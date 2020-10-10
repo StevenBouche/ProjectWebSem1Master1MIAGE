@@ -21,6 +21,15 @@ namespace Restaurant
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AllowSpecificOrigins",builder => {
+                    builder.WithOrigins("http://localhost:8080")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+
             RestaurantMongoDBConfig.ConfigureService(services, (name) => Configuration.GetSection(name));
             RestaurantServicesConfig.ConfigureService(services);
 
@@ -52,6 +61,8 @@ namespace Restaurant
            {
                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
            });
+
+            app.UseCors("AllowSpecificOrigins");
 
             app.UseRouting();
 

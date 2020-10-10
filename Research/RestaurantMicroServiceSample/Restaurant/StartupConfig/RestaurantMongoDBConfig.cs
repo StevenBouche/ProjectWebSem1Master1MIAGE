@@ -3,8 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Restaurant.DataAccess;
 using Microsoft.Extensions.Options;
 using System;
-using MongoDBAccess;
+
 using Restaurant.Model;
+using MongoDBAccess;
 
 namespace Restaurant.StartupConfig
 {

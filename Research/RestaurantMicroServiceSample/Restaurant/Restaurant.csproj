@@ -5,6 +5,7 @@
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
     <UserSecretsId>3f27a6a4-17d4-4dab-ba8b-42f6610dd04a</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <StartupObject>Restaurant.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
