@@ -1,0 +1,94 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/v1/restaurants",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "restaurant",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/restaurant",
+      "UpstreamHttpMethod": [ "POST", "GET" ],
+      "SwaggerKey": "restaurants"
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/restaurants/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "restaurant",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/restaurant/{id}",
+      "UpstreamHttpMethod": [ "PUT", "GET", "DELETE" ],
+      "SwaggerKey": "restaurants"
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/accounts/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/account/{id}",
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
+      "SwaggerKey": "users"
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/accounts",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/account",
+      "UpstreamHttpMethod": [ "GET", "PUT", "POST" ],
+      "SwaggerKey": "users"
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/auth/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/{everything}",
+      "UpstreamHttpMethod": [ "POST" ],
+      "SwaggerKey": "users"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "restaurants",
+      "Config": [
+        {
+          "Name": "Restaurant API",
+          "Version": "v1",
+          "Url": "http://restaurant/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "users",
+      "Config": [
+        {
+          "Name": "Users API",
+          "Version": "v1",
+          "Url": "http://user/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ],
+  "GlobalConfiguration": {
+    
+  }
+}
