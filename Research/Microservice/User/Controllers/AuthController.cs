@@ -35,22 +35,23 @@ namespace User.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginView account)
+        public ActionResult<LoginResult> Login([FromBody] LoginView account)
         {
             //get account by email
             Account userAccount = this.AccountManager.GetAccountWithUserMail(account.Email);
+            var result = new LoginResult();
 
             //if user dont exist
-            if (userAccount == null) return NotFound();
+            if (userAccount == null) return NotFound(result);
 
             //test if correct password
             bool credentials = userAccount.Password.Equals(account.Password);
-            if (!credentials) return Unauthorized();
+            if (!credentials) return Unauthorized(result);
 
             IPAddress ip = Request.HttpContext.Connection.RemoteIpAddress;
 
             //get last tokens of user account
-            var result = new LoginResult
+            result = new LoginResult
             {
                 Message = "success",
                 JwtToken = this.JwtManager.GetJwtToken(userAccount, ip.ToString()),
