@@ -64,6 +64,32 @@
       "UpstreamPathTemplate": "/auth/{everything}",
       "UpstreamHttpMethod": [ "POST" ],
       "SwaggerKey": "users"
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/forum",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "forum",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/forum",
+      "UpstreamHttpMethod": [ "POST", "GET" ],
+      "SwaggerKey": "forum"
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/forum/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "forum",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/forum/{id}",
+      "UpstreamHttpMethod": [ "PUT", "GET", "DELETE" ],
+      "SwaggerKey": "forum"
     }
   ],
   "SwaggerEndPoints": [
@@ -84,6 +110,16 @@
           "Name": "Users API",
           "Version": "v1",
           "Url": "http://user/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "forum",
+      "Config": [
+        {
+          "Name": "forum API",
+          "Version": "v1",
+          "Url": "http://forum/swagger/v1/swagger.json"
         }
       ]
     }

@@ -73,8 +73,10 @@ services:
     depends_on:
       - restaurant
       - user
+      - forum
     links:
       - restaurant
       - user
+      - forum
 
 
