@@ -19,6 +19,15 @@ services:
       - ./UserDB/db:/data/db
     ports:
       - "27018:27017"
+
+  mongoForum:
+    container_name: mongoForum
+    image: mongo:latest
+    restart: always
+    volumes:
+      - ./ForumDB/db:/data/db
+    ports:
+      - "27019:27017"
     
   restaurant:
     container_name: restaurant
@@ -41,6 +50,19 @@ services:
       - mongoUser
     links:
       - mongoUser
+
+
+  forum:
+    container_name: forum
+    image: ${DOCKER_REGISTRY-}forum
+    build:
+      context: .
+      dockerfile: Forum/Dockerfile
+    depends_on:
+      - mongoForum
+    links:
+      - mongoForum
+
 
   gateway:
     container_name: gateway
