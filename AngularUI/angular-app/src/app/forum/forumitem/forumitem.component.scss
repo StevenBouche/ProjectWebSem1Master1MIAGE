@@ -1,0 +1,18 @@
+
+a {
+    transition: all 0.2s;
+    &.active {
+        img {
+            transform: scaleX(-1);
+            border-radius: 0%;
+        }
+    }
+    img {
+        &:hover {
+            border-radius: 25%;
+            background: green;
+        }
+    }
+}
+
+
