@@ -9,6 +9,7 @@ import { ChannelitemComponent } from './forum/forumpanel/channelitem/channelitem
 import { UseritemComponent } from './forum/forumpanel/useritem/useritem.component';
 import { MessageitemComponent } from './forum/forumpanel/messageitem/messageitem.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ChannelpanelComponent } from './forum/forumpanel/channelpanel/channelpanel.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ForumpanelComponent,
     ChannelitemComponent,
     UseritemComponent,
-    MessageitemComponent
+    MessageitemComponent,
+    ChannelpanelComponent
   ],
   imports: [
     BrowserModule,

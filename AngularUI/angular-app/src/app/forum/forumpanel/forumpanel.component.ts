@@ -61,7 +61,7 @@ export class ForumpanelComponent implements OnInit, OnChanges {
   }
 
   getChannelClass(channel: Channel) : string {
-    if(this.channelSelected.name === channel.name) {
+    if(this.channelSelected.id === channel.id) {
       return 'text-gray-200 px-2 hover:text-gray-200 hover:bg-gray-900 bg-gray-600 rounded';
     } else {
       return 'text-gray-500 px-2 hover:text-gray-200 hover:bg-gray-900';
