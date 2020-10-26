@@ -8,6 +8,7 @@ import { ForumpanelComponent } from './forum/forumpanel/forumpanel.component';
 import { ChannelitemComponent } from './forum/forumpanel/channelitem/channelitem.component';
 import { UseritemComponent } from './forum/forumpanel/useritem/useritem.component';
 import { MessageitemComponent } from './forum/forumpanel/messageitem/messageitem.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { MessageitemComponent } from './forum/forumpanel/messageitem/messageitem
     MessageitemComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
