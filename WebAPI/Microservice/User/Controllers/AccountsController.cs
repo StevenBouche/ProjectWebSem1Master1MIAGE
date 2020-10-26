@@ -37,28 +37,39 @@ namespace User.Controllers
             return this.Manager.CreateAccount(new Account { Email = element.Email, Password = element.Password }).ToAccountView();
         }
 
-        [HttpDelete("{id}")]
-        public ActionResult Delete(string id)
+        /*  [HttpDelete("{id}")]
+          public ActionResult Delete(string id)
+          {
+              this.Manager.DeleteAccount(id);
+              return Ok();
+          }*/
+
+        [HttpGet("identity")]
+        public ActionResult<AccountView> MyIdentity()
         {
-            this.Manager.DeleteAccount(id);
-            return Ok();
+           return Ok(this.Manager.GetAccountById(this.Identity.ID).ToAccountView());
         }
 
         [HttpGet("{id}")]
-        public AccountView Get(string id)
+        public ActionResult<AccountView> Get(string id)
         {
-            return this.Manager.GetAccountById(id).ToAccountView();
+            if (this.Identity.Role.Equals("ADMIN"))
+                return Ok(this.Manager.GetAccountById(id).ToAccountView());
+            else return Unauthorized();
         }
 
         [HttpGet]
-        public List<AccountView> Get()
+        public ActionResult<List<AccountView>> Get()
         {
-            return this.Manager.GetAllAccount().Select(account => account.ToAccountView()).ToList();   
+            if (this.Identity.Role.Equals("ADMIN"))
+                return Ok(this.Manager.GetAllAccount().Select(account => account.ToAccountView()).ToList());
+            else return Unauthorized();
         }
 
         [HttpPut]
         public AccountView Put([FromBody] AccountView element)
         {
+            element.ID = this.Identity.ID;
             this.Manager.UpdateAccountFromView(element);
             return element;
         }

@@ -39,7 +39,8 @@ namespace User.Model.Users
             {
                 ID = this.ID,
                 Email = this.Email,
-                AddressIP = ip
+                AddressIP = ip,
+                Role = this.Profil.Role == 0 ? "ADMIN" : "USER"
             };
         }
 

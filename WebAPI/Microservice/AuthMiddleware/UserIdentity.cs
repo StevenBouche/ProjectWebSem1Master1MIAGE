@@ -11,6 +11,7 @@ namespace AuthMiddleware
         public string ID { get; set; }
         public string Email { get; set; }
         public string AddressIP { get; set; }
+        public string Role { get; set; }
 
         public UserIdentity()
         {
@@ -24,6 +25,7 @@ namespace AuthMiddleware
                 this.ID = claims.FindFirstValue(ClaimTypes.NameIdentifier);
                 this.Email = claims.FindFirstValue(ClaimTypes.Email);
                 this.AddressIP = claims.FindFirstValue("AddressIP");
+                this.Role = claims.FindFirstValue(ClaimTypes.Role);
             }
         }
 
@@ -33,7 +35,8 @@ namespace AuthMiddleware
             {
                 new Claim(ClaimTypes.NameIdentifier,this.ID),
                 new Claim(ClaimTypes.Email,this.Email),
-                new Claim("AddressIP",this.AddressIP)
+                new Claim("AddressIP",this.AddressIP),
+                new Claim(ClaimTypes.Role, this.Role)
             };
         }
 

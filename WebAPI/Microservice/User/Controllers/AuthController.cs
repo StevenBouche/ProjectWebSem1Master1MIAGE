@@ -63,11 +63,14 @@ namespace User.Controllers
         }
 
         [HttpPost("refresh")]
+        [AllowAnonymous]
         public IActionResult RefreshToken([FromBody] RefreshToken token)
         {
-            Account userAccount = this.Identity is null ?
+            /*Account userAccount = this.Identity is null ?
                 this.AccountManager.GetAccountWithRefreshToken(token) :
-                this.AccountManager.GetAccountById(this.Identity.ID);
+                this.AccountManager.GetAccountById(this.Identity.ID);*/
+
+            Account userAccount = this.AccountManager.GetAccountWithRefreshToken(token);
 
             RefreshToken rToken = this.JwtManager.RefreshTokenIsValid(userAccount, this.Identity.AddressIP, token);
 

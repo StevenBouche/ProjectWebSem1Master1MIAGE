@@ -27,19 +27,6 @@
       "SwaggerKey": "restaurants"
     },
     {
-      "DownstreamPathTemplate": "/api/v1/accounts/{id}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "user",
-          "Port": 80
-        }
-      ],
-      "UpstreamPathTemplate": "/account/{id}",
-      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
-      "SwaggerKey": "users"
-    },
-    {
       "DownstreamPathTemplate": "/api/v1/accounts",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -52,6 +39,33 @@
       "UpstreamHttpMethod": [ "GET", "PUT", "POST" ],
       "SwaggerKey": "users"
     },
+    {
+      "DownstreamPathTemplate": "/api/v1/accounts/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/account/{id}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "users"
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/accounts/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/account/{everything}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "users"
+    },
+
     {
       "DownstreamPathTemplate": "/api/v1/auth/{everything}",
       "DownstreamScheme": "http",
