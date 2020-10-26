@@ -55,3 +55,22 @@
     border-radius: 10px;
     background-color: #1F2225;
 }
+
+.disabled {
+    display: none;
+}
+
+.paramForum{
+    button{
+        outline:none;
+        width: 100%;
+        span {
+            width: 80%;
+        }
+    }
+    transition: all 1s ease-out;
+    .paramisshow{
+        transform: rotate(90deg);
+    }
+}
+

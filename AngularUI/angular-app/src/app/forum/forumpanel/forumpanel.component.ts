@@ -16,7 +16,10 @@ export class ForumpanelComponent implements OnInit, OnChanges {
   channelSelected: Channel;
   cacheSelected: Map<string,string>;
 
+  displayParamForum: boolean;
+
   constructor() {
+      this.displayParamForum = false;
       this.cacheSelected = new Map<string,string>();
    }
 
@@ -41,6 +44,11 @@ export class ForumpanelComponent implements OnInit, OnChanges {
       this.channelSelected = this.forum.channels.length > 0 ? this.forum.channels[0] : undefined;
       if(this.channelSelected != undefined) this.updateCacheChannel();
     }
+  }
+
+  onClickParamForum(){
+    console.log("click on param forum")
+    this.displayParamForum=!this.displayParamForum;
   }
 
   onChannelSelect(channel: Channel) {
