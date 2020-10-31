@@ -1,19 +1,17 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import {UserProfileService} from './login/user-profile.service';
-
+import { AuthComponent } from './auth/auth.component';
+import { ForumComponent } from './forum/forum.component';
 
 const routes: Routes = [
-  {path:'', pathMatch:'full', redirectTo:'forum'}
+  { path: 'auth', component: AuthComponent },
+  { path: 'panel', component:  ForumComponent},
 ]
 
 @NgModule({
   declarations: [],
-  imports: [
-    RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules})
-  ],
-  exports: [RouterModule],
-  providers: [UserProfileService]
+  imports: [RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules})],
+  exports: [RouterModule]
 })
 
 export class AppRoutingModule { }

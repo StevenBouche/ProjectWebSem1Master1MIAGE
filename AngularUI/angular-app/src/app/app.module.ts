@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+//COMPONENT
 import { AppComponent } from './app.component';
 import { ForumComponent } from './forum/forum.component';
 import { ForumitemComponent } from './forum/forumitem/forumitem.component';
@@ -10,6 +11,12 @@ import { UseritemComponent } from './forum/forumpanel/useritem/useritem.componen
 import { MessageitemComponent } from './forum/forumpanel/messageitem/messageitem.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChannelpanelComponent } from './forum/forumpanel/channelpanel/channelpanel.component';
+import { AuthComponent } from './auth/auth.component';
+import { LoginComponent } from './auth/login/login.component';
+import { RegisterComponent } from './auth/register/register.component';
+
+//ROUTING
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -20,11 +27,15 @@ import { ChannelpanelComponent } from './forum/forumpanel/channelpanel/channelpa
     ChannelitemComponent,
     UseritemComponent,
     MessageitemComponent,
-    ChannelpanelComponent
+    ChannelpanelComponent,
+    AuthComponent,
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
