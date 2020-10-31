@@ -18,6 +18,10 @@ import { RegisterComponent } from './auth/register/register.component';
 //ROUTING
 import { AppRoutingModule } from './app-routing.module';
 
+
+// MBD
+import { MDBBootstrapModule } from 'angular-bootstrap-md';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,7 +39,8 @@ import { AppRoutingModule } from './app-routing.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MDBBootstrapModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
