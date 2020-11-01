@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthHttpInterceptor } from 'src/services/request/AuthHttpInterceptor';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { CommonModule } from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     ForumRoutingModule,
     AuthModule,
     HttpClientModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    CommonModule
   ],
   providers: [
     {
