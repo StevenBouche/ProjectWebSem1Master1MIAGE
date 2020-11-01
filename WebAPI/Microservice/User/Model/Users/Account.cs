@@ -29,7 +29,7 @@ namespace User.Model.Users
                 ID = this.ID,
                 Pseudo = this.Pseudo,
                 Email = this.Email,
-                Profil = this.Profil
+                Profil = this.Profil.ToProfilView()
             };
         }
 

@@ -48,14 +48,12 @@ namespace User.Controllers
             bool credentials = userAccount.Password.Equals(account.Password);
             if (!credentials) return Unauthorized(result);
 
-            IPAddress ip = Request.HttpContext.Connection.RemoteIpAddress;
-
             //get last tokens of user account
             result = new LoginResult
             {
                 Message = "success",
-                JwtToken = this.JwtManager.GetJwtToken(userAccount, ip.ToString()),
-                RefreshToken = this.JwtManager.GetRefreshToken(userAccount, ip.ToString(), (a) => this.AccountManager.SaveRefreshToken(a))
+                JwtToken = this.JwtManager.GetJwtToken(userAccount, account.AddressIP),
+                RefreshToken = this.JwtManager.GetRefreshToken(userAccount, account.AddressIP, (a) => this.AccountManager.SaveRefreshToken(a))
             };
 
             return Ok(result);

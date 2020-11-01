@@ -12,5 +12,7 @@ namespace User.Model.ViewModel.Auth
         public string Email { get; set; }
         [JsonPropertyName("password")]
         public string Password { get; set; }
+        [JsonPropertyName("addressIP")]
+        public string AddressIP { get; set; }
     }
 }

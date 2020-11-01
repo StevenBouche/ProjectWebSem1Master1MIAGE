@@ -6,10 +6,9 @@ namespace User.Model.Security
     {
         [JsonPropertyName("refreshToken")]
         public string Token { get; set; }
-
         [JsonPropertyName("expireAt")]
         public double ExpireAt { get; set; }
-
+        [JsonPropertyName("addressIP")]
         public string AddressIP { get; set; }
     }
 }

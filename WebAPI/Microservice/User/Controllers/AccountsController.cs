@@ -34,7 +34,18 @@ namespace User.Controllers
         [HttpPost]
         public AccountView Create([FromBody] RegisterView element)
         {
-            return this.Manager.CreateAccount(new Account { Email = element.Email, Password = element.Password }).ToAccountView();
+            return this.Manager.CreateAccount(
+                new Account {
+                    Profil = new UserProfil
+                    {
+                        FirstName = element.FirstName,
+                        LastName = element.LastName,
+                        Role = UserRole.USER
+                    },
+                    Email = element.Email,
+                    Password = element.Password,
+                    AdressIPAuthorize = new List<string> { element.AddressIP }
+                }).ToAccountView();
         }
 
         /*  [HttpDelete("{id}")]

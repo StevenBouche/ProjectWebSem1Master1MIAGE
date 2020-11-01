@@ -8,6 +8,7 @@ using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
 using AuthMiddleware;
+using PolicyMiddleware;
 
 namespace GatewayRestaurant
 {
@@ -25,6 +26,8 @@ namespace GatewayRestaurant
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+
+            PolicyOrigins.ConfigureServicesPolicyUI(services);
             Auth.Configure(services, Configuration);
 
             services.AddSwaggerForOcelot(Configuration);
@@ -39,6 +42,8 @@ namespace GatewayRestaurant
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            PolicyOrigins.ConfigureAppPolicyUI(app);
 
             app.UseSwaggerForOcelotUI();
 

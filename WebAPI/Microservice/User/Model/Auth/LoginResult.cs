@@ -9,6 +9,7 @@ namespace User.Model.Auth
 {
     public class LoginResult
     {
+        [JsonPropertyName("message")]
         public string Message { get; set; }
         [JsonPropertyName("jwtToken")]
         public JwtToken JwtToken { get; set; }

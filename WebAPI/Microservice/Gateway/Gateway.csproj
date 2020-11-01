@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AuthMiddleware\AuthMiddleware.csproj" />
+    <ProjectReference Include="..\PolicyMiddleware\PolicyMiddleware.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties ocelot_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

@@ -26,9 +26,29 @@ namespace PolicyMiddleware
 
         }
 
+        public static void ConfigureServicesPolicyUI(IServiceCollection services)
+        {
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AllowOriginsUI", builder => {
+                    builder
+                        .WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
+        }
+
         public static void ConfigureApp(IApplicationBuilder app)
         {
             app.UseCors("AllowOriginsGateway");
+        }
+
+        public static void ConfigureAppPolicyUI(IApplicationBuilder app)
+        {
+            app.UseCors("AllowOriginsUI");
         }
 
     }
