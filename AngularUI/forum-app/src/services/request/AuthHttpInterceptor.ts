@@ -15,14 +15,14 @@ export class AuthHttpInterceptor implements HttpInterceptor {
 
         console.log('intercepted request ... ');
 
-        var token = this.auth.getAuth()?.jwtToken.accessToken;
-        if(token!=undefined){
+        //var token = this.auth.getAuth()?.jwtToken.accessToken;
+        //if(token!=undefined){
            /* const authReq : HttpRequest<any> = req.clone({
                 headers: req.headers.set('Authorization', `Bearer ${ token }`)
             });*/
-            console.log('Sending request with new header auth now ...');
-            return next.handle(req);
-        }
+           // console.log('Sending request with new header auth now ...');
+           // return next.handle(req);
+       // }
         
         console.log('Sending request with no header auth ...');
         return next.handle(req);

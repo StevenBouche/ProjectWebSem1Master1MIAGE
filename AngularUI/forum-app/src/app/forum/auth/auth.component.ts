@@ -68,12 +68,11 @@ export class AuthComponent implements OnInit {
     if(user!=undefined&&user._id!=undefined){
       this.alert.showSuccess("Success register","Success")
       this.state = AuthState.LOGIN;
+      this.registerForm.reset();
     } else {
       this.alert.showError("Error on register","Error")
     }
     this.isLoading = false;
-    this.registerForm.reset();
-    console.log(user)
   }
 
   async onSubmitLogin(login : LoginView){
@@ -81,13 +80,12 @@ export class AuthComponent implements OnInit {
     var loginResult : LoginResult = await this.auth.loginUser(login);
     if(loginResult!=undefined){
       this.alert.showSuccess("Success login - redirect","Success")
+      this.loginForm.reset();
+      this.router.navigate(['/']);
     } else {
-      this.alert.showError("Error on register","Error")
+      this.alert.showError("Error on login","Error")
     }
-    console.log(loginResult)
     this.isLoading = false;
-    this.loginForm.reset();
-    this.router.navigate(['/']);
   }
 
   isRegister() : boolean {

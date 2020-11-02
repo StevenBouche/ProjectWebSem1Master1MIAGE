@@ -25,62 +25,98 @@ export class AuthService {
   }
 
   public async loginUser(login: LoginView) : Promise<LoginResult> {
+
+    //Prepare data to send back end
     var data = new LoginView();
     data.email = login.email;
     data.password = login.password;
     data.AddressIP = await this.req.getAddressIP();
-    var result = await this.req.executePost<LoginView,LoginResult>(this.apiUrl+"/"+MethodsAuth.LOGIN,data);
-    console.log(result)
-    this.setLocalStorage(this.keyStorage, result);
-    return result;
+
+    //Execute request post to login 
+    var url = this.apiUrl+"/"+MethodsAuth.LOGIN;
+    var result : LoginResult = await this.req.executePost<LoginView,LoginResult>(url,data);
+
+    //If not undefined store tokens
+    if(result!=undefined){
+      this.setLocalStorage(this.keyStorage, result);
+      return result;
+    }       
+  
+    return undefined;
   }
 
-  public async logoutUser() : Promise<any> {
-    var result = this.req.executePost<any,any>(this.apiUrl+"/"+MethodsAuth.LOGOUT);
-    this.setLocalStorage(this.keyStorage, {});
-    return result;
+  public async logoutUser() : Promise<boolean> {
+
+    //If user is auth call back end to logout and remove local tokens
+    if(this.isAuthenticated()){
+      var result = await this.req.executePost<any,any>(this.apiUrl+"/"+MethodsAuth.LOGOUT);
+      this.removeLocalStorage(this.keyStorage);
+      return true;
+    }
+    return false;
   }
 
   public getAuth(): LoginResult {
     return this.getLocalStorage<LoginResult>(this.keyStorage);
   }
 
-  public isAuthenticated(): boolean {
+  public async isAuthenticated(): Promise<boolean> {
+
     var auth = this.getAuth();
+    var currentTimeSecond = (Date.now()/1000);
+
     console.log(auth)
+
+    //if no tokens store
     if(auth==undefined) return false;
-    
-    if(auth.jwtToken!= undefined && this.jwtHelper.isTokenExpired(auth.jwtToken.accessToken, auth.jwtToken.expireAt)){
-      console.log("JWT TOKEN IS VALID")
+
+    console.log(auth)
+     //if jwt token exist and expiration is valid
+    if(auth.jwtToken!= undefined && auth.jwtToken.expireAt > currentTimeSecond)  
       return true;
-    } else if(auth.refreshToken!=undefined&&auth.refreshToken.expireAt<Date.now()) {
-      console.log("JWT TOKEN NOT VALID")
-      console.log("REFRESH TOKEN NOT VALID")
-      var result = this.req.executePost<RefreshToken,LoginResult>(this.apiUrl+"/"+MethodsAuth.REFRESH,auth.refreshToken);
+
+     //if jwt token not exist or not valid and refresh token exist and is valid
+    if(auth.refreshToken != undefined && auth.refreshToken.expireAt > currentTimeSecond) {
+      
+       //execute post request to generate new jwt token
+      var result = await this.req.executePost<RefreshToken,LoginResult>(this.apiUrl+"/"+MethodsAuth.REFRESH,auth.refreshToken);
       console.log(result)
-      this.setLocalStorage(this.keyStorage, result);
+       //If not undefined store tokens
+      if(result!=undefined)
+        this.setLocalStorage(this.keyStorage, result);
+      else {
+        this.removeLocalStorage(this.keyStorage);
+      }
+
+      //retry to return a valid jwt token recursive
       return this.isAuthenticated();
     }
-    console.log("NOT AUTH")
+
+    //no valid tokens (jwt and refresh) no auth found
     return false;
   }
 
   private setLocalStorage<T>(key:string, obj: T) : void {
-    console.log(obj)
     localStorage.setItem(key,JSON.stringify(obj))
+  }
+
+  private removeLocalStorage(key:string) : void {
+    localStorage.removeItem(key)
   }
 
   private getLocalStorage<T>(key:string) : T {
     var json = localStorage.getItem(key);
     try {
+      //try parse json
       var parse = JSON.parse(json);
-      var result : T = parse as T;
-      console.log(result)
-      return result;
+      //try cast json object to object T
+      return parse as T;
     } catch (error){
-      console.log(error)
+      //on fail parse or cast
+      console.error("Error when try to parse or cast local storage object")
+      console.error(error)
+      return undefined;
     }
-    return undefined;
   }
 
 }

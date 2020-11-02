@@ -94,9 +94,10 @@ namespace User.Services
 
         public Account GetAccountWithRefreshToken(RefreshToken token)
         {
-            return this.Context
-                .GetQueryable()
-                .FirstOrDefault(account => account.RefreshTokens.Select(refresh => refresh.Token).AsEnumerable().Contains(token.Token));
+            //todo convert mongo builder
+            List<Account> list = this.Context.GetQueryable().ToList();
+
+            return list.FirstOrDefault(account => account.RefreshTokens.FirstOrDefault(refresh => refresh.Token.Equals(token.Token)) != null);
         }
     }
 }

@@ -42,11 +42,19 @@ namespace User.Controllers
             var result = new LoginResult();
 
             //if user dont exist
-            if (userAccount == null) return NotFound(result);
+            if (userAccount == null)
+            {
+                result.Message = "Account not found";
+                return NotFound(result);
+            }
 
             //test if correct password
             bool credentials = userAccount.Password.Equals(account.Password);
-            if (!credentials) return Unauthorized(result);
+            if (!credentials)
+            {
+                result.Message = "Bad credential";
+                return Unauthorized(result);
+            }
 
             //get last tokens of user account
             result = new LoginResult
@@ -70,15 +78,18 @@ namespace User.Controllers
 
             Account userAccount = this.AccountManager.GetAccountWithRefreshToken(token);
 
-            RefreshToken rToken = this.JwtManager.RefreshTokenIsValid(userAccount, this.Identity.AddressIP, token);
+            RefreshToken rToken = this.JwtManager.RefreshTokenIsValid(userAccount, token);
 
             var result = new LoginResult();
 
-            if(rToken is null)
+            if (rToken is null)
+            {
                 result.Message = "No current refresh token valid";
+                return NotFound(result);
+            }
             else
             {
-                result.JwtToken = this.JwtManager.GetJwtToken(userAccount, this.Identity.AddressIP);
+                result.JwtToken = this.JwtManager.GetJwtToken(userAccount, rToken.AddressIP);
                 result.RefreshToken = rToken;
             }
             return Ok(result);

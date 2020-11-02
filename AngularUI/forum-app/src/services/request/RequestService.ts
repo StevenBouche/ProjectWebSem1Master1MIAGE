@@ -1,6 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { kMaxLength } from 'buffer';
+import { Observable, of } from 'rxjs';
+import {  throwError } from 'rxjs';
+import { retry, catchError, map } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -16,12 +19,12 @@ export class RequestService{
 
     async executePost<T,K>(url: string, data: T = undefined) : Promise<K> {
         var request = this.http.post<K>(url, data);
-        return await this.executePromise<any>(request);
+        return await this.executePromise<K>(request);
     }
 
     async executePut<T,K>(url: string, data: T) : Promise<K> {
         var request = this.http.put<K>(url,data);
-        return await this.executePromise<any>(request);
+        return await this.executePromise<K>(request);
     }
 
     async executeDelete<K>(url:string) : Promise<K> {
@@ -35,13 +38,30 @@ export class RequestService{
         return result.ip;
     }   
 
-    async executePromise<K>(fun: Observable<K>) : Promise<K> {
-        return new Promise<K>((resolv,reject) => {
-            fun.subscribe((result:K) => {
-                resolv(result);
+    private handleError<T>(operation = "operation", result?: T) {
+        return (error: HttpErrorResponse): Observable<T> => {
+            let errorMessage = 'Unknown error!';
+            if (error.error instanceof ErrorEvent) {
+                // Client-side errors
+                errorMessage = `Error: ${error.error.message}`;
+            } else {
+                // Server-side errors
+                errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+            }
+            console.error(errorMessage)
+          return of(result);
+        };
+      }
+
+    async executePromise<K>(fun: Observable<K>) : Promise<K>  {
+        return new Promise<K>((resolve,reject) => {
+            fun.pipe(catchError(this.handleError("executeRequest")))      
+            .subscribe((result:K) => {
+                console.log(result)
+                resolve(result);
             }, (error: any ) => {
-                console.log(error);
-                resolv(undefined);
+                console.log(error)
+                resolve(undefined)
             });
         });
     }

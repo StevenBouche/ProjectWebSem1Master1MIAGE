@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace User.Model.Security
 {
@@ -10,5 +12,20 @@ namespace User.Model.Security
         public double ExpireAt { get; set; }
         [JsonPropertyName("addressIP")]
         public string AddressIP { get; set; }
+
+        public override bool Equals(Object obj)
+        {
+            if(obj != null && obj is RefreshToken)
+            {
+                var element = obj as RefreshToken;
+                return (this.Token, this.ExpireAt, this.AddressIP).Equals((element.Token, element.ExpireAt, element.AddressIP));
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return (this.Token, this.ExpireAt, this.AddressIP).GetHashCode();
+        }
     }
 }

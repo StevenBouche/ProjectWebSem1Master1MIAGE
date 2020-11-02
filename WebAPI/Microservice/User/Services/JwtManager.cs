@@ -17,7 +17,7 @@ namespace User.Services
         JwtToken GetJwtToken(Account account, string ip);
         RefreshToken GetRefreshToken(Account account, string clientIp, Action<Account> onNewRefreshToken);
         void RemoveRefreshToken(Account userAccount, string userIp, Action<Account> onDeleteToken);
-        RefreshToken RefreshTokenIsValid(Account userAccount, string userIp, RefreshToken token);
+        RefreshToken RefreshTokenIsValid(Account userAccount, RefreshToken token);
     }
 
     public class JwtManager : IJwtCacheManager
@@ -80,10 +80,10 @@ namespace User.Services
             onDeleteToken(userAccount);
         }
 
-        public RefreshToken RefreshTokenIsValid(Account userAccount, string userIp, RefreshToken token)
+        public RefreshToken RefreshTokenIsValid(Account userAccount, RefreshToken token)
         {
             return userAccount.RefreshTokens.FirstOrDefault(refresh => 
-                refresh.AddressIP.Equals(userIp) && 
+                refresh.AddressIP.Equals(token.AddressIP) && 
                 refresh.Token.Equals(token.Token) && 
                 refresh.ExpireAt>this.UnixTimeNow());
         }
