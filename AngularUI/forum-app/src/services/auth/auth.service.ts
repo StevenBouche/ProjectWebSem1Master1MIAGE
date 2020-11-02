@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, ɵConsole } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import LoginResult from 'src/models/auth/LoginResult';
-import { AccountView, LoginView } from 'src/models/views/auth/AuthView';
+import RefreshToken from 'src/models/security/RefreshToken';
+import { LoginView } from 'src/models/views/auth/AuthView';
 import { RequestService } from '../request/RequestService';
 
 enum MethodsAuth {
@@ -30,6 +30,7 @@ export class AuthService {
     data.password = login.password;
     data.AddressIP = await this.req.getAddressIP();
     var result = await this.req.executePost<LoginView,LoginResult>(this.apiUrl+"/"+MethodsAuth.LOGIN,data);
+    console.log(result)
     this.setLocalStorage(this.keyStorage, result);
     return result;
   }
@@ -46,8 +47,22 @@ export class AuthService {
 
   public isAuthenticated(): boolean {
     var auth = this.getAuth();
-    return auth != undefined && 
-      this.jwtHelper.isTokenExpired(auth.jwtToken.accessToken, auth.jwtToken.expireAt);
+    console.log(auth)
+    if(auth==undefined) return false;
+    
+    if(auth.jwtToken!= undefined && this.jwtHelper.isTokenExpired(auth.jwtToken.accessToken, auth.jwtToken.expireAt)){
+      console.log("JWT TOKEN IS VALID")
+      return true;
+    } else if(auth.refreshToken!=undefined&&auth.refreshToken.expireAt<Date.now()) {
+      console.log("JWT TOKEN NOT VALID")
+      console.log("REFRESH TOKEN NOT VALID")
+      var result = this.req.executePost<RefreshToken,LoginResult>(this.apiUrl+"/"+MethodsAuth.REFRESH,auth.refreshToken);
+      console.log(result)
+      this.setLocalStorage(this.keyStorage, result);
+      return this.isAuthenticated();
+    }
+    console.log("NOT AUTH")
+    return false;
   }
 
   private setLocalStorage<T>(key:string, obj: T) : void {

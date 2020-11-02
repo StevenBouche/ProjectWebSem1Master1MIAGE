@@ -4,12 +4,20 @@ import { ForumRoutingModule } from './forum-routing.module';
 import { AuthModule } from './auth/auth.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthHttpInterceptor } from 'src/services/request/AuthHttpInterceptor';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressBarModule } from 'node_modules/@angular/material/progress-bar';
 import { CommonModule } from "@angular/common";
+import { ForumpanelComponent } from './forumpanel/forumpanel.component';
+import { ChannelpanelComponent } from './forumpanel/channelpanel/channelpanel.component';
+import { MessageitemComponent } from './forumpanel/channelpanel/messageitem/messageitem.component';
+import { UseritemComponent } from './forumpanel/channelpanel/useritem/useritem.component';
 
 @NgModule({
   declarations: [
-    ForumComponent
+    ForumComponent,
+    ForumpanelComponent,
+    ChannelpanelComponent,
+    MessageitemComponent,
+    UseritemComponent
   ],
   imports: [
     ForumRoutingModule,

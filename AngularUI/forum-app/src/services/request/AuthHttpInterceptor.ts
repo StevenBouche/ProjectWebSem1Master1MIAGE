@@ -17,11 +17,11 @@ export class AuthHttpInterceptor implements HttpInterceptor {
 
         var token = this.auth.getAuth()?.jwtToken.accessToken;
         if(token!=undefined){
-            const authReq : HttpRequest<any> = req.clone({
+           /* const authReq : HttpRequest<any> = req.clone({
                 headers: req.headers.set('Authorization', `Bearer ${ token }`)
-            });
+            });*/
             console.log('Sending request with new header auth now ...');
-            return next.handle(authReq);
+            return next.handle(req);
         }
         
         console.log('Sending request with no header auth ...');

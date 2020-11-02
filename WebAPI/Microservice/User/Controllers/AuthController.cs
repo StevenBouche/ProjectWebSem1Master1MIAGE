@@ -62,7 +62,7 @@ namespace User.Controllers
 
         [HttpPost("refresh")]
         [AllowAnonymous]
-        public IActionResult RefreshToken([FromBody] RefreshToken token)
+        public ActionResult<LoginResult> RefreshToken([FromBody] RefreshToken token)
         {
             /*Account userAccount = this.Identity is null ?
                 this.AccountManager.GetAccountWithRefreshToken(token) :

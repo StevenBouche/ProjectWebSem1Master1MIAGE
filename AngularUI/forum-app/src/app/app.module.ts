@@ -14,6 +14,8 @@ import { AppComponent } from './app.component';
 //Forum module
 import { ForumModule } from './forum/forum.module';
 
+import { ToastrModule } from 'ngx-toastr';
+
 @NgModule({
   declarations: [
     AppComponent  
@@ -25,6 +27,7 @@ import { ForumModule } from './forum/forum.module';
     MDBBootstrapModule.forRoot(),
     FormsModule,
     AppRoutingModule,
+	  ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

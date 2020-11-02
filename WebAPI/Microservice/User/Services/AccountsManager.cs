@@ -96,7 +96,7 @@ namespace User.Services
         {
             return this.Context
                 .GetQueryable()
-                .FirstOrDefault(account => account.RefreshTokens.Select(refresh => refresh.Token).Contains(token.Token));
+                .FirstOrDefault(account => account.RefreshTokens.Select(refresh => refresh.Token).AsEnumerable().Contains(token.Token));
         }
     }
 }

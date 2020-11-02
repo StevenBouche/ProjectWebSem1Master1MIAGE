@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import LoginResult from 'src/models/auth/LoginResult';
 import { RegisterView, LoginView, AccountView } from 'src/models/views/auth/AuthView';
 import { AuthService } from 'src/services/auth/auth.service';
+import { NotificationService } from 'src/services/notification/notification.service';
 import { UserService } from 'src/services/user/user.service';
 
 enum AuthState {
@@ -25,19 +26,28 @@ export class AuthComponent implements OnInit {
   loginData: LoginView = new LoginView();
   isLoading: boolean;
 
-  constructor(public auth: AuthService, public user: UserService, public router: Router, private formBuilder: FormBuilder) {
+  constructor(
+    public auth: AuthService, 
+    public user: UserService, 
+    public router: Router, 
+    private formBuilder: FormBuilder,
+    private alert: NotificationService) {
+
     this.state = AuthState.REGISTER;
     this.isLoading = false;
+
     this.registerForm = formBuilder.group({
       firstName: [this.registerData.firstName, [Validators.required]],
       lastName: [this.registerData.lastName, [Validators.required]],
       email: [this.registerData.email, [Validators.required]], 
       password: [this.registerData.password, [Validators.required]]
     });
+
     this.loginForm = formBuilder.group({
       email: [this.loginData.email, [Validators.required]], 
       password: [this.loginData.password, [Validators.required]]
     });
+
   }
 
   ngOnInit(): void {
@@ -55,6 +65,12 @@ export class AuthComponent implements OnInit {
   async onSubmitRegister(register: RegisterView) {
     this.isLoading = true;
     var user : AccountView = await this.user.registerUser(register);
+    if(user!=undefined&&user._id!=undefined){
+      this.alert.showSuccess("Success register","Success")
+      this.state = AuthState.LOGIN;
+    } else {
+      this.alert.showError("Error on register","Error")
+    }
     this.isLoading = false;
     this.registerForm.reset();
     console.log(user)
@@ -63,6 +79,11 @@ export class AuthComponent implements OnInit {
   async onSubmitLogin(login : LoginView){
     this.isLoading = true;
     var loginResult : LoginResult = await this.auth.loginUser(login);
+    if(loginResult!=undefined){
+      this.alert.showSuccess("Success login - redirect","Success")
+    } else {
+      this.alert.showError("Error on register","Error")
+    }
     console.log(loginResult)
     this.isLoading = false;
     this.loginForm.reset();

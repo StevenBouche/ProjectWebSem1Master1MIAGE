@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import FactoryModel from 'src/models/forum/FactoryModel';
 import Forum from 'src/models/forum/Forum';
+import User from 'src/models/forum/User';
 
 @Component({
   selector: 'app-forum',
@@ -11,7 +12,7 @@ export class ForumComponent implements OnInit {
 
   forums : Forum[];
   forumSelected: Forum;
-  currentUser = FactoryModel.createUser(0+"","user0","/assets/avatar (0).jpg")
+  currentUser: User = FactoryModel.createUser(0+"","user0","/assets/avatar (0).jpg")
   
   constructor() {
     this.forums = FactoryModel.createForums();
