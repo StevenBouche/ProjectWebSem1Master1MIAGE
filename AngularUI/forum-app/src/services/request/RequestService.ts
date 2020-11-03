@@ -40,16 +40,9 @@ export class RequestService{
 
     private handleError<T>(operation = "operation", result?: T) {
         return (error: HttpErrorResponse): Observable<T> => {
-            let errorMessage = 'Unknown error!';
-            if (error.error instanceof ErrorEvent) {
-                // Client-side errors
-                errorMessage = `Error: ${error.error.message}`;
-            } else {
-                // Server-side errors
-                errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-            }
-            console.error(errorMessage)
-          return of(result);
+            // Server-side errors
+            console.error(`Error Code: ${error.status}\nMessage: ${error.message}`);
+            return of(error.error as T);
         };
       }
 

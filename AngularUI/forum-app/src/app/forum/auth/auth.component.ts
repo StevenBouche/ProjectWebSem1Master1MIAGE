@@ -51,7 +51,7 @@ export class AuthComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+      
   }
 
   onClickLogin() : void {
@@ -76,15 +76,20 @@ export class AuthComponent implements OnInit {
   }
 
   async onSubmitLogin(login : LoginView){
+
     this.isLoading = true;
     var loginResult : LoginResult = await this.auth.loginUser(login);
-    if(loginResult!=undefined){
+
+    if(loginResult==undefined)
+      this.alert.showError("Error on login : "+loginResult.message,"Error");
+    else if(loginResult.jwtToken==undefined||loginResult.refreshToken==undefined)
+      this.alert.showError("Error on login : "+loginResult.message,"Error");
+    else {
       this.alert.showSuccess("Success login - redirect","Success")
       this.loginForm.reset();
       this.router.navigate(['/']);
-    } else {
-      this.alert.showError("Error on login","Error")
     }
+
     this.isLoading = false;
   }
 

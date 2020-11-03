@@ -37,12 +37,10 @@ export class AuthService {
     var result : LoginResult = await this.req.executePost<LoginView,LoginResult>(url,data);
 
     //If not undefined store tokens
-    if(result!=undefined){
+    if(result!=undefined&&result.jwtToken!=undefined&&result.refreshToken!=undefined){
       this.setLocalStorage(this.keyStorage, result);
-      return result;
     }       
-  
-    return undefined;
+    return result;
   }
 
   public async logoutUser() : Promise<boolean> {
@@ -65,16 +63,18 @@ export class AuthService {
     var auth = this.getAuth();
     var currentTimeSecond = (Date.now()/1000);
 
-    console.log(auth)
+    console.log(currentTimeSecond)
 
     //if no tokens store
     if(auth==undefined) return false;
 
     console.log(auth)
+    console.log(auth.jwtToken.expireAt)
      //if jwt token exist and expiration is valid
     if(auth.jwtToken!= undefined && auth.jwtToken.expireAt > currentTimeSecond)  
       return true;
 
+      console.log(auth.refreshToken.expireAt)
      //if jwt token not exist or not valid and refresh token exist and is valid
     if(auth.refreshToken != undefined && auth.refreshToken.expireAt > currentTimeSecond) {
       
@@ -93,6 +93,7 @@ export class AuthService {
     }
 
     //no valid tokens (jwt and refresh) no auth found
+    this.removeLocalStorage(this.keyStorage);
     return false;
   }
 

@@ -7,7 +7,7 @@ import { AuthComponent } from './auth/auth.component';
 
 const routes: Routes = [
   { path: '', component: ForumComponent, canActivate: [AuthGuardService] },
-  { path: 'auth', component: AuthComponent }
+  { path: 'auth', component: AuthComponent , canActivate: [AuthGuardService]}
 ];
 
 @NgModule({

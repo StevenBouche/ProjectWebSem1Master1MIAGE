@@ -89,6 +89,7 @@ namespace User.Controllers
             }
             else
             {
+                result.Message = "success";
                 result.JwtToken = this.JwtManager.GetJwtToken(userAccount, rToken.AddressIP);
                 result.RefreshToken = rToken;
             }

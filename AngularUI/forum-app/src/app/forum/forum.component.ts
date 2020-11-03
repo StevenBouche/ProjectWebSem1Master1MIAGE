@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import FactoryModel from 'src/models/forum/FactoryModel';
 import Forum from 'src/models/forum/Forum';
 import User from 'src/models/forum/User';
+import { WsService } from 'src/services/request/ws.service';
 
 @Component({
   selector: 'app-forum',
@@ -14,13 +15,17 @@ export class ForumComponent implements OnInit {
   forumSelected: Forum;
   currentUser: User = FactoryModel.createUser(0+"","user0","/assets/avatar (0).jpg")
   
-  constructor() {
+  constructor(private connectionWs : WsService) {
     this.forums = FactoryModel.createForums();
     this.forumSelected = this.forums[0];
   }
 
   ngOnInit(): void {
+    this.connectionWs.connectToWebSocket();
+  }
 
+  ngOnDestroy() : void {
+    this.connectionWs.disconnectWebSocket();
   }
 
   onForumSelect(forum: Forum){
