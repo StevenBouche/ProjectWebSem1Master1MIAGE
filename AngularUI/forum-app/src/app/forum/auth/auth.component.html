@@ -13,21 +13,21 @@
           <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegister(registerForm.value)">
             <div class="top-row">
               <div class="field-wrap">
-                <label>First Name<span class="req">*</span></label>
-                <input type="text" required autocomplete="off" formControlName="firstName" />
+                <label [class.active]="registerData.firstName!=undefined">First Name<span class="req">*</span></label>
+                <input [(ngModel)]="registerData.firstName" type="text" required autocomplete="off" formControlName="firstName" />
               </div>
               <div class="field-wrap">
-                <label>Last Name<span class="req">*</span></label>
-                <input type="text"required autocomplete="off" formControlName="lastName"/>
+                <label [class.active]="registerData.lastName!=undefined">Last Name<span class="req">*</span></label>
+                <input [(ngModel)]="registerData.lastName" type="text" required autocomplete="off" formControlName="lastName"/>
               </div>
             </div> 
             <div class="field-wrap">
-              <label>Email Address<span class="req">*</span></label>
-              <input type="email"required autocomplete="off" formControlName="email"/>
+              <label [class.active]="registerData.email!=undefined">Email Address<span class="req">*</span></label>
+              <input [(ngModel)]="registerData.email" type="email" required autocomplete="off" formControlName="email"/>
             </div>          
             <div class="field-wrap">
-              <label>Set A Password<span class="req">*</span></label>
-              <input type="password"required autocomplete="off" formControlName="password"/>
+              <label [class.active]="registerData.password!=undefined">Set A Password<span class="req">*</span></label>
+              <input [(ngModel)]="registerData.password" type="password" required autocomplete="off" formControlName="password"/>
             </div>           
             <button class="button button-block" type="submit">Get Started</button>
           </form>
@@ -38,12 +38,12 @@
           <h1>Welcome Back!</h1>
           <form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin(loginForm.value)">
             <div class="field-wrap">
-              <label>Email Address<span class="req">*</span></label>
-              <input type="email"required autocomplete="off" formControlName="email"/>
+              <label [class.active]="loginData.email!=undefined">Email Address<span class="req">*</span></label>
+              <input [(ngModel)]="loginData.email" type="email"required autocomplete="off" formControlName="email"/>
             </div>
             <div class="field-wrap">
-              <label> Password<span class="req">*</span></label>
-              <input type="password"required autocomplete="off" formControlName="password"/>
+              <label [class.active]="loginData.password!=undefined"> Password<span class="req">*</span></label>
+              <input [(ngModel)]="loginData.password" type="password"required autocomplete="off" formControlName="password"/>
             </div>
             <button class="button button-block" type="submit">Log In</button>
           </form>

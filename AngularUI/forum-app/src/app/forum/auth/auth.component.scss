@@ -98,8 +98,8 @@ h1 {
 label {
   position:absolute;
   transform:translateY(6px);
-  left:13px;
-  color:rgba($white,.5);
+  left:13px;  
+  color: white;
   transition:all 0.25s ease;
   -webkit-backface-visibility: hidden;
   pointer-events: none;
@@ -120,7 +120,7 @@ label.active {
 }
 
 label.highlight {
-	color:$white;
+	//color:$white;
 }
 
 input, textarea {
