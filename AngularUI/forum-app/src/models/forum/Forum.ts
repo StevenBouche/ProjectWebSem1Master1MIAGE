@@ -7,4 +7,5 @@ export default class Forum {
     public name: string;
     public channels: Channel[];
     public users: User[];
+    public description: string;
 }

@@ -13,21 +13,23 @@ import { AppComponent } from './app.component';
 
 //Forum module
 import { ForumModule } from './forum/forum.module';
-
+import { AuthModule } from './forum/auth/auth.module'
 import { ToastrModule } from 'ngx-toastr';
+
 
 @NgModule({
   declarations: [
     AppComponent  
   ],
   imports: [
+    AuthModule,
     ForumModule,
     BrowserModule,
     BrowserAnimationsModule,
     MDBBootstrapModule.forRoot(),
     FormsModule,
     AppRoutingModule,
-	  ToastrModule.forRoot()
+	  ToastrModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent]

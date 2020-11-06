@@ -35,13 +35,4 @@ export class UserService {
     return this.req.executePut<AccountView,AccountView>(this.apiUrl,account);
   }
 
-  
-
-
-
-
-
-
-
-
 }

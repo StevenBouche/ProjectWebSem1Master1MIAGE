@@ -55,6 +55,10 @@ export class ForumpanelComponent implements OnInit {
     this.updateCacheChannel();
   }
 
+  onNewChannel() {
+    
+  }
+
   updateCacheChannel() : void {
     this.cacheSelected.set(this.forum.id,this.channelSelected.id)
   }
@@ -65,6 +69,6 @@ export class ForumpanelComponent implements OnInit {
     } else {
       return 'text-gray-500 px-2 hover:text-gray-200 hover:bg-gray-900';
     }
-}
+  }
 
 }

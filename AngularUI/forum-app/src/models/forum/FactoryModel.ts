@@ -22,7 +22,8 @@ export default class FactoryModel {
         forum.name = name;
         forum.channels = FactoryModel.createChannels(name);
         forum.users = FactoryModel.createUsers();
-        forum.urlPicture = "/assets/forum"+id+".jpg"
+        forum.urlPicture = "/assets/forum"+id+".jpg";
+        forum.description = "this is my description text "+id;
         return forum;
     }
 

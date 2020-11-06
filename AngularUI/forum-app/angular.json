@@ -28,7 +28,8 @@
               "src/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",          
+              "./node_modules/@nebular/theme/styles/prebuilt/dark.css",
+              "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
               "./node_modules/ngx-toastr/toastr.css",
               "src/styles.scss"
             ],
@@ -72,7 +73,9 @@
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
             "browserTarget": "forum-app:build",
-            "customWebpackConfig": { "path": "./webpack.config.js" }
+            "customWebpackConfig": {
+              "path": "./webpack.config.js"
+            }
           },
           "configurations": {
             "production": {
@@ -112,9 +115,7 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": [
-             
-            ]
+            "exclude": []
           }
         },
         "e2e": {
