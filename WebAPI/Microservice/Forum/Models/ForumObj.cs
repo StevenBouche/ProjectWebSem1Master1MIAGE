@@ -1,4 +1,6 @@
 ﻿using Forum.Models.View;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,8 @@ namespace Forum.Models
 {
     public class ForumObj
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         [JsonPropertyName("_id")]
         public string Id { get; set; }
         [JsonPropertyName("urlPicture")]
@@ -26,6 +30,7 @@ namespace Forum.Models
         {
             return new ForumView
             {
+                Id = this.Id,
                 Name = this.Name,
                 Description = this.Description,
                 UrlPicture = this.UrlPicture,

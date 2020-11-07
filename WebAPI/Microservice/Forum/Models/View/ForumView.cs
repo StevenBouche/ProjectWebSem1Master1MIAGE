@@ -8,6 +8,8 @@ namespace Forum.Models.View
 {
     public class ForumView
     {
+        [JsonPropertyName("_id")]
+        public string Id { get; set; }
         [JsonPropertyName("name")]
         public string Name { get; set; }
         [JsonPropertyName("description")]

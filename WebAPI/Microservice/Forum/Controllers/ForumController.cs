@@ -54,9 +54,9 @@ namespace Forum.Controllers
         }
 
         [HttpGet("subscribe/{id}")]
-        public ActionResult<string> SubForum(string idForum)
+        public ActionResult<string> SubForum(string id)
         {
-            string result = this.Manager.UserSubscribe(idForum, this.Identity);
+            string result = this.Manager.UserSubscribe(id, this.Identity);
             return this.Ok(result);
         }
 
