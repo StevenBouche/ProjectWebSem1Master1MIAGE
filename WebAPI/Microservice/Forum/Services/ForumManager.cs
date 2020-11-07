@@ -65,7 +65,27 @@ namespace Forum.Services
 
         public ForumSearchView SearchForums(ForumSearchView search, UserIdentity iD)
         {
-            throw new NotImplementedException();
+            if(this.Context.GetCollection().Count() >= 0)
+            {
+                search.ForumSearch = this.Context.GetQueryable().Select(forum => new {
+                    forum.Name,
+                    forum.Description,
+                    forum.UrlPicture,
+                    forum.Users,
+                    NbOnline = 0
+                })
+            .ToList()
+            .Select(element => new ForumView
+            {
+                Name = element.Name,
+                Description = element.Description,
+                UrlPicture = element.UrlPicture,
+                NbMember = element.Users.Count,
+                NbOnline = element.NbOnline
+            }).ToList();
+                
+            }
+            return search;
         }
 
         public string UserSubscribe(string idForum, UserIdentity iD)
