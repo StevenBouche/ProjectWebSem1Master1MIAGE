@@ -1,6 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Forum from 'src/models/forum/Forum';
+import ForumForm from 'src/models/forum/ForumForm';
+import { ForumService } from 'src/services/forum/forum.service';
 
 @Component({
   selector: 'app-boardcreate',
@@ -15,45 +17,54 @@ export class BoardcreateComponent implements OnInit {
   createForm : FormGroup;
   imgURL: any;
 
-  constructor(private formBuilder: FormBuilder) { 
+  forumForm : ForumForm;
+
+  constructor(private formBuilder: FormBuilder, private forumService : ForumService) {
     this.forum = new Forum();
     this.createForm = formBuilder.group({
-      name: [ this.forum.name, [Validators.required]], 
-      description: [ this.forum.description , [Validators.required]],
-      image: [ this.file , [Validators.required]]
+      name: ['', Validators.required],
+      description: [''],
+      image: ['']
     });
+
+    this.forumForm = new ForumForm();
   }
+
 
   ngOnInit(): void {
   }
 
-  private uploadFiles() {  
-    this.fileUpload.nativeElement.value = '';  
+  private uploadFiles() {
+    this.fileUpload.nativeElement.value = '';
     this.uploadFile(this.file);
   }
 
-  uploadFile(file: File) {  
-    const formData = new FormData();  
-    formData.append('file', file);   
+  uploadFile(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
     console.log(file);
   }
 
-  onClick() {  
-    const fileUpload = this.fileUpload.nativeElement;fileUpload.onchange = () => {  
+  onClick() {
+    const fileUpload = this.fileUpload.nativeElement;fileUpload.onchange = () => {
       this.file =  fileUpload.files[0]
       var reader = new FileReader();
-      reader.readAsDataURL(this.file); 
-      reader.onload = (_event) => { 
-        this.imgURL = reader.result; 
+      reader.readAsDataURL(this.file);
+      reader.onload = (_event) => {
+        this.imgURL = reader.result;
         console.log(this.imgURL)
       }
-      this.uploadFiles();  
-    };  
-    fileUpload.click();  
+      this.uploadFiles();
+    };
+    fileUpload.click();
   }
 
-  onSubmitRegister(createForm: FormData){
-    console.log(createForm)
+  onSubmitRegister(){
+    this.forumForm.name = this.createForm.controls['name'].value;
+    this.forumForm.description = this.createForm.controls['description'].value;
+    this.forumForm.image = this.createForm.controls['image'].value;
+
+    this.forumService.sendFormValues(this.forumForm);
   }
 
 }

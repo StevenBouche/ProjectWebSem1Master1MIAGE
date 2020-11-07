@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import Forum from 'src/models/forum/Forum';
+import ForumView from 'src/models/forum/ForumView';
 
 @Component({
   selector: 'app-forumsearchitem',
@@ -8,7 +8,7 @@ import Forum from 'src/models/forum/Forum';
 })
 export class ForumsearchitemComponent implements OnInit {
 
-  @Input() item: Forum;
+  @Input() item: ForumView;
 
   constructor() {  }
 

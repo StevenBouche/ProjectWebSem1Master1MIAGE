@@ -2,7 +2,7 @@
 <div class="flex text-white h-12">
     <!-- NAVBAR CHANNEL -->
     <div class="flex-1 bg-gray-800 flex items-center justify-between border-b border-gray-900 px-4">
-    
+
         <!-- PRINT CURRENT CHANNEL -->
         <div class="flex items-center">
             <div class="text-gray-500 text-2xl">#</div>
@@ -17,12 +17,12 @@
                     <span class="absolute right-0 top-0 mr-1" style="top:6px">
                         <svg class="w-4 h-4 text-gray-500 hover:text-gray-200" fill="currentColor" viewBox="0 0 24 24" width="24" height="24"><path class="heroicon-ui" d="M16.32 14.9l5.39 5.4a1 1 0 0 1-1.42 1.4l-5.38-5.38a8 8 0 1 1 1.41-1.41zM10 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"></path></svg>
                     </span>
-                </form>   
+                </form>
             </a>
         </div>
     </div>
 </div>
-    
+
 <div class="flex-1 flex justify-between overflow-y-hidden pr-8">
 
     <!--LIST MESSAGE ITEM AND SENDEUR -->
@@ -30,18 +30,18 @@
 
         <!--LIST MESSAGE ITEM -->
         <div class="chat text-sm text-gray-400">
-         
 
-         
-            <form [formGroup]="createForm" (ngSubmit)="onSubmitRegister(createForm.value)">
+
+
+            <form [formGroup]="createForm" (ngSubmit)="onSubmitRegister()">
                 <div class="bg-gray-800 shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
-                  
+
                   <div class="-mx-3 md:flex mb-6">
                     <div class="md:w-full px-3">
                       <label class="uppercase tracking-wide text-white text-xs font-bold mb-2" for="forum-name">
                         Forum name*
                       </label>
-                      <input formControlName="name" class="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3" id="forum-name" type="text" placeholder="Name...">
+                      <input formControlName="name" required class="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3" id="forum-name" type="text" placeholder="Name...">
                     </div>
                   </div>
                   <div class="-mx-3 md:flex mb-6">
@@ -59,7 +59,7 @@
                         class="md:w-full bg-gray-900 text-white font-bold py-2 px-4 border-b-4 hover:border-b-2 border-gray-500 hover:border-gray-100 rounded-full"
                         >Add a photo</button>
                         <input formControlName="image" type="file" #fileUpload id="fileUpload" name="fileUpload" accept="image/*" style="display:none;" />
-                       
+
                     </div>
                   </div>
                   <div class="-mx-3 md:flex mt-2">
@@ -71,9 +71,9 @@
                   </div>
                 </div>
               </form>
-              
-           
-           
+
+
+
         </div>
 
         <!--SENDEUR TOOLBAR MESSAGE -->
@@ -94,8 +94,8 @@
 
     </div>
 
-   
+
 </div>
 
-    
+
 
