@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -8,6 +10,8 @@ namespace Forum.Models
 {
     public class Message
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         [JsonPropertyName("_id")]
         public string Id { get; set; }
         [JsonPropertyName("value")]

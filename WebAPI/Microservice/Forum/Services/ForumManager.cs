@@ -53,7 +53,22 @@ namespace Forum.Services
             return forum.ToViewForum();
 
         }
-        
+
+        public void AddChannelForum(string idForum, Channel channel)
+        {
+            ForumObj forum = this.GetForumById(idForum);
+
+            if (forum == null) return;
+
+            forum.Channels.Add(channel);
+
+            var filter = Builders<ForumObj>.Filter.Eq("_id", idForum);
+            var update = Builders<ForumObj>.Update.Set("Channels", forum.Channels);
+
+            this.Context.GetCollection().UpdateOne(filter, update);
+
+        }
+
         public List<ForumView> GetForumsOfUser(UserIdentity identity)
         {
             return this.Context.GetQueryable()
@@ -65,14 +80,13 @@ namespace Forum.Services
 
         public ForumSearchView SearchForums(ForumSearchView search, UserIdentity iD)
         {
-            if(this.Context.GetCollection().Count() >= 0)
+            if(this.Context.GetQueryable().Count() >= 0)
             {
                 search.ForumSearch = this.Context.GetQueryable().Select(forum => new {
                     forum.Name,
                     forum.Description,
                     forum.UrlPicture,
-                    forum.Users,
-                    NbOnline = 0
+                    forum.Users
                 })
             .ToList()
             .Select(element => new ForumView
@@ -81,17 +95,46 @@ namespace Forum.Services
                 Description = element.Description,
                 UrlPicture = element.UrlPicture,
                 NbMember = element.Users.Count,
-                NbOnline = element.NbOnline
+                NbOnline = 0
             }).ToList();
                 
             }
             return search;
         }
 
-        public string UserSubscribe(string idForum, UserIdentity iD)
+        public ForumObj GetForumById(string id)
         {
-            throw new NotImplementedException();
+            return this.Context.GetQueryable().FirstOrDefault(forum => forum.Id.Equals(id));
         }
+
+        public string UserSubscribe(string idForum, UserIdentity identity)
+        {
+
+            if (string.IsNullOrEmpty(idForum)) return "id forum missing";
+
+            if(string.IsNullOrEmpty(identity.ID)) return "id user missing";
+
+            ForumObj forum = this.GetForumById(idForum);
+
+            if (forum == null) return "forum not found";
+
+            if (forum.Users.Any(User => User.Id == identity.ID)) return "user is already subscribe";
+
+            forum.Users.Add(new User
+            {
+                Id = identity.ID, 
+                Pseudo = identity.Email
+            });
+
+            var filter = Builders<ForumObj>.Filter.Eq("_id", idForum);
+            var update = Builders<ForumObj>.Update.Set("Users", forum.Users);
+
+            this.Context.GetCollection().UpdateOne(filter, update);
+
+            return "succes";
+        }
+
+   
 
         //GET PUT POST ...
     }
