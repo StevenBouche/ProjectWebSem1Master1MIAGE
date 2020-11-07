@@ -21,6 +21,13 @@ export class ForumService {
     return await this.req.executePost<ForumForm, ForumView>(this.apiUrl+"/create", forumForm)
   }
 
+  public async getMyForums() : Promise<Array<ForumView>> {
+    return await this.req.executeGet<Array<ForumView>>(this.apiUrl+"/myforum")
+  }
+
+  public async subscribe(id : string) : Promise<string> {
+    return await this.req.executeGet<string>(this.apiUrl+"/subscribe/" + id);
+  }
   // public async registerUser(register: RegisterView) : Promise<AccountView> {
   //     var data = new RegisterView();
   //     data.firstName = register.firstName;

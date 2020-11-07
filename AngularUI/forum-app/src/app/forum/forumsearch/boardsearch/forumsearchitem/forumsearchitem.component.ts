@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import ForumView from 'src/models/forum/ForumView';
 
 @Component({
@@ -9,10 +9,16 @@ import ForumView from 'src/models/forum/ForumView';
 export class ForumsearchitemComponent implements OnInit {
 
   @Input() item: ForumView;
+  @Output() subscribeCallBack = new EventEmitter<ForumView>();
+
 
   constructor() {  }
 
   ngOnInit(): void {
+  }
+
+  subscribe() {
+    this.subscribeCallBack.emit(this.item);
   }
 
 }

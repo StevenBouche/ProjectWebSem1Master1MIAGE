@@ -1,8 +1,5 @@
-import { Input } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
-import { create } from 'domain';
-import User from 'src/models/forum/User';
-
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import ForumView from 'src/models/forum/ForumView';
 
 class ActionForum {
   public name: string;
@@ -20,23 +17,23 @@ export class ForumsearchComponent implements OnInit {
   actions: Array<ActionForum>
   currentAction: ActionForum;
   component: string;
-  componentSearch: string = "Search"
-  componentCreate: string = "Create"
-  @Input() user: User;
-  
-  constructor() { 
+  componentSearch: ActionForum;
+  componentCreate: ActionForum;
+  @Output() onUpdate = new EventEmitter();
+
+  constructor() {
     this.actions = new Array();
-    var actionSearch = new ActionForum();
-    actionSearch.name = "Search";
-    var actionCreate = new ActionForum();
-    actionCreate.name = "Create";
-    this.actions.push(actionSearch);
-    this.actions.push(actionCreate);
-    this.currentAction = actionSearch;
+    this.componentSearch = new ActionForum();
+    this.componentSearch.name = "Search";
+    this.componentCreate = new ActionForum();
+    this.componentCreate.name = "Create";
+    this.actions.push(this.componentSearch);
+    this.actions.push(this.componentCreate);
+    this.currentAction = this.componentSearch;
   }
 
   ngOnInit(): void {
-    this.component = this.componentSearch;
+    this.component = this.componentSearch.name;
   }
 
   getChannelClass(action: ActionForum) : string {
@@ -51,5 +48,17 @@ export class ForumsearchComponent implements OnInit {
     this.currentAction = action;
     this.component = action.name;
   }
+
+  onCreate(forum : ForumView){
+    //TODO send to personalized forums
+    this.component = this.componentSearch.name;
+    this.currentAction = this.componentSearch;
+    this.onUpdate.emit();
+  }
+
+  subscribe(forum : ForumView){
+    this.onUpdate.emit();
+  }
+
 
 }

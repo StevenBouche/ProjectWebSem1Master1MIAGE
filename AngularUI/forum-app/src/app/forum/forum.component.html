@@ -19,8 +19,8 @@
         </div>
     </div>
 
-    <app-forumsearch *ngIf="component==componentSearchName" [user]="currentUser"></app-forumsearch>
-    <app-forumpanel *ngIf="component==componentForumName" [forum]="forumSelected" [user]="currentUser"></app-forumpanel>      
+    <app-forumsearch *ngIf="component==componentSearchName" (onUpdate)="onForumSearch()"></app-forumsearch>
+    <app-forumpanel *ngIf="component==componentForumName" [forum]="forumSelected"></app-forumpanel>
 
 
 </div>

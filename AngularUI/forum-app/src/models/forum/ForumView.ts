@@ -1,7 +1,8 @@
 export default class ForumView {
-  name: string;
-  description: string;
-  nbOnline: number;
-  nbMember: number;
-  urlPicture: string;
+  public name: string;
+  public _id : string;
+  public description: string;
+  public nbOnline: number;
+  public nbMember: number;
+  public urlPicture: string;
 }

@@ -1,8 +1,9 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import Forum from 'src/models/forum/Forum';
 import ForumForm from 'src/models/forum/ForumForm';
 import { ForumService } from 'src/services/forum/forum.service';
+import { EventEmitter } from '@angular/core';
+import ForumView from 'src/models/forum/ForumView';
 
 @Component({
   selector: 'app-boardcreate',
@@ -13,14 +14,16 @@ export class BoardcreateComponent implements OnInit {
 
   @ViewChild("fileUpload", {static: false}) fileUpload: ElementRef;
   file : File;
-  forum: Forum;
+  forum: ForumView;
   createForm : FormGroup;
   imgURL: any;
+  loading : boolean;
 
+  @Output() callBackCreate = new EventEmitter<ForumView>();
   forumForm : ForumForm;
 
   constructor(private formBuilder: FormBuilder, private forumService : ForumService) {
-    this.forum = new Forum();
+    this.forum = new ForumView();
     this.createForm = formBuilder.group({
       name: ['', Validators.required],
       description: [''],
@@ -59,12 +62,16 @@ export class BoardcreateComponent implements OnInit {
     fileUpload.click();
   }
 
-  onSubmitRegister(){
+  async onSubmitRegister(){
     this.forumForm.name = this.createForm.controls['name'].value;
     this.forumForm.description = this.createForm.controls['description'].value;
     this.forumForm.image = this.createForm.controls['image'].value;
 
-    this.forumService.sendFormValues(this.forumForm);
+    this.loading = true;
+    var res = await this.forumService.sendFormValues(this.forumForm);
+    this.loading = false;
+    this.callBackCreate.emit(res);
+
   }
 
 }

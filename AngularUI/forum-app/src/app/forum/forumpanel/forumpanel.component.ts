@@ -1,21 +1,22 @@
 import { Component, Input, OnInit, SimpleChange, SimpleChanges } from '@angular/core';
-import Channel from 'src/models/forum/Channel';
-import Forum from 'src/models/forum/Forum';
-import User from 'src/models/forum/User';
+import ChannelView from 'src/models/forum/ChannelView';
+import ForumPanelView from 'src/models/forum/ForumPanelView';
+import ForumView from 'src/models/forum/ForumView';
 
 @Component({
   selector: 'app-forumpanel',
   templateUrl: './forumpanel.component.html',
   styleUrls: ['./forumpanel.component.scss']
 })
+
 export class ForumpanelComponent implements OnInit {
 
-  @Input() forum : Forum;
-  @Input() user: User;
-  channelSelected: Channel;
+  @Input() forum : ForumView;
+  channelSelected: ChannelView;
   cacheSelected: Map<string,string>;
-  
+
   displayParamForum: boolean;
+  panel : ForumPanelView;
 
   constructor() {
       this.displayParamForum = false;
@@ -23,7 +24,9 @@ export class ForumpanelComponent implements OnInit {
    }
 
   ngOnInit(): void {
-  
+    //REQUEST GET FORUM PANEL VIEW -> (idForumView) | '/forum/panel'
+    //
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -32,15 +35,19 @@ export class ForumpanelComponent implements OnInit {
   }
 
   onChangeForum(forum: SimpleChange) {
-    var idChannel = this.cacheSelected.get(this.forum.id);
+    var idChannel = this.cacheSelected.get(this.forum._id);
     //si le forum n'a pas de channel referencer setup le premier channel sinon recupere le channel dans le cache du bon forum
+    if(this.panel == undefined || this.panel.channels == undefined){
+      return;
+    }
+
     if(idChannel != undefined){
       // si pas de channel => undefined, si le channel dans le cache existe alors => channel_cache, sinon prend le premier du forum
-      var channel = this.forum.channels[idChannel];
-      this.channelSelected = channel != undefined ? channel : this.forum.channels.length > 0 ? this.forum.channels[0] : undefined;
+      var channel = this.panel.channels[idChannel];
+      this.channelSelected = channel != undefined ? channel : this.panel.channels.length > 0 ? this.panel.channels[0] : undefined;
     }
     else {
-      this.channelSelected = this.forum.channels.length > 0 ? this.forum.channels[0] : undefined;
+      this.channelSelected = this.panel.channels.length > 0 ? this.panel.channels[0] : undefined;
       if(this.channelSelected != undefined) this.updateCacheChannel();
     }
   }
@@ -50,20 +57,20 @@ export class ForumpanelComponent implements OnInit {
     this.displayParamForum=!this.displayParamForum;
   }
 
-  onChannelSelect(channel: Channel) {
+  onChannelSelect(channel: ChannelView) {
     this.channelSelected = channel;
     this.updateCacheChannel();
   }
 
   onNewChannel() {
-    
+
   }
 
   updateCacheChannel() : void {
-    this.cacheSelected.set(this.forum.id,this.channelSelected.id)
+    this.cacheSelected.set(this.forum._id,this.channelSelected.id)
   }
 
-  getChannelClass(channel: Channel) : string {
+  getChannelClass(channel: ChannelView) : string {
     if(this.channelSelected.id === channel.id) {
       return 'text-gray-200 px-2 hover:text-gray-200 hover:bg-gray-900 bg-gray-600 rounded';
     } else {
