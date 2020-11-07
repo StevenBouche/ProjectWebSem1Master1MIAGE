@@ -37,15 +37,16 @@ export class AuthComponent implements OnInit {
     this.isLoading = false;
 
     this.registerForm = formBuilder.group({
-      firstName: [this.registerData.firstName, [Validators.required]],
-      lastName: [this.registerData.lastName, [Validators.required]],
-      email: [this.registerData.email, [Validators.required]], 
-      password: [this.registerData.password, [Validators.required]]
+      firstName: [null, [Validators.required]],
+      lastName: [null, [Validators.required]],
+      email: [null, [Validators.required]], 
+      password: [null, [Validators.required]],
+      pseudo: [null, [Validators.required]]
     });
 
     this.loginForm = formBuilder.group({
-      email: [this.loginData.email, [Validators.required]], 
-      password: [this.loginData.password, [Validators.required]]
+      email: [null, [Validators.required]], 
+      password: [null, [Validators.required]]
     });
 
   }

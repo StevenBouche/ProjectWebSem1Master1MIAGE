@@ -44,6 +44,7 @@ namespace User.Controllers
                     },
                     Email = element.Email,
                     Password = element.Password,
+                    Pseudo = element.Pseudo,
                     AdressIPAuthorize = new List<string> { element.AddressIP }
                 }).ToAccountView();
         }

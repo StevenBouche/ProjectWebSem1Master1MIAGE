@@ -22,6 +22,10 @@
               </div>
             </div> 
             <div class="field-wrap">
+              <label [class.active]="registerData.pseudo!=undefined">Pseudo<span class="req">*</span></label>
+              <input [(ngModel)]="registerData.pseudo" type="text" required autocomplete="off" formControlName="pseudo"/>
+            </div>   
+            <div class="field-wrap">
               <label [class.active]="registerData.email!=undefined">Email Address<span class="req">*</span></label>
               <input [(ngModel)]="registerData.email" type="email" required autocomplete="off" formControlName="email"/>
             </div>          

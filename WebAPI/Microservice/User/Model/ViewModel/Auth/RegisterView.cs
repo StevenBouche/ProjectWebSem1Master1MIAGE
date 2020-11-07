@@ -18,5 +18,7 @@ namespace User.Model.ViewModel.Auth
         public string Password { get; set; }
         [JsonPropertyName("addressIP")]
         public string AddressIP { get; set; }
+        [JsonPropertyName("pseudo")]
+        public string Pseudo { get; set; }
     }
 }

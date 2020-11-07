@@ -9,6 +9,7 @@ import { ForumsearchitemComponent } from './boardsearch/forumsearchitem/forumsea
 import { MatCardModule } from '@angular/material/card';
 import { AngularFileUploaderModule } from "angular-file-uploader";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatTableModule,
     UserpanelModule,
     MatCardModule,
+    MatPaginatorModule,
     AngularFileUploaderModule,
     FormsModule,
     ReactiveFormsModule,
