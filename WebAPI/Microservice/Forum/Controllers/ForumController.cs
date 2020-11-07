@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AuthMiddleware;
+using Forum.Models.View;
 using Forum.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,7 +14,6 @@ namespace Forum.Controllers
     [Route("api/v1/[controller]")]
     [ApiController]
     [Authorize]
-
     public class ForumController : ControllerBase
     {
         IForumManager Manager;
@@ -26,41 +26,32 @@ namespace Forum.Controllers
             }
         }
 
+       
         public ForumController(IForumManager forumManager)
         {
             this.Manager = forumManager;
         }
-        // GET: api/Forum
-        [HttpGet]
-        [AllowAnonymous]
-        public IEnumerable<string> Get()
+
+        [HttpPost("create")]
+        public ActionResult<ForumView> CreateForum([FromBody] ForumForm value)
         {
-            return new string[] { "value1", "value2" };
+            ForumView forum = this.Manager.CreateForum(value,this.Identity.ID);
+            return this.Ok(forum);
         }
 
-        // GET: api/Forum/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [HttpPost("search")]
+        public ActionResult<ForumSearchView> SearchForums([FromBody] ForumSearchView search)
         {
-            return "value";
+            ForumSearchView searchResult = this.Manager.SearchForums(search, this.Identity.ID);
+            return this.Ok(searchResult);
         }
 
-        // POST: api/Forum
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("subscribe/{id}")]
+        public ActionResult<string> SubForum(string idForum)
         {
+            string result = this.Manager.UserSubscribe(idForum, this.Identity.ID);
+            return this.Ok(result);
         }
 
-        // PUT: api/Forum/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

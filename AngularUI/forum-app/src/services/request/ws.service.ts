@@ -42,7 +42,7 @@ export class WsService {
       }).catch((error:any) => {
         this.alert.showError(error,"Error");
         console.log("connect error : "+error)
-        this.connectToWebSocket();
+        //this.connectToWebSocket();
       })
 
     }

@@ -16,6 +16,8 @@ namespace Forum.Models.View
         public int NbOnline { get; set; }
         [JsonPropertyName("nbMember")]
         public int NbMember { get; set; }
+        [JsonPropertyName("urlPicture")]
+        public string UrlPicture { get; set; }
 
 
     }
