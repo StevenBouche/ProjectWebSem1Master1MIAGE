@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import User from 'src/models/forum/User';
+import UserView from 'src/models/forum/UserView';
 
 @Component({
   selector: 'app-userpanel',
@@ -8,9 +8,11 @@ import User from 'src/models/forum/User';
 })
 export class UserpanelComponent implements OnInit {
 
-  @Input() user: User;
-  
-  constructor() { }
+  user: UserView;
+
+  constructor() {
+    this.user = new UserView();
+  }
 
   ngOnInit(): void {
   }

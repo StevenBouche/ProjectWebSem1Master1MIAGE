@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import Channel from 'src/models/forum/Channel';
-import User from 'src/models/forum/User';
+import ChannelPanelView from 'src/models/forum/ChannelPanelView';
+import ChannelView from 'src/models/forum/ChannelView';
+import UserView from 'src/models/forum/UserView';
 
 @Component({
   selector: 'app-channelpanel',
@@ -9,9 +10,10 @@ import User from 'src/models/forum/User';
 })
 export class ChannelpanelComponent implements OnInit {
 
-  @Input() channel: Channel;
-  @Input() usersOnline: User[];
-  @Input() usersOffline: User[]
+  @Input() channel: ChannelView;
+  panel : ChannelPanelView;
+  @Input() usersOnline: UserView[];
+  @Input() usersOffline: UserView[]
 
   constructor() { }
 

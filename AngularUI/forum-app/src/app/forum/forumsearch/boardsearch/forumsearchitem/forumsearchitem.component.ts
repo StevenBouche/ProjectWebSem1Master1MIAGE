@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import Forum from 'src/models/forum/Forum';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import ForumView from 'src/models/forum/ForumView';
 
 @Component({
   selector: 'app-forumsearchitem',
@@ -8,11 +8,17 @@ import Forum from 'src/models/forum/Forum';
 })
 export class ForumsearchitemComponent implements OnInit {
 
-  @Input() item: Forum;
+  @Input() item: ForumView;
+  @Output() subscribeCallBack = new EventEmitter<ForumView>();
+
 
   constructor() {  }
 
   ngOnInit(): void {
+  }
+
+  subscribe() {
+    this.subscribeCallBack.emit(this.item);
   }
 
 }

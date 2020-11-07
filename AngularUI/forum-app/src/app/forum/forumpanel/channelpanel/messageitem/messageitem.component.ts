@@ -1,6 +1,6 @@
 
 import { Component, Input, OnInit } from '@angular/core';
-import Message from 'src/models/forum/Message';
+import MessageView from 'src/models/forum/MessageView';
 
 @Component({
   selector: 'app-messageitem',
@@ -9,8 +9,8 @@ import Message from 'src/models/forum/Message';
 })
 export class MessageitemComponent implements OnInit {
 
-  @Input() message: Message;
-  
+  @Input() message: MessageView;
+
   constructor() { }
 
   ngOnInit(): void {

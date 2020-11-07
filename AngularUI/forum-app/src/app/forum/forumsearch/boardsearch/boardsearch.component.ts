@@ -1,26 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import FactoryModel from 'src/models/forum/FactoryModel';
-import Forum from 'src/models/forum/Forum';
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-];
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import ForumSearchView from 'src/models/forum/ForumSearchView';
+import ForumView from 'src/models/forum/ForumView';
+import { ForumService } from 'src/services/forum/forum.service';
+import { NotificationService } from 'src/services/notification/notification.service';
 
 @Component({
   selector: 'app-boardsearch',
@@ -29,20 +11,25 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class BoardsearchComponent implements OnInit {
 
-  forums : Array<Forum>;
-  
-  totalItem: number;
-  totalPage: number;
-  currentPage: number;
-  nbItemPerPage: number;
-  descFilter: string;
-  nameFiler: string;
-  
-  constructor() {
-    this.forums = FactoryModel.createForums();
+  forumsView : ForumSearchView;
+  @Output() onSubscribe = new EventEmitter<ForumView>();
+
+  constructor(private forumService : ForumService, private notif : NotificationService) {
+    this.forumsView = new ForumSearchView();
+    this.forumsView.currentPage = 1;
+    this.forumsView.nbItemPerPage = 10;
+    this.forumsView.nameFilter = '';
+    this.forumsView.descFilter = '';
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.forumsView = await this.forumService.getForums(this.forumsView);
+  }
+
+  async OnSubscribe(forum : ForumView){
+    var res : string = await this.forumService.subscribe(forum._id);
+    this.notif.showSuccess(res, "Successfuly subscribed");
+    this.onSubscribe.emit(forum);
   }
 
 }

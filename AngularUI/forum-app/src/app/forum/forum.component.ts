@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import FactoryModel from 'src/models/forum/FactoryModel';
-import Forum from 'src/models/forum/Forum';
-import User from 'src/models/forum/User';
+import ForumView from 'src/models/forum/ForumView';
+import { ForumService } from 'src/services/forum/forum.service';
 import { WsService } from 'src/services/request/ws.service';
 
 @Component({
@@ -11,20 +10,22 @@ import { WsService } from 'src/services/request/ws.service';
 })
 export class ForumComponent implements OnInit {
 
-  forums : Forum[];
-  forumSelected: Forum;
-  currentUser: User = FactoryModel.createUser(0+"","user0","/assets/avatar (0).jpg")
+  forums : Array<ForumView>;
+  forumSelected: ForumView;
   component: string;
   componentSearchName : string = "showSearchForum"
   componentForumName: string = "showForumSelect"
-  
-  constructor(private connectionWs : WsService) {
+
+  constructor(private connectionWs : WsService, private forumService : ForumService) {
     this.component = this.componentSearchName;
-    this.forums = FactoryModel.createForums();
-    this.forumSelected = this.forums[0];
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.forums = await this.forumService.getMyForums();
+
+    if(this.forums!=undefined && this.forums.length > 0)
+      this.forumSelected = this.forums[0];
+
     this.connectionWs.connectToWebSocket();
   }
 
@@ -36,14 +37,18 @@ export class ForumComponent implements OnInit {
     this.component = this.componentSearchName;
   }
 
-  onForumSelect(forum: Forum){
+  onForumSelect(forum: ForumView){
     this.forumSelected = forum;
     this.component = this.componentForumName;
   }
 
-  forumIsSelected(forum: Forum) : boolean{
-    var test = this.forumSelected != undefined && forum != undefined && this.forumSelected.id === forum.id;
+  forumIsSelected(forum: ForumView) : boolean{
+    var test = this.forumSelected != undefined && forum != undefined && this.forumSelected._id === forum._id;
     return test;
+  }
+
+  async onForumSearch(){
+    this.forums = await this.forumService.getMyForums(); //Refresh
   }
 
 }
