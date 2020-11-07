@@ -80,7 +80,7 @@
       "SwaggerKey": "users"
     },
     {
-      "DownstreamPathTemplate": "/api/v1/forum",
+      "DownstreamPathTemplate": "/api/v1/forum/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -88,12 +88,12 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/forum",
+      "UpstreamPathTemplate": "/forum/{everything}",
       "UpstreamHttpMethod": [ "POST", "GET" ],
       "SwaggerKey": "forum"
     },
     {
-      "DownstreamPathTemplate": "/api/v1/forum/{id}",
+      "DownstreamPathTemplate": "/api/v1/forum/{everything}/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -101,8 +101,8 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/forum/{id}",
-      "UpstreamHttpMethod": [ "PUT", "GET", "DELETE" ],
+      "UpstreamPathTemplate": "/forum/{everything}/{id}",
+      "UpstreamHttpMethod": [ "GET" ],
       "SwaggerKey": "forum"
     }
   ],

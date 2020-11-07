@@ -35,7 +35,9 @@ export class BoardsearchComponent implements OnInit {
   totalPage: number;
   currentPage: number;
   nbItemPerPage: number;
-
+  descFilter: string;
+  nameFiler: string;
+  
   constructor() {
     this.forums = FactoryModel.createForums();
   }
