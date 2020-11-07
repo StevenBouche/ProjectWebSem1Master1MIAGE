@@ -426,3 +426,9 @@ WebAPI/Microservice/ForumDB/db/diagnostic.data/
 WebAPI/Microservice/RestaurantDB/db/diagnostic.data/
 
 WebAPI/Microservice/UserDB/db/diagnostic.data/
+
+WebAPI/Microservice/ForumDB/
+
+WebAPI/Microservice/UserDB/
+
+WebAPI/Microservice/RestaurantDB/
