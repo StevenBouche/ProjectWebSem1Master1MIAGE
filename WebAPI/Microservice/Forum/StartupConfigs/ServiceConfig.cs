@@ -11,7 +11,12 @@ namespace Forum.StartupConfigs
     {
         public static void ConfigureService(IServiceCollection services)
         {
-           services.AddTransient<IForumManager, ForumManager>();
+            services.AddTransient<IForumManagerView, ForumManager>();
+            services.AddTransient<IForumManager, ForumManager>();
+            services.AddTransient<IChannelManagerView, ChannelManager>();
+            services.AddTransient<IChannelManager, ChannelManager>();
+            services.AddTransient<IMessageManagerView, MessageManager>();
+            services.AddTransient<IMessageManager, MessageManager>();
         }
     }
 }

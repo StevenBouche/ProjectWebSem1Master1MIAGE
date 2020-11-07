@@ -1,5 +1,7 @@
 ﻿using AuthMiddleware;
 using Forum.Models;
+using Forum.Models.Form;
+using Forum.Models.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,8 @@ namespace Forum.Services
 
     public interface IChannelManagerView
     {
-
+        ChannelView GetChannelView();
+        ChannelView CreateChannelView(RegisterChannel channel, UserIdentity identity);
     }
 
     public interface IChannelManager
@@ -54,11 +57,21 @@ namespace Forum.Services
                 Messages = new List<Message>()
             };
 
+            //todo verif if is subscript to forum
             this.Manager.AddChannelForum(idForum, channel);
 
             return channel;
         }
 
+        public ChannelView GetChannelView()
+        {
+            throw new NotImplementedException();
+        }
 
+        public ChannelView CreateChannelView(RegisterChannel channel, UserIdentity identity)
+        {
+            Channel c = this.CreateChannel(channel.IdForum, new Channel { Name = channel.NameChannel }, identity);
+            return c?.ToChannelView();
+        }
     }
 }

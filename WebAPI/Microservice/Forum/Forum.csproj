@@ -21,6 +21,11 @@
     <ProjectReference Include="..\PolicyMiddleware\PolicyMiddleware.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\View\Message\" />
+    <Folder Include="Models\View\Channel\" />
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 

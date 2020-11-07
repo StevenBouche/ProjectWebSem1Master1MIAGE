@@ -28,10 +28,6 @@ namespace Forum.Services
             this.Manager = channelManager;
         }
 
-        public List<Message> GetMessages(string idForum, string idChannel, UserIdentity identity)
-        {
-
-        }
 
     }
 
