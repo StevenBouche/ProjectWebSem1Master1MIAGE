@@ -1,5 +1,7 @@
-﻿using MongoDB.Bson;
+﻿using Forum.Models.View;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -15,5 +17,14 @@ namespace Forum.Models
         public string Name { get; set; }
         [JsonPropertyName("messages")]
         public List<Message> Messages { get; set; }
+
+        public ChannelView ToChannelView()
+        {
+            return new ChannelView
+            {
+                Id = this.Id,
+                Name = this.Name
+            };
+        }
     }
 }

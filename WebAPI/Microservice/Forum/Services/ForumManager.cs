@@ -12,13 +12,20 @@ namespace Forum.Services
 {
     public interface IForumManager
     {
+        ForumObj GetForumById(string id);
+        void AddChannelForum(string idForum, Channel channel);
+    }
+
+    public interface IForumManagerView
+    {
         ForumView CreateForum(ForumForm value, UserIdentity iD);
         ForumSearchView SearchForums(ForumSearchView search, UserIdentity iD);
         string UserSubscribe(string idForum, UserIdentity iD);
         List<ForumView> GetForumsOfUser(UserIdentity identity);
+        ForumPanelView GetForumPanel(string id, UserIdentity identity);
     }
 
-    public class ForumManager : IForumManager
+    public class ForumManager : IForumManager, IForumManagerView
     {
         private readonly IMongoDBContext<ForumObj> Context;
 
@@ -102,11 +109,6 @@ namespace Forum.Services
             return search;
         }
 
-        public ForumObj GetForumById(string id)
-        {
-            return this.Context.GetQueryable().FirstOrDefault(forum => forum.Id.Equals(id));
-        }
-
         public string UserSubscribe(string idForum, UserIdentity identity)
         {
 
@@ -134,7 +136,28 @@ namespace Forum.Services
             return "succes";
         }
 
-   
+        public ForumObj GetForumById(string id)
+        {
+            return this.Context.GetQueryable().FirstOrDefault(forum => forum.Id.Equals(id));
+        }
+
+        public ForumPanelView GetForumPanel(string id, UserIdentity identity)
+        {
+            ForumObj forum = this.GetForumById(id);
+
+            ForumPanelView panel = new ForumPanelView();
+
+            if (forum == null) return panel;
+
+            panel.Forum = forum.ToViewForum();
+            panel.Channels = forum.Channels.Select(channel => channel.ToChannelView()).ToList();
+            panel.Users = forum.Users.Select(user => user.ToUserView()).ToList();
+
+            return panel;
+
+        }
+
+
 
         //GET PUT POST ...
     }

@@ -7,12 +7,26 @@ using System.Threading.Tasks;
 
 namespace Forum.Services
 {
-    public class ChannelManager
+
+    public interface IChannelManagerView
     {
 
-        ForumManager Manager;
+    }
 
-        public ChannelManager(ForumManager forumManager)
+    public interface IChannelManager
+    {
+        List<Channel> GetChannelsForum(string idForum, UserIdentity identity);
+        Channel GetChannelForum(string idForum, string idChannel, UserIdentity identity);
+        Channel CreateChannel(string idForum, Channel c, UserIdentity identity);
+
+    }
+
+    public class ChannelManager : IChannelManagerView, IChannelManager
+    {
+
+        IForumManager Manager;
+
+        public ChannelManager(IForumManager forumManager)
         {
             this.Manager = forumManager;
         }

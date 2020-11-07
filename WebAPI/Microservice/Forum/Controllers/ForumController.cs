@@ -16,7 +16,7 @@ namespace Forum.Controllers
     [Authorize]
     public class ForumController : ControllerBase
     {
-        IForumManager Manager;
+        IForumManagerView Manager;
 
         private UserIdentity Identity
         {
@@ -27,7 +27,7 @@ namespace Forum.Controllers
         }
 
        
-        public ForumController(IForumManager forumManager)
+        public ForumController(IForumManagerView forumManager)
         {
             this.Manager = forumManager;
         }
@@ -57,6 +57,13 @@ namespace Forum.Controllers
         public ActionResult<string> SubForum(string id)
         {
             string result = this.Manager.UserSubscribe(id, this.Identity);
+            return this.Ok(result);
+        }
+
+        [HttpGet("panel/{id}")]
+        public ActionResult<string> GetForumPanel(string id)
+        {
+            ForumPanelView result = this.Manager.GetForumPanel(id, this.Identity);
             return this.Ok(result);
         }
 

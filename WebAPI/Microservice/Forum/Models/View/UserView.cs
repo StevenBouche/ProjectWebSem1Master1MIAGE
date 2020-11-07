@@ -1,13 +1,12 @@
-﻿using Forum.Models.View;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Forum.Models
+namespace Forum.Models.View
 {
-    public class User
+    public class UserView
     {
         [JsonPropertyName("id")]
         public string Id { get; set; }
@@ -15,15 +14,5 @@ namespace Forum.Models
         public string Pseudo { get; set; }
         [JsonPropertyName("urlPicture")]
         public string UrlPicture { get; set; }
-
-        public UserView ToUserView()
-        {
-            return new UserView
-            {
-                Id = this.Id,
-                Pseudo = this.Pseudo,
-                UrlPicture = this.UrlPicture
-            };
-        }
     }
 }
