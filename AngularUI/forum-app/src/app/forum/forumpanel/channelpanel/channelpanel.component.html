@@ -6,7 +6,7 @@
         <!-- PRINT CURRENT CHANNEL -->
         <div class="flex items-center">
             <div class="text-gray-500 text-2xl">#</div>
-            <div class="ml-2 text-sm text-white">{{channel.name}}</div>
+            <div class="ml-2 text-sm text-white" *ngIf="channel != undefined">{{channel.name}}</div>
         </div>
 
         <!-- TOOLS -->

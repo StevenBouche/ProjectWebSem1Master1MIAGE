@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
+import ChannelPanelView from 'src/models/forum/ChannelPanelView';
+import ChannelView from 'src/models/forum/ChannelView';
 import ForumForm from 'src/models/forum/ForumForm';
+import ForumPanelView from 'src/models/forum/ForumPanelView';
 import ForumSearchView from 'src/models/forum/ForumSearchView';
 import ForumView from 'src/models/forum/ForumView';
+import RegisterChannel from 'src/models/forum/RegisterChannel';
 import { RequestService } from '../request/RequestService';
 
 @Injectable({
@@ -10,6 +14,7 @@ import { RequestService } from '../request/RequestService';
 export class ForumService {
 
   private readonly apiUrl = "http://localhost:7000/forum"
+  private readonly apiUrlChannel = "http://localhost:7000/channel"
 
   constructor(private req: RequestService) { }
 
@@ -27,6 +32,14 @@ export class ForumService {
 
   public async subscribe(id : string) : Promise<string> {
     return await this.req.executeGet<string>(this.apiUrl+"/subscribe/" + id);
+  }
+
+  public async newChannel(channel : RegisterChannel) : Promise<ChannelView> {
+    return await this.req.executePost<RegisterChannel, ChannelView>(this.apiUrlChannel+"/create", channel);
+  }
+
+  public async getForumPannel(idForum : string) : Promise<ForumPanelView>{
+    return await this.req.executeGet<ForumPanelView>(this.apiUrl+"/panel/" + idForum);
   }
   // public async registerUser(register: RegisterView) : Promise<AccountView> {
   //     var data = new RegisterView();

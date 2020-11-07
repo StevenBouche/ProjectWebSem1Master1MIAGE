@@ -7,7 +7,7 @@
             <div class="paramForum text-white h-12 bg-gray-800 w-56 flex-none flex items-center justify-between border-b border-gray-900 px-3 py-2" >
                 <!-- PRINT CURRENT FORUM -->
                 <button [class.b-gray-900]="displayParamForum" class="flex-none flex hover:bg-gray-900 rounded" (click)="onClickParamForum()">
-                    <span>{{forum.name}}</span>
+                    <span>{{getLabel()}}</span>
                     <div>
                         <svg [class.paramisshow]="!displayParamForum" fill="currentColor" viewBox="0 0 24 24" width="24" height="24">
                             <path class="heroicon-ui" d="M15.3 9.3a1 1 0 0 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 1.4-1.4l3.3 3.29 3.3-3.3z"></path>
@@ -36,10 +36,10 @@
                         <span class="ml-2">{{channel.name}}</span>
                     </span>
                 </li>
-                <li class="text-gray-500 px-2 hover:text-gray-200 hover:bg-gray-900">
-                    <span class="flex items-center" (click)="onNewChannel()">
-                        <span class="text-xl">+</span>
-                        <span class="ml-2">New Channel</span>
+                <li class="text-gray-500 px-2 hover:text-gray-200">
+                    <span class="flex items-center mt-5">
+                        <button (click)="onNewChannel()" type="button" class="bg-gray-900 pl-2 pr-2">+</button>
+                        <input [(ngModel)] = "channelName" type="text" class="ml-2 text-black" placeholder="Nom du channel">
                     </span>
                 </li>
             </ul>

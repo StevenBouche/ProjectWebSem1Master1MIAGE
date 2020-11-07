@@ -2,6 +2,10 @@ import { Component, Input, OnInit, SimpleChange, SimpleChanges } from '@angular/
 import ChannelView from 'src/models/forum/ChannelView';
 import ForumPanelView from 'src/models/forum/ForumPanelView';
 import ForumView from 'src/models/forum/ForumView';
+import RegisterChannel from 'src/models/forum/RegisterChannel';
+import UserView from 'src/models/forum/UserView';
+import { RegisterView } from 'src/models/views/auth/AuthView';
+import { ForumService } from 'src/services/forum/forum.service';
 
 @Component({
   selector: 'app-forumpanel',
@@ -17,21 +21,32 @@ export class ForumpanelComponent implements OnInit {
 
   displayParamForum: boolean;
   panel : ForumPanelView;
+  channelName : string;
+  newChannel : RegisterChannel;
 
-  constructor() {
+  constructor(private forumService : ForumService) {
       this.displayParamForum = false;
       this.cacheSelected = new Map<string,string>();
+      this.newChannel = new RegisterChannel();
+      this.channelName = '';
+      this.panel = new ForumPanelView();
+      this.panel.forum = this.forum;
+      this.panel.channels = new Array<ChannelView>();
+      this.panel.users = new Array<UserView>();
    }
 
-  ngOnInit(): void {
-    //REQUEST GET FORUM PANEL VIEW -> (idForumView) | '/forum/panel'
-    //
-
+  async ngOnInit() {
+    this.panel = await this.forumService.getForumPannel(this.forum._id);
+    console.log(this.panel)
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes.forum != undefined)
       this.onChangeForum(changes.forum);
+  }
+
+  getLabel() : string {
+    return this.panel != undefined && this.panel.forum != undefined ? this.panel.forum.name : ''
   }
 
   onChangeForum(forum: SimpleChange) {
@@ -62,8 +77,15 @@ export class ForumpanelComponent implements OnInit {
     this.updateCacheChannel();
   }
 
-  onNewChannel() {
+  async onNewChannel() {
+    console.log(this.channelName);
+    var channelEntered = this.channelName
+    this.newChannel.NameChannel = channelEntered;
+    this.newChannel.IdForum = this.forum._id;
 
+    var res = await this.forumService.newChannel(this.newChannel);
+    this.panel.channels.push(res);
+    console.log(this.panel.channels)
   }
 
   updateCacheChannel() : void {

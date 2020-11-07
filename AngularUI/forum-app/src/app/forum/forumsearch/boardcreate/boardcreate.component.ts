@@ -65,7 +65,7 @@ export class BoardcreateComponent implements OnInit {
   async onSubmitRegister(){
     this.forumForm.name = this.createForm.controls['name'].value;
     this.forumForm.description = this.createForm.controls['description'].value;
-    this.forumForm.image = this.createForm.controls['image'].value;
+    this.forumForm.image = this.imgURL;
 
     this.loading = true;
     var res = await this.forumService.sendFormValues(this.forumForm);
