@@ -13,9 +13,9 @@ export class WsService {
   private readonly urlServer = "http://localhost:8081/forumhub"
   private connection : HubConnection;
 
-  constructor(private auth : AuthService, private alert: NotificationService) { 
-      
-  } 
+  constructor(private auth : AuthService, private alert: NotificationService) {
+
+  }
 
   public async connectToWebSocket() {
 
@@ -27,7 +27,7 @@ export class WsService {
 
       console.log(`${this.urlServer}?token=${loginResult.jwtToken.accessToken}`)
       //create new hub
-      this.connection =  new signalR.HubConnectionBuilder()   
+      this.connection =  new signalR.HubConnectionBuilder()
       .withUrl(`${this.urlServer}?token=${loginResult.jwtToken.accessToken}`)   // mapping to the chathub as in startup.cs
       .configureLogging(signalR.LogLevel.Information)
       .build();
@@ -42,7 +42,7 @@ export class WsService {
       }).catch((error:any) => {
         this.alert.showError(error,"Error");
         console.log("connect error : "+error)
-        this.connectToWebSocket();
+        // this.connectToWebSocket();
       })
 
     }
