@@ -32,6 +32,13 @@ namespace Forum.Controllers
             this.Manager = forumManager;
         }
 
+        [HttpGet("myforum")]
+        public ActionResult<List<ForumView>> GetMyForum()
+        {
+            List<ForumView> forums = this.Manager.GetForumsOfUser(this.Identity);
+            return this.Ok(forums);
+        }
+
         [HttpPost("create")]
         public ActionResult<ForumView> CreateForum([FromBody] ForumForm value)
         {

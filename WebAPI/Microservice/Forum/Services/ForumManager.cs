@@ -1,6 +1,7 @@
 ﻿using AuthMiddleware;
 using Forum.Models;
 using Forum.Models.View;
+using MongoDB.Driver;
 using MongoDBAccess;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace Forum.Services
         ForumView CreateForum(ForumForm value, UserIdentity iD);
         ForumSearchView SearchForums(ForumSearchView search, UserIdentity iD);
         string UserSubscribe(string idForum, UserIdentity iD);
+        List<ForumView> GetForumsOfUser(UserIdentity identity);
     }
 
     public class ForumManager : IForumManager
@@ -50,6 +52,15 @@ namespace Forum.Services
 
             return forum.ToViewForum();
 
+        }
+        
+        public List<ForumView> GetForumsOfUser(UserIdentity identity)
+        {
+            return this.Context.GetQueryable()
+                .Where(forum => forum.Users.Where(user => user.Id == identity.ID).Any())
+                .ToList()
+                .Select(forum => forum.ToViewForum())
+                .ToList();
         }
 
         public ForumSearchView SearchForums(ForumSearchView search, UserIdentity iD)
