@@ -1,4 +1,5 @@
-﻿using Forum.Models;
+﻿using AuthMiddleware;
+using Forum.Models;
 using Forum.Models.View;
 using MongoDBAccess;
 using System;
@@ -10,9 +11,9 @@ namespace Forum.Services
 {
     public interface IForumManager
     {
-        ForumView CreateForum(ForumForm value, string iD);
-        ForumSearchView SearchForums(ForumSearchView search, string iD);
-        string UserSubscribe(string idForum, string iD);
+        ForumView CreateForum(ForumForm value, UserIdentity iD);
+        ForumSearchView SearchForums(ForumSearchView search, UserIdentity iD);
+        string UserSubscribe(string idForum, UserIdentity iD);
     }
 
     public class ForumManager : IForumManager
@@ -24,17 +25,39 @@ namespace Forum.Services
             this.Context = c;
         }
 
-        public ForumView CreateForum(ForumForm value, string iD)
+        public ForumView CreateForum(ForumForm value, UserIdentity identity)
+        {
+            var forum = new ForumObj
+            {
+                Name = value.Name,
+                UrlPicture = value.Image,
+                Description = value.Description,
+                Channels = new List<Channel>(),
+                Users = new List<User>(),
+            };
+
+            //todo change
+
+            forum.Users.Add(new User
+            {
+                Id = identity.ID,
+                Pseudo = identity.Email,
+                UrlPicture = ""
+            });
+
+
+            this.Context.GetCollection().InsertOne(forum);
+
+            return forum.ToViewForum();
+
+        }
+
+        public ForumSearchView SearchForums(ForumSearchView search, UserIdentity iD)
         {
             throw new NotImplementedException();
         }
 
-        public ForumSearchView SearchForums(ForumSearchView search, string iD)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string UserSubscribe(string idForum, string iD)
+        public string UserSubscribe(string idForum, UserIdentity iD)
         {
             throw new NotImplementedException();
         }

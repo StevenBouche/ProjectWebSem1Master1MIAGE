@@ -35,21 +35,21 @@ namespace Forum.Controllers
         [HttpPost("create")]
         public ActionResult<ForumView> CreateForum([FromBody] ForumForm value)
         {
-            ForumView forum = this.Manager.CreateForum(value,this.Identity.ID);
+            ForumView forum = this.Manager.CreateForum(value,this.Identity);
             return this.Ok(forum);
         }
 
         [HttpPost("search")]
         public ActionResult<ForumSearchView> SearchForums([FromBody] ForumSearchView search)
         {
-            ForumSearchView searchResult = this.Manager.SearchForums(search, this.Identity.ID);
+            ForumSearchView searchResult = this.Manager.SearchForums(search, this.Identity);
             return this.Ok(searchResult);
         }
 
         [HttpGet("subscribe/{id}")]
         public ActionResult<string> SubForum(string idForum)
         {
-            string result = this.Manager.UserSubscribe(idForum, this.Identity.ID);
+            string result = this.Manager.UserSubscribe(idForum, this.Identity);
             return this.Ok(result);
         }
 
