@@ -58,7 +58,7 @@ namespace Forum.Services
             };
 
             //todo verif if is subscript to forum
-            this.Manager.AddChannelForum(idForum, channel);
+            this.Manager.AddChannelForum(idForum, channel,identity);
 
             return channel;
         }

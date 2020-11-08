@@ -1,6 +1,7 @@
 ﻿using AuthMiddleware;
 using Forum.Models;
 using Forum.Models.View;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDBAccess;
 using System;
@@ -13,7 +14,7 @@ namespace Forum.Services
     public interface IForumManager
     {
         ForumObj GetForumById(string id);
-        void AddChannelForum(string idForum, Channel channel);
+        void AddChannelForum(string idForum, Channel channel, UserIdentity identity);
     }
 
     public interface IForumManagerView
@@ -61,19 +62,18 @@ namespace Forum.Services
 
         }
 
-        public void AddChannelForum(string idForum, Channel channel)
+        public void AddChannelForum(string idForum, Channel channel, UserIdentity identity)
         {
             ForumObj forum = this.GetForumById(idForum);
 
             if (forum == null) return;
 
-            forum.Channels.Add(channel);
-
-            var filter = Builders<ForumObj>.Filter.Eq("_id", idForum);
-            var update = Builders<ForumObj>.Update.Set("Channels", forum.Channels);
-
-            this.Context.GetCollection().UpdateOne(filter, update);
-
+            if (forum.Users.Any(User => User.Id == identity.ID))
+            {
+                channel.Id = ObjectId.GenerateNewId().ToString();
+                forum.Channels.Add(channel);
+                this.Context.GetCollection().ReplaceOne(acc => acc.Id.Equals(forum.Id), forum);
+            }
         }
 
         public List<ForumView> GetForumsOfUser(UserIdentity identity)
