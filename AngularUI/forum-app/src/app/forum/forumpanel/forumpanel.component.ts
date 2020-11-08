@@ -35,8 +35,15 @@ export class ForumpanelComponent implements OnInit {
       this.panel.users = new Array<UserView>();
    }
 
-  async ngOnInit() {
+  ngOnInit() {
+    this.onUpdatePanel();
+  }
+
+  async onUpdatePanel() {
     this.panel = await this.forumService.getForumPannel(this.forum._id);
+    this.channelSelected = this.channelSelected == undefined && this.panel.channels.length > 0 ? this.panel.channels[0] : undefined;
+    console.log(this.channelSelected)
+    this.updateCacheChannel();
     console.log(this.panel)
   }
 
@@ -82,10 +89,11 @@ export class ForumpanelComponent implements OnInit {
     var channelEntered = this.channelName
     this.newChannel.NameChannel = channelEntered;
     this.newChannel.IdForum = this.forum._id;
-
     var res = await this.forumService.newChannel(this.newChannel);
-    this.panel.channels.push(res);
-    console.log(this.panel.channels)
+    console.log(res)
+    this.channelSelected = res;
+    this.updateCacheChannel();
+    this.onUpdatePanel();
   }
 
   updateCacheChannel() : void {
@@ -93,7 +101,7 @@ export class ForumpanelComponent implements OnInit {
   }
 
   getChannelClass(channel: ChannelView) : string {
-    if(this.channelSelected.id === channel.id) {
+    if(this.channelSelected!=undefined && this.channelSelected.id == channel.id) {
       return 'text-gray-200 px-2 hover:text-gray-200 hover:bg-gray-900 bg-gray-600 rounded';
     } else {
       return 'text-gray-500 px-2 hover:text-gray-200 hover:bg-gray-900';
