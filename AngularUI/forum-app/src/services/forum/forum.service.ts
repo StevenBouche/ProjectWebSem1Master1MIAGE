@@ -8,9 +8,12 @@ import ForumSearchView from 'src/models/forum/ForumSearchView';
 import ForumView from 'src/models/forum/ForumView';
 import MessageView from 'src/models/forum/MessageView';
 import RegisterChannel from 'src/models/forum/RegisterChannel';
+import RegisterMessage from 'src/models/forum/RegisterMessage';
 import UserView from 'src/models/forum/UserView';
+import { RegisterView } from 'src/models/views/auth/AuthView';
 import { NotificationService } from '../notification/notification.service';
 import { RequestService } from '../request/RequestService';
+import { UserService } from '../user/user.service';
 
 
 class FactoryModel {
@@ -32,9 +35,9 @@ class FactoryModel {
 })
 export class ForumService {
 
-  private readonly apiUrl = "http://localhost:7000/forum"
-  private readonly apiUrlChannel = "http://localhost:7000/channel"
-
+  private readonly apiUrl = "http://localhost:7000/forum";
+  private readonly apiUrlChannel = "http://localhost:7000/channel";
+  private readonly apiUrlMsg = "http://localhost:7000/message";
 
   private _myForums = new BehaviorSubject<Array<ForumView>>(new Array<ForumView>());
   private _searchForum = new BehaviorSubject<ForumSearchView>(FactoryModel.defaultForumSearchView())
@@ -74,7 +77,7 @@ export class ForumService {
   readonly channelForumSelected = this._channelForumSelected.asObservable();
   readonly messagesOfChannelSelected = this._messagesOfChannelSelected.asObservable();
 
-  constructor(private req: RequestService, private notif : NotificationService) { }
+  constructor(private req: RequestService, private notif : NotificationService, private userService : UserService) { }
 
   async loadMyForums() {
     //get forum API
@@ -151,7 +154,7 @@ export class ForumService {
       this.dataStore.myForumSelected = selected;
 
       this._myForumSelected.next(this.cpObj(this.dataStore).myForumSelected);
-
+      this.dataStore.channelForumSelected = undefined;
       //load data of forum select
       this.loadDatasOfSelectedForum();
 
@@ -208,9 +211,30 @@ export class ForumService {
     this.loadMyForums();
     this.notif.showSuccess("You have subscribed to this forum", "Success");
   }
+
+  async sendMessage(msg : string){
+    let registerMsg : RegisterMessage = new RegisterMessage();
+    let message : MessageView = new MessageView();
+
+    message.timestamp = Date.now();
+    message.value = msg;
+
+    registerMsg.idchannel = this.dataStore.channelForumSelected.id;
+    registerMsg.idforum = this.dataStore.myForumSelected._id;
+    registerMsg.messageV = message;
+
+    let res = await this.newMsg(registerMsg);
+
+    this.dataStore.messagesOfChannelSelected.push(res);
+    this._messagesOfChannelSelected.next(this.cpObj(this.dataStore).messagesOfChannelSelected)
+  }
     //
     // HTTP CALLS
     //
+
+  public async newMsg(registerMsg : RegisterMessage){
+    return await this.req.executePost<RegisterMessage, MessageView>(this.apiUrlMsg, registerMsg)
+  }
 
   public async getForums(listForum : ForumSearchView) : Promise<ForumSearchView>{
     return await this.req.executePost<ForumSearchView, ForumSearchView>(this.apiUrl+"/search", listForum);

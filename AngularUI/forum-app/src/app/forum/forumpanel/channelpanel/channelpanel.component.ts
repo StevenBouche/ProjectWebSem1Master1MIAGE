@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import ChannelPanelView from 'src/models/forum/ChannelPanelView';
 import ChannelView from 'src/models/forum/ChannelView';
 import MessageView from 'src/models/forum/MessageView';
+import RegisterMessage from 'src/models/forum/RegisterMessage';
 import UserView from 'src/models/forum/UserView';
 import { ForumService } from 'src/services/forum/forum.service';
 
@@ -19,6 +20,9 @@ export class ChannelpanelComponent implements OnInit {
   usersOnline: Array<UserView>;
   usersOffline: Array<UserView>;
 
+  message : string;
+
+
   constructor(private forumService: ForumService ) {
 
   }
@@ -31,15 +35,21 @@ export class ChannelpanelComponent implements OnInit {
     });
 
     this.forumService.channelForumSelected.subscribe((channel:ChannelView) => {
+      console.log(channel)
       this.channel = channel;
     })
 
     this.forumService.messagesOfChannelSelected.subscribe((message:Array<MessageView>) => {
       this.messages = message;
     })
-
   }
 
+  sendMessage(){
+      console.log("MESSAGE AVANT ENVOI " + this.message);
+      var msgEntered = this.message;
+      this.message = '';
 
+      this.forumService.sendMessage(msgEntered);
+  }
 
 }
