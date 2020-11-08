@@ -49,16 +49,5 @@ export class ForumsearchComponent implements OnInit {
     this.component = action.name;
   }
 
-  onCreate(forum : ForumView){
-    //TODO send to personalized forums
-    this.component = this.componentSearch.name;
-    this.currentAction = this.componentSearch;
-    this.onUpdate.emit();
-  }
-
-  subscribe(forum : ForumView){
-    this.onUpdate.emit();
-  }
-
 
 }

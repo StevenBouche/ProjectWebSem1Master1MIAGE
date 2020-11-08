@@ -52,8 +52,8 @@ namespace Forum.Services
             forum.Users.Add(new User
             {
                 Id = identity.ID,
-                Pseudo = identity.Email,
-                UrlPicture = ""
+                Pseudo = identity.Pseudo,
+                UrlPicture = "http://localhost:7000/account/picture/" + identity.ID
             });
 
 
@@ -91,6 +91,7 @@ namespace Forum.Services
             if(this.Context.GetQueryable().Count() >= 0)
             {
                 search.ForumSearch = this.Context.GetQueryable().Select(forum => new {
+                    forum.Id,
                     forum.Name,
                     forum.Description,
                     forum.UrlPicture,
@@ -99,6 +100,7 @@ namespace Forum.Services
             .ToList()
             .Select(element => new ForumView
             {
+                Id = element.Id,
                 Name = element.Name,
                 Description = element.Description,
                 UrlPicture = element.UrlPicture,
@@ -113,9 +115,9 @@ namespace Forum.Services
         public string UserSubscribe(string idForum, UserIdentity identity)
         {
 
-            if (string.IsNullOrEmpty(idForum)) return "id forum missing";
+            if (String.IsNullOrEmpty(idForum)) return "id forum missing";
 
-            if(string.IsNullOrEmpty(identity.ID)) return "id user missing";
+            if(String.IsNullOrEmpty(identity.ID)) return "id user missing";
 
             ForumObj forum = this.GetForumById(idForum);
 
@@ -126,7 +128,8 @@ namespace Forum.Services
             forum.Users.Add(new User
             {
                 Id = identity.ID, 
-                Pseudo = identity.Email
+                Pseudo = identity.Pseudo,
+                UrlPicture = identity.UrlPicture
             });
 
             this.Context.GetCollection().ReplaceOne((f => f.Id == forum.Id), forum);

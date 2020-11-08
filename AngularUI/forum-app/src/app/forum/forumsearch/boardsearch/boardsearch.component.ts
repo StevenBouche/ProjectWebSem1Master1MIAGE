@@ -12,24 +12,20 @@ import { NotificationService } from 'src/services/notification/notification.serv
 export class BoardsearchComponent implements OnInit {
 
   forumsView : ForumSearchView;
-  @Output() onSubscribe = new EventEmitter<ForumView>();
 
   constructor(private forumService : ForumService, private notif : NotificationService) {
-    this.forumsView = new ForumSearchView();
-    this.forumsView.currentPage = 1;
-    this.forumsView.nbItemPerPage = 10;
-    this.forumsView.nameFilter = '';
-    this.forumsView.descFilter = '';
+
   }
 
   async ngOnInit() {
-    this.forumsView = await this.forumService.getForums(this.forumsView);
-  }
+    // this.forumsView = await this.forumService.getForums(this.forumsView);
+    this.forumService.searchForum.subscribe((data: ForumSearchView) => {
+      this.forumsView = data;
+      console.log("DATA : ");
+      console.log(data);
+    })
 
-  async OnSubscribe(forum : ForumView){
-    var res : string = await this.forumService.subscribe(forum._id);
-    this.notif.showSuccess(res, "Successfuly subscribed");
-    this.onSubscribe.emit(forum);
+    this.forumService.loadSearchForum();
   }
 
 }

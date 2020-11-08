@@ -39,7 +39,7 @@
                 <li class="text-gray-500 px-2 hover:text-gray-200">
                     <span class="flex items-center mt-5">
                         <button (click)="onNewChannel()" type="button" class="bg-gray-900 pl-2 pr-2">+</button>
-                        <input [(ngModel)] = "channelName" type="text" class="ml-2 text-black" placeholder="Nom du channel">
+                        <input [(ngModel)] = "channelName" type="text" onfocus="this.value=''" class="ml-2 text-black" placeholder="Nom du channel">
                     </span>
                 </li>
             </ul>

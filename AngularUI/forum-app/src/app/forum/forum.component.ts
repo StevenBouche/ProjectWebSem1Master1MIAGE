@@ -28,8 +28,11 @@ export class ForumComponent implements OnInit {
     //subscribe event selected forum
     this.forumService.myForumSelected.subscribe((value:ForumView) => {
       console.log(value)
+      if(value) {
       this.forumSelected = value;
       this.component = this.componentForumName;
+      }
+
     })
     // load my forum
     this.forumService.loadMyForums();
@@ -52,10 +55,6 @@ export class ForumComponent implements OnInit {
 
   forumIsSelected(forum: ForumView) : boolean{
     return this.forumSelected != undefined && forum != undefined && this.forumSelected._id == forum._id;
-  }
-
-  async onForumSearch(){
-    this.forums = await this.forumService.getMyForums(); //Refresh
   }
 
 }

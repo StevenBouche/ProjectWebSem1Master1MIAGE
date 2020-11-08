@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import LoginResult from 'src/models/auth/LoginResult';
@@ -69,6 +69,8 @@ export class AuthComponent implements OnInit {
 
   async onSubmitRegister(register: RegisterView) {
     this.isLoading = true;
+    register.image = this.imgURL;
+    console.log(register);
     var user : AccountView = await this.user.registerUser(register);
     if(user!=undefined&&user._id!=undefined){
       this.alert.showSuccess("Success register","Success")
@@ -104,6 +106,31 @@ export class AuthComponent implements OnInit {
 
   isLogin() : boolean {
     return this.state == AuthState.LOGIN;
+  }
+
+  private uploadFiles() {
+    this.fileUpload.nativeElement.value = '';
+    this.uploadFile(this.file);
+  }
+
+  uploadFile(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    console.log(file);
+  }
+
+  onClick() {
+    const fileUpload = this.fileUpload.nativeElement;fileUpload.onchange = () => {
+      this.file =  fileUpload.files[0]
+      var reader = new FileReader();
+      reader.readAsDataURL(this.file);
+      reader.onload = (_event) => {
+        this.imgURL = reader.result;
+        console.log(this.imgURL)
+      }
+      this.uploadFiles();
+    };
+    fileUpload.click();
   }
 
 }

@@ -9,6 +9,7 @@ import ForumView from 'src/models/forum/ForumView';
 import MessageView from 'src/models/forum/MessageView';
 import RegisterChannel from 'src/models/forum/RegisterChannel';
 import UserView from 'src/models/forum/UserView';
+import { NotificationService } from '../notification/notification.service';
 import { RequestService } from '../request/RequestService';
 
 
@@ -73,7 +74,7 @@ export class ForumService {
   readonly channelForumSelected = this._channelForumSelected.asObservable();
   readonly messagesOfChannelSelected = this._messagesOfChannelSelected.asObservable();
 
-  constructor(private req: RequestService) { }
+  constructor(private req: RequestService, private notif : NotificationService) { }
 
   async loadMyForums() {
     //get forum API
@@ -83,6 +84,7 @@ export class ForumService {
     //if value have forums and not have current selected forum, set first element of array and notify
     if(this.dataStore.myForumSelected==undefined&&this.dataStore.myForums.length>0)
       this.selectMyForums(this.dataStore.myForums[0]._id);
+
   }
 
     //
@@ -91,6 +93,7 @@ export class ForumService {
 
   async loadSearchForum() {
     this.dataStore.searchForum = await this.getForums(this.dataStore.searchForum);
+    console.log(this.dataStore.searchForum);
     this._searchForum.next(this.cpObj(this.dataStore).searchForum)
   }
 
@@ -177,7 +180,7 @@ export class ForumService {
   }
 
   async createNewChannelForumSelected(channelName: string) {
-    
+
     let register : RegisterChannel = new RegisterChannel();
 
     register.IdForum = this.dataStore.myForumSelected._id;
@@ -189,6 +192,22 @@ export class ForumService {
 
   }
 
+  async createNewForum(forum : ForumForm) {
+    var res = await this.sendFormValues(forum);
+    // this.dataStore.myForums = [...this.dataStore.myForums, res];
+    // this._myForums.next(this.cpObj(this.dataStore).myForums)
+    this.loadMyForums();
+  }
+
+  async subscribeToAForum(forum : ForumView){
+    if(this.dataStore.myForums.find(f => f._id == forum._id)){
+      this.notif.showError("You have already subscribed to this forum", "Error");
+      return;
+    }
+    var res = await this.subscribe(forum._id);
+    this.loadMyForums();
+    this.notif.showSuccess("You have subscribed to this forum", "Success");
+  }
     //
     // HTTP CALLS
     //

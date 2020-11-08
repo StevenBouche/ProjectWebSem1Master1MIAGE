@@ -45,7 +45,7 @@ namespace User.Controllers
                     Email = element.Email,
                     Password = element.Password,
                     Pseudo = element.Pseudo,
-                    Image = element.Image,
+                    Image = element.Image ?? string.Empty,
                     AdressIPAuthorize = new List<string> { element.AddressIP }
                 }).ToAccountView();
         }
@@ -65,9 +65,9 @@ namespace User.Controllers
 
         [AllowAnonymous]
         [HttpGet("picture/{id}")]
-        public ActionResult UserPicture(string id)
+        public string UserPicture(string id)
         {
-            return Ok(this.Manager.GetPictureUser(id));
+            return this.Manager.GetPictureUser(id);
         }
 
         [HttpGet("{id}")]

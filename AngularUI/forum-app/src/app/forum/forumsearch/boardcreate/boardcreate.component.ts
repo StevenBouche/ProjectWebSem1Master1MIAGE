@@ -19,7 +19,6 @@ export class BoardcreateComponent implements OnInit {
   imgURL: any;
   loading : boolean;
 
-  @Output() callBackCreate = new EventEmitter<ForumView>();
   forumForm : ForumForm;
 
   constructor(private formBuilder: FormBuilder, private forumService : ForumService) {
@@ -67,11 +66,7 @@ export class BoardcreateComponent implements OnInit {
     this.forumForm.description = this.createForm.controls['description'].value;
     this.forumForm.image = this.imgURL;
 
-    this.loading = true;
-    var res = await this.forumService.sendFormValues(this.forumForm);
-    this.loading = false;
-    this.callBackCreate.emit(res);
-
+    this.forumService.createNewForum(this.forumForm);
   }
 
 }

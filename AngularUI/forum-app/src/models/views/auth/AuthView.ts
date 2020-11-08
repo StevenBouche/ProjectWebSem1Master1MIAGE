@@ -16,8 +16,9 @@ class RegisterView {
     public lastName: string;
     public email: string;
     public password: string;
-    public AddressIP: string;
+    public addressIP: string;
     public pseudo: string;
+    public image : string;
 }
 
 class ProfilView {

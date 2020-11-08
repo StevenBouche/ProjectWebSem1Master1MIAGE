@@ -26,8 +26,10 @@ export class UserService {
       data.firstName = register.firstName;
       data.lastName = register.lastName;
       data.email = register.email;
+      data.pseudo = register.pseudo; //TODO Register IMG
+      data.image = register.image;
       data.password = register.password;
-      data.AddressIP = await this.req.getAddressIP();
+      data.addressIP = await this.req.getAddressIP();
       return this.req.executePost<RegisterView,AccountView>(this.apiUrl,data);
   }
 

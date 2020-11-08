@@ -40,9 +40,10 @@ namespace User.Model.Users
             {
                 ID = this.ID,
                 Email = this.Email,
+                Pseudo = this.Pseudo,
                 AddressIP = ip,
                 Role = this.Profil.Role == 0 ? "ADMIN" : "USER",
-                UrlPicture = "http://localhost:7000/uset/picture/" + this.ID
+                UrlPicture = "http://localhost:7000/account/picture/" + this.ID
             };
         }
 
