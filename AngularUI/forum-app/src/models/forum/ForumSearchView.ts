@@ -1,6 +1,7 @@
 import ForumView from "./ForumView";
 
 export default class ForumSearchView {
+  public totalItemCurent:number;
   public totalItem: number;
   public totalPage: number;
   public currentPage: number;

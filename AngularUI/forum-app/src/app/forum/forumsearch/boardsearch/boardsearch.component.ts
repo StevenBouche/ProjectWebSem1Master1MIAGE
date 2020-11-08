@@ -1,6 +1,6 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import ForumSearchView from 'src/models/forum/ForumSearchView';
-import ForumView from 'src/models/forum/ForumView';
 import { ForumService } from 'src/services/forum/forum.service';
 import { NotificationService } from 'src/services/notification/notification.service';
 
@@ -26,6 +26,11 @@ export class BoardsearchComponent implements OnInit {
     })
 
     this.forumService.loadSearchForum();
+  }
+
+  onPageChange(event:PageEvent){
+    console.log(event)
+    this.forumService.OnSearchPaginitionChange(event.length,event.pageIndex,event.pageSize);
   }
 
 }

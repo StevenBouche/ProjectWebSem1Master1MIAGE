@@ -22,6 +22,7 @@ class FactoryModel {
     search.totalItem = 0;
     search.totalPage = 0;
     search.nbItemPerPage = 10;
+    search.totalItemCurent = 0;
     search.forumSearch = new Array<ForumView>()
     return search;
   }
@@ -207,6 +208,13 @@ export class ForumService {
     var res = await this.subscribe(forum._id);
     this.loadMyForums();
     this.notif.showSuccess("You have subscribed to this forum", "Success");
+  }
+
+  async OnSearchPaginitionChange(length:number,pageIndex:number,pageSize:number){
+    this.dataStore.searchForum.totalItem = length;
+    this.dataStore.searchForum.currentPage = pageIndex;
+    this.dataStore.searchForum.nbItemPerPage = pageSize;
+    //this.loadSearchForum();
   }
     //
     // HTTP CALLS

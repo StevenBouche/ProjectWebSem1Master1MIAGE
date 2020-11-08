@@ -115,7 +115,8 @@ namespace Forum.Services
                     NbOnline = element.Users.Where(user => user.IsConnected).Count()
                 }).ToList();
 
-                 
+                search.TotalItem = forums.Count;
+                
                     /*search.ForumSearch = this.Context.GetQueryable().Select(forum => new {
                         forum.Id,
                         forum.Name,

@@ -33,9 +33,13 @@
 
         <!--SENDEUR TOOLBAR MESSAGE -->
         <div class="bg-gray-800 py-4 flex items-center">
-            <mat-paginator class="" [length]="100"
-                [pageSize]="10"
-                [pageSizeOptions]="[5, 10, 25, 100]">
+            <mat-paginator class=""
+                [length]="forumsView.totalItem"
+                [pageSize]="forumsView.nbItemPerPage"
+                [pageIndex]="forumsView.currentPage"
+                [pageSizeOptions]="[5, 10, 25, 100]"
+                 (page)="onPageChange($event)">
+
             </mat-paginator>
         </div>
 
