@@ -14,5 +14,7 @@ namespace Forum.Models.View
         public string Pseudo { get; set; }
         [JsonPropertyName("urlPicture")]
         public string UrlPicture { get; set; }
+        [JsonPropertyName("isConnected")]
+        public bool IsConnected { get; set; }
     }
 }

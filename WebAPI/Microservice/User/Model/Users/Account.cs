@@ -30,7 +30,8 @@ namespace User.Model.Users
                 ID = this.ID,
                 Pseudo = this.Pseudo,
                 Email = this.Email,
-                Profil = this.Profil.ToProfilView()       
+                Profil = this.Profil.ToProfilView(),
+                UrlPicture = "http://localhost:7000/account/picture/" + this.ID
             };
         }
 

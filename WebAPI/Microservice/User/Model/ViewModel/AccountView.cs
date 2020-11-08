@@ -13,5 +13,7 @@ namespace User.Model.ViewModel
         public string Email { get; set; }
         [JsonPropertyName("profil")]
         public ProfilView Profil { get; set; }
+        [JsonPropertyName("urlPicture")]
+        public string UrlPicture { get; set; }
     }
 }

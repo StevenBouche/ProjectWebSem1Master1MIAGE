@@ -16,6 +16,8 @@ namespace Forum.Services
         ForumObj GetForumById(string id);
         void AddChannelForum(string idForum, Channel channel, UserIdentity identity);
         void GetForumAndChannel(string idChannel, out ForumObj forum, out Channel channel, UserIdentity user);
+        void UserConnected(string v);
+        void UserDisconnected(string v);
     }
 
     public interface IForumManagerView
@@ -30,10 +32,12 @@ namespace Forum.Services
     public class ForumManager : IForumManager, IForumManagerView
     {
         private readonly IMongoDBContext<ForumObj> Context;
+        private readonly CacheUserWs Cache;
 
-        public ForumManager(IMongoDBContext<ForumObj> c)
+        public ForumManager(IMongoDBContext<ForumObj> c, CacheUserWs cache)
         {
             this.Context = c;
+            this.Cache = cache;
         }
 
         public ForumView CreateForum(ForumForm value, UserIdentity identity)
@@ -90,25 +94,48 @@ namespace Forum.Services
         {
             if(this.Context.GetQueryable().Count() >= 0)
             {
-                search.ForumSearch = this.Context.GetQueryable().Select(forum => new {
-                    forum.Id,
-                    forum.Name,
-                    forum.Description,
-                    forum.UrlPicture,
-                    forum.Users
-                })
-            .ToList()
-            .Select(element => new ForumView
-            {
-                Id = element.Id,
-                Name = element.Name,
-                Description = element.Description,
-                UrlPicture = element.UrlPicture,
-                NbMember = element.Users.Count,
-                NbOnline = 0
-            }).ToList();
+
+                List<ForumObj> forums = this.Context.GetQueryable().ToList();
+
+                forums.ForEach(forum =>
+                {
+                    forum.Users.ForEach(user =>
+                    {
+                        user.IsConnected = this.Cache.usersIdWebSocket.Values.Contains(user.Id);
+                    });
+                });
+
+                search.ForumSearch = forums.Select(element => new ForumView
+                {
+                    Id = element.Id,
+                    Name = element.Name,
+                    Description = element.Description,
+                    UrlPicture = element.UrlPicture,
+                    NbMember = element.Users.Count,
+                    NbOnline = element.Users.Where(user => user.IsConnected).Count()
+                }).ToList();
+
+                 
+                    /*search.ForumSearch = this.Context.GetQueryable().Select(forum => new {
+                        forum.Id,
+                        forum.Name,
+                        forum.Description,
+                        forum.UrlPicture,
+                        forum.Users
+                    })
+                .ToList()
+                .Select(element => new ForumView
+                {
+                    Id = element.Id,
+                    Name = element.Name,
+                    Description = element.Description,
+                    UrlPicture = element.UrlPicture,
+                    NbMember = element.Users.Count,
+                    NbOnline = element.Users.Where
+                }).ToList();*/
                 
             }
+
             return search;
         }
 
@@ -175,6 +202,16 @@ namespace Forum.Services
                 }
             }
          
+        }
+
+        public void UserConnected(string v)
+        {
+            this.Context.GetQueryable().Where(forum => forum.Users.Where(user => user.Id == v).Any()).ToList();
+        }
+
+        public void UserDisconnected(string v)
+        {
+            throw new NotImplementedException();
         }
 
         //GET PUT POST ...

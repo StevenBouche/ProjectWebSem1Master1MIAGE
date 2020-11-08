@@ -15,6 +15,8 @@ namespace Forum.Models
         public string Pseudo { get; set; }
         [JsonPropertyName("urlPicture")]
         public string UrlPicture { get; set; }
+        [JsonPropertyName("isConnected")]
+        public bool IsConnected { get; set; }
 
         public UserView ToUserView()
         {
@@ -22,7 +24,8 @@ namespace Forum.Models
             {
                 Id = this.Id,
                 Pseudo = this.Pseudo,
-                UrlPicture = this.UrlPicture
+                UrlPicture = this.UrlPicture,
+                IsConnected = IsConnected
             };
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AuthMiddleware;
+using Forum.Services;
 using Forum.SignalR;
 using Forum.StartupConfigs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -87,9 +88,12 @@ namespace Forum
                 };
             });
 
+            services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
+            services.AddSingleton<CacheUserWs>();
+
             //Websocket
             services.AddSignalR();
-            services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
+            
 
             // Add framework services.
             services.AddSwaggerGen(options =>

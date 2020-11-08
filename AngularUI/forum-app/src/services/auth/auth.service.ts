@@ -2,8 +2,9 @@ import { Injectable, ɵConsole } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import LoginResult from 'src/models/auth/LoginResult';
 import RefreshToken from 'src/models/security/RefreshToken';
-import { LoginView } from 'src/models/views/auth/AuthView';
+import { AccountView, LoginView } from 'src/models/views/auth/AuthView';
 import { RequestService } from '../request/RequestService';
+import { UserService } from '../user/user.service';
 
 enum MethodsAuth {
   LOGIN = "login",
@@ -19,9 +20,13 @@ export class AuthService {
   private readonly jwtHelper : JwtHelperService;
   private readonly keyStorage = "auth";
   private readonly apiUrl = "http://localhost:7000/auth"
+  identity : AccountView;
 
-  constructor(private req: RequestService) { 
+  constructor(private req: RequestService, private userService:UserService) {
     this.jwtHelper = new JwtHelperService();
+    this.userService.myIdentity.subscribe((identity:AccountView) => {
+      this.identity = identity;
+    })
   }
 
   public async loginUser(login: LoginView) : Promise<LoginResult> {
@@ -32,14 +37,14 @@ export class AuthService {
     data.password = login.password;
     data.AddressIP = await this.req.getAddressIP();
 
-    //Execute request post to login 
+    //Execute request post to login
     var url = this.apiUrl+"/"+MethodsAuth.LOGIN;
     var result : LoginResult = await this.req.executePost<LoginView,LoginResult>(url,data);
 
     //If not undefined store tokens
     if(result!=undefined&&result.jwtToken!=undefined&&result.refreshToken!=undefined){
       this.setLocalStorage(this.keyStorage, result);
-    }       
+    }
     return result;
   }
 
@@ -71,13 +76,17 @@ export class AuthService {
     console.log(auth)
     console.log(auth.jwtToken.expireAt)
      //if jwt token exist and expiration is valid
-    if(auth.jwtToken!= undefined && auth.jwtToken.expireAt > currentTimeSecond)  
+    if(auth.jwtToken!= undefined && auth.jwtToken.expireAt > currentTimeSecond){
+      if(this.identity==undefined){
+        this.userService.onSetAuth();
+      }
       return true;
+    }
 
       console.log(auth.refreshToken.expireAt)
      //if jwt token not exist or not valid and refresh token exist and is valid
     if(auth.refreshToken != undefined && auth.refreshToken.expireAt > currentTimeSecond) {
-      
+
        //execute post request to generate new jwt token
       var result = await this.req.executePost<RefreshToken,LoginResult>(this.apiUrl+"/"+MethodsAuth.REFRESH,auth.refreshToken);
       console.log(result)
@@ -99,10 +108,12 @@ export class AuthService {
 
   private setLocalStorage<T>(key:string, obj: T) : void {
     localStorage.setItem(key,JSON.stringify(obj))
+    this.userService.onSetAuth();
   }
 
   private removeLocalStorage(key:string) : void {
     localStorage.removeItem(key)
+    this.userService.onRemoveAuth();
   }
 
   private getLocalStorage<T>(key:string) : T {

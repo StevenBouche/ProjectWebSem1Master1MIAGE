@@ -20,6 +20,7 @@ namespace Forum.Controllers
     {
         IForumManagerView Manager;
         private readonly IHubContext<ForumHub> HubContext;
+        CacheUserWs Cache;
 
         private UserIdentity Identity
         {
@@ -29,10 +30,11 @@ namespace Forum.Controllers
             }
         }
 
-        public ForumController(IForumManagerView forumManager, IHubContext<ForumHub> hubContext)
+        public ForumController(IForumManagerView forumManager, IHubContext<ForumHub> hubContext, CacheUserWs cache)
         {
             this.Manager = forumManager;
             this.HubContext = hubContext;
+            this.Cache = cache;
         }
 
         [HttpGet("myforum")]
@@ -67,6 +69,10 @@ namespace Forum.Controllers
         public ActionResult<string> GetForumPanel(string id)
         {
             ForumPanelView result = this.Manager.GetForumPanel(id, this.Identity);
+            result.Users.ForEach(user =>
+            {
+                user.IsConnected = this.Cache.usersIdWebSocket.Values.Contains(user.Id);
+            });
             return this.Ok(result);
         }
 
