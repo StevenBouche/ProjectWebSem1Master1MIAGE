@@ -219,6 +219,23 @@ export class ForumService {
     this.dataStore.searchForum.nbItemPerPage = pageSize;
     //this.loadSearchForum();
   }
+
+  async sendMessage(msg : string){
+    let registerMsg : RegisterMessage = new RegisterMessage();
+    let message : MessageView = new MessageView();
+
+    message.timestamp = Date.now();
+    message.value = msg;
+
+    registerMsg.idchannel = this.dataStore.channelForumSelected.id;
+    registerMsg.idforum = this.dataStore.myForumSelected._id;
+    registerMsg.messageV = message;
+
+    let res = await this.newMsg(registerMsg);
+
+    this.dataStore.messagesOfChannelSelected.push(res);
+    this._messagesOfChannelSelected.next(this.cpObj(this.dataStore).messagesOfChannelSelected)
+  }
     //
     // HTTP CALLS
     //
