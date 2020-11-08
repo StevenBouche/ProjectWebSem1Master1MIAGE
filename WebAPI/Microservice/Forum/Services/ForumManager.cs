@@ -129,10 +129,7 @@ namespace Forum.Services
                 Pseudo = identity.Email
             });
 
-            var filter = Builders<ForumObj>.Filter.Eq("_id", idForum);
-            var update = Builders<ForumObj>.Update.Set("Users", forum.Users);
-
-            this.Context.GetCollection().UpdateOne(filter, update);
+            this.Context.GetCollection().ReplaceOne((f => f.Id == forum.Id), forum);
 
             return "succes";
         }

@@ -5,9 +5,14 @@ using System.Threading.Tasks;
 
 namespace Forum.SignalR
 {
+    public interface IForumHub
+    {
+        Task SendMessage(string message);
+        string GetIdUser();
+    }
 
     [Authorize(AuthenticationSchemes = "Bearer")]
-    public class ForumHub : Hub
+    public class ForumHub : Hub, IForumHub
     {
 
         public ForumHub(IUserIdProvider userId)
@@ -35,7 +40,7 @@ namespace Forum.SignalR
             await Clients.All.SendAsync("newMessage", this.GetIdUser(), message);
         }
 
-        private string GetIdUser()
+        public string GetIdUser()
         {
             return this.Context.UserIdentifier;
         }

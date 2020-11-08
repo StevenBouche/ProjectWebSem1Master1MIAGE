@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using AuthMiddleware;
 using Forum.Services;
+using Forum.SignalR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Forum.Controllers
 {
@@ -17,6 +19,7 @@ namespace Forum.Controllers
     {
 
         IForumManagerView Manager;
+        private readonly IHubContext<ForumHub> HubContext;
 
         private UserIdentity Identity
         {
@@ -27,10 +30,13 @@ namespace Forum.Controllers
         }
 
 
-        public MessageController(IForumManagerView forumManager)
+        public MessageController(IForumManagerView forumManager, IHubContext<ForumHub> hubContext)
         {
             this.Manager = forumManager;
+            this.HubContext = hubContext;
         }
+
+
 
 
     }

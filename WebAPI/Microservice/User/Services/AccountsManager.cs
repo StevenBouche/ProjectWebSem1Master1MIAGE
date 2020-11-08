@@ -21,6 +21,7 @@ namespace User.Services
         void UpdateAccountFromView(AccountView element);
         List<AccountView> GetAllAccountView();
         Account GetAccountWithRefreshToken(RefreshToken token);
+        string GetPictureUser(string id);
     }
 
     public class AccountsManager : IAccountsManager
@@ -98,6 +99,11 @@ namespace User.Services
             List<Account> list = this.Context.GetQueryable().ToList();
 
             return list.FirstOrDefault(account => account.RefreshTokens.FirstOrDefault(refresh => refresh.Token.Equals(token.Token)) != null);
+        }
+
+        public string GetPictureUser(string id)
+        {
+            return this.Context.GetQueryable().FirstOrDefault(User => User.ID == id).Image;
         }
     }
 }

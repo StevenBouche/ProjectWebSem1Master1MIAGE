@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import LoginResult from 'src/models/auth/LoginResult';
@@ -26,10 +26,14 @@ export class AuthComponent implements OnInit {
   loginData: LoginView = new LoginView();
   isLoading: boolean;
 
+  @ViewChild("fileUpload", {static: false}) fileUpload: ElementRef;
+  file : File;
+  imgURL: any;
+
   constructor(
-    public auth: AuthService, 
-    public user: UserService, 
-    public router: Router, 
+    public auth: AuthService,
+    public user: UserService,
+    public router: Router,
     private formBuilder: FormBuilder,
     private alert: NotificationService) {
 
@@ -39,20 +43,20 @@ export class AuthComponent implements OnInit {
     this.registerForm = formBuilder.group({
       firstName: [null, [Validators.required]],
       lastName: [null, [Validators.required]],
-      email: [null, [Validators.required]], 
+      email: [null, [Validators.required]],
       password: [null, [Validators.required]],
       pseudo: [null, [Validators.required]]
     });
 
     this.loginForm = formBuilder.group({
-      email: [null, [Validators.required]], 
+      email: [null, [Validators.required]],
       password: [null, [Validators.required]]
     });
 
   }
 
   ngOnInit(): void {
-      
+
   }
 
   onClickLogin() : void {

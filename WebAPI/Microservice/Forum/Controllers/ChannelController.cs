@@ -6,9 +6,11 @@ using AuthMiddleware;
 using Forum.Models.Form;
 using Forum.Models.View;
 using Forum.Services;
+using Forum.SignalR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Forum.Controllers
 {
@@ -19,6 +21,7 @@ namespace Forum.Controllers
     {
 
         IChannelManagerView Manager;
+        private readonly IHubContext<ForumHub> HubContext;
 
         private UserIdentity Identity
         {
@@ -28,9 +31,10 @@ namespace Forum.Controllers
             }
         }
 
-        public ChannelController(IChannelManagerView channelManager)
+        public ChannelController(IChannelManagerView channelManager, IHubContext<ForumHub> hubContext)
         {
             this.Manager = channelManager;
+            this.HubContext = hubContext;
         }
 
         [HttpPost("create")]

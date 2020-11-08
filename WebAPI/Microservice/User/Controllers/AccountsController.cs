@@ -45,6 +45,7 @@ namespace User.Controllers
                     Email = element.Email,
                     Password = element.Password,
                     Pseudo = element.Pseudo,
+                    Image = element.Image,
                     AdressIPAuthorize = new List<string> { element.AddressIP }
                 }).ToAccountView();
         }
@@ -60,6 +61,13 @@ namespace User.Controllers
         public ActionResult<AccountView> MyIdentity()
         {
            return Ok(this.Manager.GetAccountById(this.Identity.ID).ToAccountView());
+        }
+
+        [AllowAnonymous]
+        [HttpGet("picture/{id}")]
+        public ActionResult UserPicture(string id)
+        {
+            return Ok(this.Manager.GetPictureUser(id));
         }
 
         [HttpGet("{id}")]
