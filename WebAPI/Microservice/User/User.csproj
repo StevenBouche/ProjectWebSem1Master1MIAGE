@@ -11,6 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\Jwt\**" />
+    <Content Remove="Services\Jwt\**" />
+    <EmbeddedResource Remove="Services\Jwt\**" />
+    <None Remove="Services\Jwt\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.9" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="mongocsharpdriver" Version="2.11.3" />
@@ -23,10 +30,6 @@
     <ProjectReference Include="..\AuthMiddleware\AuthMiddleware.csproj" />
     <ProjectReference Include="..\MongoDBAccess\MongoDBAccess.csproj" />
     <ProjectReference Include="..\PolicyMiddleware\PolicyMiddleware.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\Jwt\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

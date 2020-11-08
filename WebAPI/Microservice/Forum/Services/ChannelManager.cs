@@ -14,6 +14,7 @@ namespace Forum.Services
     {
         ChannelView GetChannelView();
         ChannelView CreateChannelView(RegisterChannel channel, UserIdentity identity);
+        ChannelPanelView GetChannelPanelView(string idChannel, UserIdentity identity);
     }
 
     public interface IChannelManager
@@ -72,6 +73,20 @@ namespace Forum.Services
         {
             Channel c = this.CreateChannel(channel.IdForum, new Channel { Name = channel.NameChannel }, identity);
             return c?.ToChannelView();
+        }
+
+        public ChannelPanelView GetChannelPanelView(string idChannel, UserIdentity identity)
+        {
+            var panel = new ChannelPanelView();
+
+            this.Manager.GetForumAndChannel(idChannel, out ForumObj forum, out Channel channel, identity);
+
+            if (forum == null || channel == null) return panel;
+
+            panel.Channel = channel.ToChannelView();
+            panel.Messages = channel.Messages.Select(message => message.ToMessageView()).ToList();
+
+            return panel;
         }
     }
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import ForumView from 'src/models/forum/ForumView';
 import { ForumService } from 'src/services/forum/forum.service';
 import { WsService } from 'src/services/request/ws.service';
@@ -12,6 +13,7 @@ export class ForumComponent implements OnInit {
 
   forums : Array<ForumView>;
   forumSelected: ForumView;
+
   component: string;
   componentSearchName : string = "showSearchForum"
   componentForumName: string = "showForumSelect"
@@ -21,11 +23,17 @@ export class ForumComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.forums = await this.forumService.getMyForums();
-
-    if(this.forums!=undefined && this.forums.length > 0)
-      this.forumSelected = this.forums[0];
-
+    //subscribe event my forum
+    this.forumService.myForums.subscribe((list:Array<ForumView>) => { this.forums = list; })
+    //subscribe event selected forum
+    this.forumService.myForumSelected.subscribe((value:ForumView) => {
+      console.log(value)
+      this.forumSelected = value;
+      this.component = this.componentForumName;
+    })
+    // load my forum
+    this.forumService.loadMyForums();
+    //connect to forum websocket server
     this.connectionWs.connectToWebSocket();
   }
 
@@ -38,13 +46,12 @@ export class ForumComponent implements OnInit {
   }
 
   onForumSelect(forum: ForumView){
-    this.forumSelected = forum;
-    this.component = this.componentForumName;
+    console.log(forum)
+    this.forumService.selectMyForums(forum._id);
   }
 
   forumIsSelected(forum: ForumView) : boolean{
-    var test = this.forumSelected != undefined && forum != undefined && this.forumSelected._id === forum._id;
-    return test;
+    return this.forumSelected != undefined && forum != undefined && this.forumSelected._id == forum._id;
   }
 
   async onForumSearch(){

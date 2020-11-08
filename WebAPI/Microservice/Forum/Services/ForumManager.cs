@@ -15,6 +15,7 @@ namespace Forum.Services
     {
         ForumObj GetForumById(string id);
         void AddChannelForum(string idForum, Channel channel, UserIdentity identity);
+        void GetForumAndChannel(string idChannel, out ForumObj forum, out Channel channel, UserIdentity user);
     }
 
     public interface IForumManagerView
@@ -155,6 +156,25 @@ namespace Forum.Services
 
             return panel;
 
+        }
+
+        public void GetForumAndChannel(string idChannel, out ForumObj forum, out Channel channel, UserIdentity identity)
+        {
+
+            forum = null;
+            channel = null;
+
+            ForumObj resForum = this.Context.GetQueryable().FirstOrDefault(forum => forum.Channels.Where(channel => channel.Id == idChannel).Any());
+
+            if (resForum != null)
+            {
+                if(resForum.Users.Any(user => user.Id == identity.ID))
+                {
+                    forum = resForum;
+                    channel = resForum.Channels.FirstOrDefault(channel => channel.Id == idChannel);
+                }
+            }
+         
         }
 
         //GET PUT POST ...

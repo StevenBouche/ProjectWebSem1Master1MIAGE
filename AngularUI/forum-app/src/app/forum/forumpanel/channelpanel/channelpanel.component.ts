@@ -3,6 +3,7 @@ import ChannelPanelView from 'src/models/forum/ChannelPanelView';
 import ChannelView from 'src/models/forum/ChannelView';
 import MessageView from 'src/models/forum/MessageView';
 import UserView from 'src/models/forum/UserView';
+import { ForumService } from 'src/services/forum/forum.service';
 
 @Component({
   selector: 'app-channelpanel',
@@ -11,18 +12,34 @@ import UserView from 'src/models/forum/UserView';
 })
 export class ChannelpanelComponent implements OnInit {
 
-  @Input() channel: ChannelView;
-  panel : ChannelPanelView;
-  @Input() usersOnline: UserView[];
-  @Input() usersOffline: UserView[]
+  channel: ChannelView;
+  messages: Array<MessageView>;
+  //panel : ChannelPanelView;
 
-  constructor() {
-    this.panel = new ChannelPanelView();
-    this.panel.messages = new Array<MessageView>();
-    this.panel.channel = this.channel;
+  usersOnline: Array<UserView>;
+  usersOffline: Array<UserView>;
+
+  constructor(private forumService: ForumService ) {
+
   }
 
   ngOnInit(): void {
+
+    this.forumService.usersOfMyForumSelected.subscribe((users:Array<UserView>) => {
+      this.usersOffline = users.filter(user => !user.isConnected);
+      this.usersOnline = users.filter(user => user.isConnected);
+    });
+
+    this.forumService.channelForumSelected.subscribe((channel:ChannelView) => {
+      this.channel = channel;
+    })
+
+    this.forumService.messagesOfChannelSelected.subscribe((message:Array<MessageView>) => {
+      this.messages = message;
+    })
+
   }
+
+
 
 }

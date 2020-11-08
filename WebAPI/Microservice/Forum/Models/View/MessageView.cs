@@ -11,8 +11,8 @@ namespace Forum.Models.View
         public string Value { get; set; }
         [JsonPropertyName("timestamp")]
         public double Timestamp { get; set; }
-        [JsonPropertyName("users")]
-        public UserView Users{ get; set; }
+        [JsonPropertyName("userId")]
+        public string UserId{ get; set; }
 
     }
 }

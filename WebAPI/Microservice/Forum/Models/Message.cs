@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Forum.Models.View;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -20,5 +21,16 @@ namespace Forum.Models
         public double Timestamp { get; set; }
         [JsonPropertyName("userId")]
         public string UserId { get; set; }
+
+        public MessageView ToMessageView()
+        {
+            return new MessageView
+            {
+                Id = this.Id,
+                Value = this.Value,
+                Timestamp = this.Timestamp,
+                UserId = this.UserId
+            };
+        }
     }
 }

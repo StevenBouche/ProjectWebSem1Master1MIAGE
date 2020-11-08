@@ -15,63 +15,32 @@ import { ForumService } from 'src/services/forum/forum.service';
 
 export class ForumpanelComponent implements OnInit {
 
-  @Input() forum : ForumView;
+  forum : ForumView;
+  channels : Array<ChannelView>
   channelSelected: ChannelView;
-  cacheSelected: Map<string,string>;
 
   displayParamForum: boolean;
-  panel : ForumPanelView;
   channelName : string;
-  newChannel : RegisterChannel;
 
   constructor(private forumService : ForumService) {
       this.displayParamForum = false;
-      this.cacheSelected = new Map<string,string>();
-      this.newChannel = new RegisterChannel();
       this.channelName = '';
-      this.panel = new ForumPanelView();
-      this.panel.forum = this.forum;
-      this.panel.channels = new Array<ChannelView>();
-      this.panel.users = new Array<UserView>();
    }
 
   ngOnInit() {
-    this.onUpdatePanel();
-  }
 
-  async onUpdatePanel() {
-    this.panel = await this.forumService.getForumPannel(this.forum._id);
-    this.channelSelected = this.channelSelected == undefined && this.panel.channels.length > 0 ? this.panel.channels[0] : undefined;
-    console.log(this.channelSelected)
-    this.updateCacheChannel();
-    console.log(this.panel)
-  }
+    this.forumService.myForumSelected.subscribe((forum : ForumView) => {
+      this.forum = forum;
+    })
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if(changes.forum != undefined)
-      this.onChangeForum(changes.forum);
-  }
+    this.forumService.channelsOfMyForumSelected.subscribe((channels:Array<ChannelView>) => {
+      this.channels = channels;
+    })
 
-  getLabel() : string {
-    return this.panel != undefined && this.panel.forum != undefined ? this.panel.forum.name : ''
-  }
+    this.forumService.channelForumSelected.subscribe((channel:ChannelView) => {
+      this.channelSelected = channel;
+    })
 
-  onChangeForum(forum: SimpleChange) {
-    var idChannel = this.cacheSelected.get(this.forum._id);
-    //si le forum n'a pas de channel referencer setup le premier channel sinon recupere le channel dans le cache du bon forum
-    if(this.panel == undefined || this.panel.channels == undefined){
-      return;
-    }
-
-    if(idChannel != undefined){
-      // si pas de channel => undefined, si le channel dans le cache existe alors => channel_cache, sinon prend le premier du forum
-      var channel = this.panel.channels[idChannel];
-      this.channelSelected = channel != undefined ? channel : this.panel.channels.length > 0 ? this.panel.channels[0] : undefined;
-    }
-    else {
-      this.channelSelected = this.panel.channels.length > 0 ? this.panel.channels[0] : undefined;
-      if(this.channelSelected != undefined) this.updateCacheChannel();
-    }
   }
 
   onClickParamForum(){
@@ -80,24 +49,11 @@ export class ForumpanelComponent implements OnInit {
   }
 
   onChannelSelect(channel: ChannelView) {
-    this.channelSelected = channel;
-    this.updateCacheChannel();
+    this.forumService.selectChannelForum(this.forum._id,channel.id)
   }
 
-  async onNewChannel() {
-    console.log(this.channelName);
-    var channelEntered = this.channelName
-    this.newChannel.NameChannel = channelEntered;
-    this.newChannel.IdForum = this.forum._id;
-    var res = await this.forumService.newChannel(this.newChannel);
-    console.log(res)
-    this.channelSelected = res;
-    this.updateCacheChannel();
-    this.onUpdatePanel();
-  }
-
-  updateCacheChannel() : void {
-    this.cacheSelected.set(this.forum._id,this.channelSelected.id)
+  onNewChannel() {
+    this.forumService.createNewChannelForumSelected(this.channelName);
   }
 
   getChannelClass(channel: ChannelView) : string {

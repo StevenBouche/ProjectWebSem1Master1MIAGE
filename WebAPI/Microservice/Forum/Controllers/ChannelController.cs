@@ -39,5 +39,11 @@ namespace Forum.Controllers
             return this.Ok(this.Manager.CreateChannelView(channel,this.Identity));
         }
 
+        [HttpGet("panel/{id}")]
+        public ActionResult<ChannelPanelView> GetChannelPanel(string id)
+        {
+            return this.Ok(this.Manager.GetChannelPanelView(id, this.Identity));
+        }
+
     }
 }
