@@ -52,8 +52,10 @@ export class BoardcreateComponent implements OnInit {
       this.file =  fileUpload.files[0]
       var reader = new FileReader();
       reader.readAsDataURL(this.file);
+
       reader.onload = (_event) => {
         this.imgURL = reader.result;
+        
         console.log(this.imgURL)
       }
       this.uploadFiles();

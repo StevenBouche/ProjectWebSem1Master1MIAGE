@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using AuthMiddleware;
 using Microsoft.AspNetCore.Authorization;
@@ -65,9 +67,14 @@ namespace User.Controllers
 
         [AllowAnonymous]
         [HttpGet("picture/{id}")]
-        public string UserPicture(string id)
+        public ActionResult<string> UserPicture(string id)
         {
-            return this.Manager.GetPictureUser(id);
+            var img =  this.Manager.GetPictureUser(id);
+            var items = img.Split(new char[] { ',', ':', ';' });
+            var type = items[1]; 
+            var image = items[3];
+            byte[] b = Convert.FromBase64String(image);
+            return new FileContentResult(b, type);
         }
 
         [HttpGet("{id}")]
