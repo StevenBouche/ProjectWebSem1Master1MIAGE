@@ -22,8 +22,7 @@ namespace Forum.Models.View
         public string DescFilter { get; set; }
         [JsonPropertyName("forumSearch")]
         public List<ForumView> ForumSearch { get; set; }
-
-
-
+        [JsonPropertyName("totalItemCurrent")]
+        public int TotalItemCurrent { get; internal set; }
     }
 }

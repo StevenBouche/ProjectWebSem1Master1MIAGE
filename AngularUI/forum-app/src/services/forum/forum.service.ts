@@ -25,6 +25,7 @@ class FactoryModel {
     search.totalItem = 0;
     search.totalPage = 0;
     search.nbItemPerPage = 10;
+    search.totalItemCurent = 0;
     search.forumSearch = new Array<ForumView>()
     return search;
   }
@@ -212,21 +213,11 @@ export class ForumService {
     this.notif.showSuccess("You have subscribed to this forum", "Success");
   }
 
-  async sendMessage(msg : string){
-    let registerMsg : RegisterMessage = new RegisterMessage();
-    let message : MessageView = new MessageView();
-
-    message.timestamp = Date.now();
-    message.value = msg;
-
-    registerMsg.idchannel = this.dataStore.channelForumSelected.id;
-    registerMsg.idforum = this.dataStore.myForumSelected._id;
-    registerMsg.messageV = message;
-
-    let res = await this.newMsg(registerMsg);
-
-    this.dataStore.messagesOfChannelSelected.push(res);
-    this._messagesOfChannelSelected.next(this.cpObj(this.dataStore).messagesOfChannelSelected)
+  async OnSearchPaginitionChange(length:number,pageIndex:number,pageSize:number){
+    this.dataStore.searchForum.totalItem = length;
+    this.dataStore.searchForum.currentPage = pageIndex;
+    this.dataStore.searchForum.nbItemPerPage = pageSize;
+    //this.loadSearchForum();
   }
     //
     // HTTP CALLS
