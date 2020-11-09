@@ -4,6 +4,7 @@ import ForumForm from 'src/models/forum/ForumForm';
 import { ForumService } from 'src/services/forum/forum.service';
 import { EventEmitter } from '@angular/core';
 import ForumView from 'src/models/forum/ForumView';
+import { NotificationService } from 'src/services/notification/notification.service';
 
 @Component({
   selector: 'app-boardcreate',
@@ -20,16 +21,18 @@ export class BoardcreateComponent implements OnInit {
   loading : boolean;
 
   forumForm : ForumForm;
+  borderColor : string;
 
-  constructor(private formBuilder: FormBuilder, private forumService : ForumService) {
+  constructor(private formBuilder: FormBuilder, private forumService : ForumService, private notif : NotificationService) {
     this.forum = new ForumView();
     this.createForm = formBuilder.group({
       name: ['', Validators.required],
-      description: [''],
-      image: ['']
+      description: ['', Validators.required],
+      image: ['', Validators.required]
     });
 
     this.forumForm = new ForumForm();
+    this.borderColor = "border-gray-200";
   }
 
 
@@ -55,7 +58,7 @@ export class BoardcreateComponent implements OnInit {
 
       reader.onload = (_event) => {
         this.imgURL = reader.result;
-        
+
         console.log(this.imgURL)
       }
       this.uploadFiles();
@@ -68,6 +71,23 @@ export class BoardcreateComponent implements OnInit {
     this.forumForm.description = this.createForm.controls['description'].value;
     this.forumForm.image = this.imgURL;
 
+    this.forumForm.name = this.forumForm.name.trim();
+    if(this.forumForm.name === undefined || this.forumForm.name === '') {
+      this.borderColor = "border-danger";
+      this.notif.showError("Please insert a correct forum name", "Error on input")
+      return;
+    }
+
+    this.forumForm.description = this.forumForm.description.trim();
+    if(this.forumForm.description === undefined || this.forumForm.description === '') {
+      this.notif.showError("Please insert a correct forum description", "Error on input")
+      return; }
+
+    if(this.forumForm.image === undefined) {
+      this.notif.showError("Please insert a image for your forum", "Error on input")
+      return;
+    }
+    this.notif.showSuccess("Forum successfuly created !", "Success !")
     this.forumService.createNewForum(this.forumForm);
   }
 

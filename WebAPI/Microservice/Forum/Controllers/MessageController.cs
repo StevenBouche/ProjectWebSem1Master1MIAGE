@@ -40,7 +40,7 @@ namespace Forum.Controllers
         public async Task<ActionResult<RegisterMessage>> CreateMessage([FromBody] RegisterMessage message)
         {
             RegisterMessage result = this.Manager.CreateMessage(message, this.Identity);
-            await this.HubContext.Clients.AllExcept(new string[] { message.MessageV.Id }).SendAsync("onNewMessage",result);
+            await this.HubContext.Clients.AllExcept(new string[] { this.Identity.ID }).SendAsync("onNewMessage",result);
             return this.Ok(result);
         }
     }

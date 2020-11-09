@@ -96,37 +96,58 @@ export class ForumService {
     })
 
     this.websocket.onNewCategorie.subscribe((channel:RegisterChannelResult) => {
-
+      console.log("hey")
         if(channel==undefined) return;
 
-        //verif current forum is forum of channel variable
-        //add channel to channels datastore
+        if(this.dataStore.myForumSelected._id !== channel.forum._id) return;
 
+        let res : ChannelView = new ChannelView();
+        res.id = channel.channel.id;
+        res.name = channel.channel.name;
+
+        this.addNewCategory(res);
     })
 
     this.websocket.onUserConnect.subscribe((idUser:string) => {
 
         if(idUser==undefined) return;
+        let user = this.dataStore.usersOfMyForumSelected.find(user => user.id === idUser);
 
-        //verif current forum curretn channel
-        // users data store
+        if(user == undefined) return;
+
+        user.isConnected = true;
+        let test = this.dataStore.usersOfMyForumSelected.find(usera => usera.isConnected === user.isConnected)
+        console.log(test);
+
+        this._usersOfMyForumSelected.next(this.cpObj(this.dataStore).usersOfMyForumSelected);
 
     })
 
     this.websocket.onUserDisconnect.subscribe((idUser:string) => {
 
-        if(idUser==undefined) return;
+      if(idUser==undefined) return;
+      let user = this.dataStore.usersOfMyForumSelected.find(user => user.id === idUser);
 
+      if(user == undefined) return;
 
+      user.isConnected = false;
+      this.dataStore.usersOfMyForumSelected.find(usera => usera.isConnected === user.isConnected)
 
+      this._usersOfMyForumSelected.next(this.cpObj(this.dataStore).usersOfMyForumSelected);
     })
 
     this.websocket.onUserSubscribe.subscribe((sub:SubscribeResultView) => {
 
         if(sub==undefined) return;
 
+        if(this.dataStore.myForumSelected != undefined && this.dataStore.myForumSelected._id !== sub.idForum) return;
 
-
+        if(sub.user === undefined) {
+        console.log("user undefined")
+        return;
+        }
+          this.dataStore.usersOfMyForumSelected.push(sub.user);
+          this._usersOfMyForumSelected.next(this.cpObj(this.dataStore).usersOfMyForumSelected);
     })
 
   }
@@ -286,7 +307,8 @@ export class ForumService {
     var res = await this.sendFormValues(forum);
 
     //set redirection on new forum
-    this.dataStore.channelForumSelected.id = res._id;
+    if(this.dataStore.channelForumSelected !== undefined)
+      this.dataStore.channelForumSelected.id = res._id;
 
     //refresh my forums to load refresh
     this.loadMyForums();
@@ -359,6 +381,12 @@ export class ForumService {
     //push and notify new message
     this.dataStore.messagesOfChannelSelected.push(msg);
     this._messagesOfChannelSelected.next(this.cpObj(this.dataStore).messagesOfChannelSelected)
+  }
+
+  addNewCategory(channel : ChannelView){
+    console.log(channel)
+    this.dataStore.channelsOfMyForumSelected.push(channel)
+    this._channelsOfMyForumSelected.next(this.cpObj((this.dataStore).channelsOfMyForumSelected))
   }
 
     //

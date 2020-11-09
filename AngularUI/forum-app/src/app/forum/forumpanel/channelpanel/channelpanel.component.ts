@@ -54,6 +54,10 @@ export class ChannelpanelComponent implements OnInit {
 
   sendMessage(){
       console.log("MESSAGE AVANT ENVOI " + this.message);
+
+      this.message = this.message.trim();
+      if(this.message === undefined || this.message === '') return;
+
       var msgEntered = this.message;
       this.message = '';
 

@@ -47,6 +47,8 @@ export class ForumpanelComponent implements OnInit {
   }
 
   onNewChannel() {
+    this.channelName = this.channelName.trim();
+    if(this.channelName === undefined || this.channelName === '') return;
     this.forumService.createNewChannelForumSelected(this.channelName);
   }
 
