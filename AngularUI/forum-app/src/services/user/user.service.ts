@@ -14,9 +14,7 @@ enum MethodsAuth {
 })
 export class UserService {
 
-
   private readonly apiUrl = "http://localhost:7000/account"
-
 
   private _myIdentity = new BehaviorSubject<AccountView>(undefined);
 

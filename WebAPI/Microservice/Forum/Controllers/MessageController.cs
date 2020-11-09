@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AuthMiddleware;
+using Forum.Models.View;
 using Forum.Services;
 using Forum.SignalR;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +19,7 @@ namespace Forum.Controllers
     public class MessageController : ControllerBase
     {
 
-        IForumManagerView Manager;
+        IMessageManagerView Manager;
         private readonly IHubContext<ForumHub> HubContext;
 
         private UserIdentity Identity
@@ -30,14 +31,17 @@ namespace Forum.Controllers
         }
 
 
-        public MessageController(IForumManagerView forumManager, IHubContext<ForumHub> hubContext)
+        public MessageController(IMessageManagerView forumManager, IHubContext<ForumHub> hubContext)
         {
             this.Manager = forumManager;
             this.HubContext = hubContext;
         }
 
-
-
-
+        [HttpPost]
+        public ActionResult<RegisterMessage> CreateMessage([FromBody] RegisterMessage message)
+        {
+            RegisterMessage result = this.Manager.CreateMessage(message, this.Identity);
+            return this.Ok(result);
+        }
     }
 }

@@ -119,7 +119,6 @@
       "UpstreamHttpMethod": [ "POST", "GET" ],
       "SwaggerKey": "forum"
     },
-
     {
       "DownstreamPathTemplate": "/api/v1/channel/{everything}",
       "DownstreamScheme": "http",
@@ -130,6 +129,19 @@
         }
       ],
       "UpstreamPathTemplate": "/channel/{everything}",
+      "UpstreamHttpMethod": [ "POST", "GET" ],
+      "SwaggerKey": "forum"
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/message",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "forum",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/message",
       "UpstreamHttpMethod": [ "POST", "GET" ],
       "SwaggerKey": "forum"
     }

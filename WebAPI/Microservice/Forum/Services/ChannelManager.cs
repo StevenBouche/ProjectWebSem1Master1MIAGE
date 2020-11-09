@@ -22,7 +22,7 @@ namespace Forum.Services
         List<Channel> GetChannelsForum(string idForum, UserIdentity identity);
         Channel GetChannelForum(string idForum, string idChannel, UserIdentity identity);
         Channel CreateChannel(string idForum, Channel c, UserIdentity identity);
-
+        Message AddNewMessageChannel(string idforum, string idchannel, Message messageV, UserIdentity identity);
     }
 
     public class ChannelManager : IChannelManagerView, IChannelManager
@@ -88,5 +88,11 @@ namespace Forum.Services
 
             return panel;
         }
+
+        public Message AddNewMessageChannel(string idforum, string idchannel, Message message, UserIdentity identity)
+        {
+            return this.Manager.CreateAndAddNewMessage(idforum, idchannel, message, identity);
+        }
+
     }
 }

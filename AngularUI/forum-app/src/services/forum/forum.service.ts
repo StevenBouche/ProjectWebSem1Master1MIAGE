@@ -41,17 +41,24 @@ export class ForumService {
   private readonly apiUrlChannel = "http://localhost:7000/channel";
   private readonly apiUrlMsg = "http://localhost:7000/message";
 
+
   private _myForums = new BehaviorSubject<Array<ForumView>>(new Array<ForumView>());
   private _searchForum = new BehaviorSubject<ForumSearchView>(FactoryModel.defaultForumSearchView())
-
   //Selector forum - channel
   private _myForumSelected = new BehaviorSubject<ForumView>(undefined);
   private _channelForumSelected = new BehaviorSubject<ChannelView>(undefined);
-
   //data channels users messages
   private _channelsOfMyForumSelected = new BehaviorSubject<Array<ChannelView>>(new Array<ChannelView>());
   private _usersOfMyForumSelected = new BehaviorSubject<Array<UserView>>(new Array<UserView>());
   private _messagesOfChannelSelected = new BehaviorSubject<Array<MessageView>>(new Array<MessageView>());
+
+  readonly searchForum = this._searchForum.asObservable()
+  readonly myForums = this._myForums.asObservable();
+  readonly myForumSelected = this._myForumSelected.asObservable();
+  readonly channelsOfMyForumSelected = this._channelsOfMyForumSelected.asObservable();
+  readonly usersOfMyForumSelected = this._usersOfMyForumSelected.asObservable();
+  readonly channelForumSelected = this._channelForumSelected.asObservable();
+  readonly messagesOfChannelSelected = this._messagesOfChannelSelected.asObservable();
 
   private dataStore: {
     myForums : Array<ForumView>,
@@ -71,13 +78,6 @@ export class ForumService {
       messagesOfChannelSelected: new Array<MessageView>()
   }; // store our data in memory
 
-  readonly searchForum = this._searchForum.asObservable()
-  readonly myForums = this._myForums.asObservable();
-  readonly myForumSelected = this._myForumSelected.asObservable();
-  readonly channelsOfMyForumSelected = this._channelsOfMyForumSelected.asObservable();
-  readonly usersOfMyForumSelected = this._usersOfMyForumSelected.asObservable();
-  readonly channelForumSelected = this._channelForumSelected.asObservable();
-  readonly messagesOfChannelSelected = this._messagesOfChannelSelected.asObservable();
 
   constructor(private req: RequestService, private notif : NotificationService) { }
 
@@ -87,9 +87,9 @@ export class ForumService {
     //notify change value
     this._myForums.next(Object.assign({}, this.dataStore).myForums);
     //if value have forums and not have current selected forum, set first element of array and notify
-    if(this.dataStore.myForumSelected==undefined&&this.dataStore.myForums.length>0)
+    if(this.dataStore.myForumSelected==undefined&&this.dataStore.myForums.length>0){
       this.selectMyForums(this.dataStore.myForums[0]._id);
-
+    }
   }
 
     //
@@ -97,57 +97,66 @@ export class ForumService {
     //
 
   async loadSearchForum() {
+
+    //execute request
     this.dataStore.searchForum = await this.getForums(this.dataStore.searchForum);
-    console.log(this.dataStore.searchForum);
+    //notify change
     this._searchForum.next(this.cpObj(this.dataStore).searchForum)
+
   }
 
   private async loadDatasOfSelectedForum() {
 
+      //get forum selected, if is undefined set channel forum to undefined
       var idForum = this.dataStore.myForumSelected?._id;
-
-      if(idForum){
-
-        //get panel of selected forum
-        var panel = await this.getForumPannel(idForum);
-
-        //set data in store and notify channels / users
-        this.dataStore.channelsOfMyForumSelected = panel.channels;
-        this._channelsOfMyForumSelected.next(this.cpObj(this.dataStore).channelsOfMyForumSelected);
-        this.dataStore.usersOfMyForumSelected = panel.users;
-        this._usersOfMyForumSelected.next(this.cpObj(this.dataStore).usersOfMyForumSelected);
-
-        //si pas de channel selectionner
-        if(this.dataStore.channelForumSelected==undefined){
-            //mais il y a des channels alors set le premier channel
-            if(panel.channels.length>0){
-              this.selectChannelForum(panel.channels[0].id);
-            }
-        } else { // si channel select
-          //find if channel current is in current forum
-          this.dataStore.channelForumSelected = panel.channels.find(channel => channel.id == this.dataStore.channelForumSelected.id)
-          //is il y est pas et que channels existe alors set le premier sinon set undefined
-          if(this.dataStore.channelForumSelected == undefined && panel.channels.length>0){
-            this.selectChannelForum(panel.channels[0].id);
-          } else {
-            this._channelForumSelected.next(this.cpObj(this.dataStore).channelForumSelected);
-          }
-        }
-
+      if(idForum==undefined) {
+        this.selectChannelForum(undefined);
+        return;
       }
+
+      //get panel of selected forum
+      var panel = await this.getForumPannel(idForum);
+
+      //set data in store and notify channels / users
+      this.dataStore.channelsOfMyForumSelected = panel.channels;
+      this.dataStore.usersOfMyForumSelected = panel.users;
+      this._channelsOfMyForumSelected.next(this.cpObj(this.dataStore).channelsOfMyForumSelected);
+      this._usersOfMyForumSelected.next(this.cpObj(this.dataStore).usersOfMyForumSelected);
+
+      //si pas de channel selectionner
+      if(this.dataStore.channelForumSelected==undefined){
+          //mais il y a des channels alors set le premier channel
+          if(panel.channels.length>0) this.selectChannelForum(panel.channels[0].id);
+          return;
+      }
+
+      // si channel select
+      //find if channel current is in current forum
+      this.dataStore.channelForumSelected = panel.channels.find(channel => channel.id == this.dataStore.channelForumSelected.id)
+      //is il y est pas et que channels existe alors set le premier sinon set undefined
+      if(this.dataStore.channelForumSelected == undefined && panel.channels.length>0) this.selectChannelForum(panel.channels[0].id);
+      else this._channelForumSelected.next(this.cpObj(this.dataStore).channelForumSelected);
 
   }
 
   private async loadDataOfSelectedChannel() {
+
+    //if undefined reset messages
     var idChannel = this.dataStore.channelForumSelected?.id;
-    console.log(this.dataStore)
-    if(idChannel){
-      //get panel of selected forum
-      var panel = await this.getChannelPannel(idChannel);
-      //set data in store and notify message
-      this.dataStore.messagesOfChannelSelected = panel.messages;
+
+    if(idChannel==undefined){
+      //else clear the message array
+      this.dataStore.messagesOfChannelSelected = new Array<MessageView>();
       this._messagesOfChannelSelected.next(this.cpObj(this.dataStore).messagesOfChannelSelected);
+      return;
     }
+
+    //get panel of selected forum
+    var panel = await this.getChannelPannel(idChannel);
+    //set data in store and notify message
+    this.dataStore.messagesOfChannelSelected = panel.messages;
+    this._messagesOfChannelSelected.next(this.cpObj(this.dataStore).messagesOfChannelSelected);
+
   }
 
     //
@@ -157,73 +166,105 @@ export class ForumService {
 
   selectMyForums(id: string){
 
-    //ignore if current forum
-    //if(this.dataStore.myForumSelected?._id == id) return;
+    //if select undefined, set data to undefined and load refresh dependencie child
+    if(id==undefined){
+      this.dataStore.myForumSelected = undefined;
+      this._myForumSelected.next(this.cpObj(this.dataStore).myForumSelected);
+      this.loadDatasOfSelectedForum();
+      return;
+    }
 
-    //find forum with id
+    // else find forum with id
     var selected = this.dataStore.myForums.find(forum => forum._id == id);
 
-    //if exist
-    if(selected){
+    if(selected==undefined) return;
 
-      //update selected and next
-      this.dataStore.myForumSelected = selected;
-      this._myForumSelected.next(this.cpObj(this.dataStore).myForumSelected);
+    //update selected and next
+    this.dataStore.myForumSelected = selected;
+    this._myForumSelected.next(this.cpObj(this.dataStore).myForumSelected);
 
-      //load data of forum select
-
-      this.loadDatasOfSelectedForum();
-
-    }
+    //load data of forum select
+    this.loadDatasOfSelectedForum();
 
   }
 
   selectChannelForum(idChannel:string){
 
-      var channelSelect = this.dataStore.channelsOfMyForumSelected.find(channel => channel.id === idChannel);
+    //if set channel to undefined reset child field
+    if(idChannel==undefined){
+      this.dataStore.channelForumSelected = undefined;
+      this._channelForumSelected.next(this.cpObj(this.dataStore).channelForumSelected)
+      this.loadDataOfSelectedChannel();
+      return;
+    }
 
-      if(channelSelect){
+    //else search if exist and set and refresh
+    var channelSelect = this.dataStore.channelsOfMyForumSelected.find(channel => channel.id === idChannel);
 
-        this.dataStore.channelForumSelected = channelSelect;
-        this._channelForumSelected.next(this.cpObj(this.dataStore).channelForumSelected)
+    if(channelSelect==undefined) return;
 
-        this.loadDataOfSelectedChannel();
+    this.dataStore.channelForumSelected = channelSelect;
+    this._channelForumSelected.next(this.cpObj(this.dataStore).channelForumSelected)
 
-      }
+    this.loadDataOfSelectedChannel();
 
   }
 
   async createNewChannelForumSelected(channelName: string) {
 
+    //setup register form
     let register : RegisterChannel = new RegisterChannel();
-
     register.IdForum = this.dataStore.myForumSelected._id;
     register.NameChannel = channelName;
+
+    //execute request
     var res = await this.newChannel(register);
 
+    //concat result to channels and notify
     this.dataStore.channelsOfMyForumSelected = [...this.dataStore.channelsOfMyForumSelected, res];
     this._channelsOfMyForumSelected.next(this.cpObj(this.dataStore).channelsOfMyForumSelected)
+
+    //if empty channel select and channels have data, select first channel
+    if(this.dataStore.channelForumSelected == undefined && this.dataStore.channelsOfMyForumSelected.length > 0)
+      this.selectChannelForum(this.dataStore.channelsOfMyForumSelected[0].id);
 
   }
 
   async createNewForum(forum : ForumForm) {
+
+    //execute request to create forum
     var res = await this.sendFormValues(forum);
-    // this.dataStore.myForums = [...this.dataStore.myForums, res];
-    // this._myForums.next(this.cpObj(this.dataStore).myForums)
+
+    //set redirection on new forum
+    this.dataStore.channelForumSelected.id = res._id;
+
+    //refresh my forums to load refresh
     this.loadMyForums();
+
+    //execute select of new forum
+    this.selectMyForums(res._id);
+
   }
 
   async subscribeToAForum(forum : ForumView){
+
+    //error already subscribe
     if(this.dataStore.myForums.find(f => f._id == forum._id)){
       this.notif.showError("You have already subscribed to this forum", "Error");
       return;
     }
+
+    //execute request
     var res = await this.subscribe(forum._id);
+
+    //and load refresh of my forum
     this.loadMyForums();
     this.notif.showSuccess("You have subscribed to this forum", "Success");
+
   }
 
   async OnSearchPaginitionChange(length:number,pageIndex:number,pageSize:number){
+    //todo
     this.dataStore.searchForum.totalItem = length;
     this.dataStore.searchForum.currentPage = pageIndex;
     this.dataStore.searchForum.nbItemPerPage = pageSize;
@@ -231,32 +272,47 @@ export class ForumService {
   }
 
   async sendMessage(msg : string){
-    let registerMsg : RegisterMessage = new RegisterMessage();
-    let message : MessageView = new MessageView();
 
+    //create message view
+    let message : MessageView = new MessageView();
     message.timestamp = Date.now();
     message.value = msg;
 
-    registerMsg.idchannel = this.dataStore.channelForumSelected.id;
-    registerMsg.idforum = this.dataStore.myForumSelected._id;
+    //create form
+    let registerMsg : RegisterMessage = new RegisterMessage();
+    registerMsg.idChannel = this.dataStore.channelForumSelected.id;
+    registerMsg.idForum = this.dataStore.myForumSelected._id;
     registerMsg.messageV = message;
 
+    //execute request
     let res = await this.newMsg(registerMsg);
 
-    this.dataStore.messagesOfChannelSelected.push(res);
-    this._messagesOfChannelSelected.next(this.cpObj(this.dataStore).messagesOfChannelSelected)
+    //if correct response create message (have id)
+    // and is current forum and channel
+    if( res.messageV !== undefined &&
+        res.messageV.id !== undefined &&
+        res.idForum == this.dataStore.myForumSelected._id &&
+        res.idChannel == this.dataStore.channelForumSelected.id
+      ){
+        //push message in current list of message
+        this.dataStore.messagesOfChannelSelected.push(res.messageV);
+        this._messagesOfChannelSelected.next(this.cpObj(this.dataStore).messagesOfChannelSelected)
+    }
+
   }
 
   pushMessage(msg : MessageView){
+    //push and notify new message
     this.dataStore.messagesOfChannelSelected.push(msg);
     this._messagesOfChannelSelected.next(this.cpObj(this.dataStore).messagesOfChannelSelected)
   }
+
     //
     // HTTP CALLS
     //
 
   public async newMsg(registerMsg : RegisterMessage){
-    return await this.req.executePost<RegisterMessage, MessageView>(this.apiUrlMsg, registerMsg)
+    return await this.req.executePost<RegisterMessage, RegisterMessage>(this.apiUrlMsg, registerMsg)
   }
 
   public async getForums(listForum : ForumSearchView) : Promise<ForumSearchView>{
@@ -290,18 +346,5 @@ export class ForumService {
   private cpObj<T>(obj:T) : T{
     return Object.assign({},obj);
   }
-  // public async registerUser(register: RegisterView) : Promise<AccountView> {
-  //     var data = new RegisterView();
-  //     data.firstName = register.firstName;
-  //     data.lastName = register.lastName;
-  //     data.email = register.email;
-  //     data.password = register.password;
-  //     data.AddressIP = await this.req.getAddressIP();
-  //     return this.req.executePost<RegisterView,AccountView>(this.apiUrl,data);
-  // }
-
-  // public async updateUser(account: AccountView) : Promise<AccountView>{
-  //   return this.req.executePut<AccountView,AccountView>(this.apiUrl,account);
-  // }
 
 }

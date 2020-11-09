@@ -4,10 +4,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthHttpInterceptor } from 'src/services/request/AuthHttpInterceptor';
 import { MatProgressBarModule } from 'node_modules/@angular/material/progress-bar';
 import { CommonModule } from "@angular/common";
-import { UserpanelComponent } from './userpanel/userpanel.component';
 import { ForumsearchModule } from './forumsearch/forumsearch.module';
 import { ForumpanelModule } from './forumpanel/forumpanel.module';
-
 
 @NgModule({
   declarations: [

@@ -49,13 +49,13 @@ export class AuthService {
   }
 
   public async logoutUser() : Promise<boolean> {
-
     //If user is auth call back end to logout and remove local tokens
     if(this.isAuthenticated()){
       var result = await this.req.executePost<any,any>(this.apiUrl+"/"+MethodsAuth.LOGOUT);
       this.removeLocalStorage(this.keyStorage);
       return true;
     }
+    this.removeLocalStorage(this.keyStorage);
     return false;
   }
 

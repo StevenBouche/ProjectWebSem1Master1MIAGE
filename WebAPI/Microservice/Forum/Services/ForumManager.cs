@@ -16,8 +16,7 @@ namespace Forum.Services
         ForumObj GetForumById(string id);
         void AddChannelForum(string idForum, Channel channel, UserIdentity identity);
         void GetForumAndChannel(string idChannel, out ForumObj forum, out Channel channel, UserIdentity user);
-        void UserConnected(string v);
-        void UserDisconnected(string v);
+        Message CreateAndAddNewMessage(string idforum, string idchannel, Message message, UserIdentity identity);
     }
 
     public interface IForumManagerView
@@ -117,24 +116,6 @@ namespace Forum.Services
 
                 search.TotalItem = forums.Count;
                 
-                    /*search.ForumSearch = this.Context.GetQueryable().Select(forum => new {
-                        forum.Id,
-                        forum.Name,
-                        forum.Description,
-                        forum.UrlPicture,
-                        forum.Users
-                    })
-                .ToList()
-                .Select(element => new ForumView
-                {
-                    Id = element.Id,
-                    Name = element.Name,
-                    Description = element.Description,
-                    UrlPicture = element.UrlPicture,
-                    NbMember = element.Users.Count,
-                    NbOnline = element.Users.Where
-                }).ToList();*/
-                
             }
 
             return search;
@@ -205,14 +186,31 @@ namespace Forum.Services
          
         }
 
-        public void UserConnected(string v)
+        public Message CreateAndAddNewMessage(string idforum, string idchannel, Message message, UserIdentity identity)
         {
-            this.Context.GetQueryable().Where(forum => forum.Users.Where(user => user.Id == v).Any()).ToList();
-        }
 
-        public void UserDisconnected(string v)
-        {
-            throw new NotImplementedException();
+            bool permit = this.Context.GetQueryable()
+                .Any(Forum =>
+                        Forum.Id == idforum &&
+                        Forum.Users.Any(user => user.Id == identity.ID) &&
+                        Forum.Channels.Any(channel => channel.Id == idchannel));
+
+            if (permit && message.UserId == identity.ID)
+            {
+                message.Id = ObjectId.GenerateNewId().ToString();
+
+                ForumObj forum = this.Context.GetQueryable()
+                    .FirstOrDefault(f => f.Id == idforum && f.Channels.Any(channel => channel.Id == idchannel));
+
+                forum.Channels.FirstOrDefault(channel => channel.Id == idchannel).Messages.Add(message);
+
+                this.Context.GetCollection().ReplaceOne(f => f.Id == forum.Id, forum);
+
+                return forum.Channels.FirstOrDefault(Channel => Channel.Id == idchannel).Messages.FirstOrDefault(m => m.Id == message.Id);
+
+            }
+
+            return message;
         }
 
         //GET PUT POST ...

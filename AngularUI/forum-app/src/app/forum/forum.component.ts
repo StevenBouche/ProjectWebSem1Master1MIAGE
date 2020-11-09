@@ -24,15 +24,15 @@ export class ForumComponent implements OnInit {
 
   async ngOnInit() {
     //subscribe event my forum
-    this.forumService.myForums.subscribe((list:Array<ForumView>) => { this.forums = list; })
+    this.forumService.myForums.subscribe((list:Array<ForumView>) => {
+      this.forums = list;
+    })
     //subscribe event selected forum
     this.forumService.myForumSelected.subscribe((value:ForumView) => {
-      console.log(value)
-      if(value) {
-      this.forumSelected = value;
-      this.component = this.componentForumName;
-      }
-
+      console.log("FORUM SELECTED FORUM COMPONENT")
+        console.log(value)
+        this.forumSelected = value;
+        this.component = this.componentForumName;
     })
     // load my forum
     this.forumService.loadMyForums();
@@ -45,6 +45,7 @@ export class ForumComponent implements OnInit {
   }
 
   onSearchForumSelect() {
+    this.forumService.selectMyForums(undefined);
     this.component = this.componentSearchName;
   }
 

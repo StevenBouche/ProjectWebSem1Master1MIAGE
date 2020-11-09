@@ -1,8 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import UserView from 'src/models/forum/UserView';
 import { AccountView } from 'src/models/views/auth/AuthView';
 import { WsService } from 'src/services/request/ws.service';
 import { UserService } from 'src/services/user/user.service';
+import { ModalDirective } from 'angular-bootstrap-md';
+import { AuthService } from 'src/services/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-userpanel',
@@ -16,7 +19,9 @@ export class UserpanelComponent implements OnInit {
   user: UserView;
   color: string;
 
-  constructor(private userService : UserService, private websocket : WsService) {
+  @ViewChild(ModalDirective) modal: ModalDirective;
+
+  constructor(private userService : UserService, private websocket : WsService, private authService : AuthService) {
 
   }
 
@@ -30,6 +35,11 @@ export class UserpanelComponent implements OnInit {
       this.isConnected = connect;
       this.color = connect ?  "text-green-900" : "text-red-900";
     })
+  }
+
+  async onLogout(){
+    await this.authService.logoutUser();
+    window.location.reload();
   }
 
 }

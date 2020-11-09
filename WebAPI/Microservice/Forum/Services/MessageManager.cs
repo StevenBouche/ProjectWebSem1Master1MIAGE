@@ -1,5 +1,6 @@
 ﻿using AuthMiddleware;
 using Forum.Models;
+using Forum.Models.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Forum.Services
 
     public interface IMessageManagerView
     {
-
+        RegisterMessage CreateMessage(RegisterMessage message, UserIdentity identity);
     }
 
     public interface IMessageManager
@@ -28,6 +29,19 @@ namespace Forum.Services
             this.Manager = channelManager;
         }
 
+        public RegisterMessage CreateMessage(RegisterMessage message, UserIdentity identity)
+        {
+            Message messageObj = new Message
+            {
+                Value = message.MessageV.Value,
+                Timestamp = message.MessageV.Timestamp,
+                UserId = identity.ID
+            };
+
+            Message messview = this.Manager.AddNewMessageChannel(message.Idforum, message.Idchannel, messageObj, identity);
+            message.MessageV = messview.ToMessageView();
+            return message;
+        }
 
     }
 
