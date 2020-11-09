@@ -1,4 +1,5 @@
-﻿using Forum.Services;
+﻿using Forum.Models.View;
+using Forum.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -8,12 +9,11 @@ namespace Forum.SignalR
 {
     public interface IForumHub
     {
-        Task SendMessage(string message);
-        string GetIdUser();
+        Task OnNewMessage(RegisterMessage message);
     }
 
     [Authorize(AuthenticationSchemes = "Bearer")]
-    public class ForumHub : Hub, IForumHub
+    public class ForumHub : Hub<IForumHub>
     {
         CacheUserWs Cache;
 
@@ -36,11 +36,6 @@ namespace Forum.SignalR
             await base.OnDisconnectedAsync(exception);
             Console.WriteLine("Disconnect");
             this.Cache.UserDisconnect(this.GetIdUser(), GetIdWsUser());
-        }
-
-        public async Task SendMessage(string message)
-        {
-            await Clients.All.SendAsync("newMessage", this.GetIdUser(), message);
         }
 
         public string GetIdUser()

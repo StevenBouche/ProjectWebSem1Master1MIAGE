@@ -20,7 +20,7 @@ namespace Forum.Controllers
     {
 
         IMessageManagerView Manager;
-        private readonly IHubContext<ForumHub> HubContext;
+        private readonly IHubContext<ForumHub, IForumHub> HubContext;
 
         private UserIdentity Identity
         {
@@ -31,16 +31,17 @@ namespace Forum.Controllers
         }
 
 
-        public MessageController(IMessageManagerView forumManager, IHubContext<ForumHub> hubContext)
+        public MessageController(IMessageManagerView forumManager, IHubContext<ForumHub, IForumHub> hubContext)
         {
             this.Manager = forumManager;
             this.HubContext = hubContext;
         }
 
         [HttpPost]
-        public ActionResult<RegisterMessage> CreateMessage([FromBody] RegisterMessage message)
+        public async Task<ActionResult<RegisterMessage>> CreateMessage([FromBody] RegisterMessage message)
         {
             RegisterMessage result = this.Manager.CreateMessage(message, this.Identity);
+            await this.HubContext.Clients.All.OnNewMessage(result);
             return this.Ok(result);
         }
     }

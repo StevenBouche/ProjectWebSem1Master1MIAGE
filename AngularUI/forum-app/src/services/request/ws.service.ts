@@ -98,7 +98,14 @@ export class WsService {
       this.forumService.pushMessage(this.msg);
 
     })
+
+    connection.on("onNewMessage", (result) => {
+      console.log("onNewMessage")
+      console.log(result);
+    })
+
+    connection.on("OnNewMessage", (result) => {
+      console.log(result);
+    })
   }
-
-
 }
