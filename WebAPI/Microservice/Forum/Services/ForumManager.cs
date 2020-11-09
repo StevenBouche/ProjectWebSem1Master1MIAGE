@@ -153,19 +153,21 @@ namespace Forum.Services
                 return sub;
             }
 
-            forum.Users.Add(new User
+            User u = new User
             {
-                Id = identity.ID, 
+                Id = identity.ID,
                 Pseudo = identity.Pseudo,
                 UrlPicture = identity.UrlPicture
-            });
+            };
+
+            forum.Users.Add(u);
 
             this.Context.GetCollection().ReplaceOne((f => f.Id == forum.Id), forum);
 
             sub.Result = true;
             sub.IdForum = idForum;
             sub.Message = "succes";
-            sub.IdUser = identity.ID;
+            sub.User = u.ToUserView();
 
             return sub;
         }
