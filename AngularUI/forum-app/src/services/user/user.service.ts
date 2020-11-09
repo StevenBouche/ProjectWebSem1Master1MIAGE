@@ -58,4 +58,8 @@ export class UserService {
     return this.req.executeGet<AccountView>(this.apiUrl+"/"+MethodsAuth.IDENTITY);
   }
 
+  public getCurrentIdentity(){
+    return this.dataStore.myIdentity._id;
+  }
+
 }
