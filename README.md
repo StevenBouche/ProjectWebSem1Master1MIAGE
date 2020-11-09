@@ -1,6 +1,6 @@
 # Angular / .NET - Application Discord-like 
 
-<h3> Code pour lancer l'application : <strong>npm install> ng serve</strong> </h3>
+<h3> Code pour lancer l'application : <strong>npm install > ng serve</strong> </h3>
 
 Notre application est structurée en micro-service.
 Chaque microservice est contenu dans un conteneur Docker.
