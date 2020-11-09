@@ -14,5 +14,7 @@ namespace Forum.Models.View
         public bool Result { get; set; }
         [JsonPropertyName("idForum")]
         public string IdForum { get; set; }
+        [JsonPropertyName("user")]
+        public UserView User { get; set; }
     }
 }

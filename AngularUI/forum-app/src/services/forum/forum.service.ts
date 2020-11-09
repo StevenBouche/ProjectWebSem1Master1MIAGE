@@ -15,6 +15,7 @@ import UserView from 'src/models/forum/UserView';
 import { NotificationService } from '../notification/notification.service';
 import { RequestService } from '../request/RequestService';
 import { WsService } from '../request/ws.service';
+import { UserService } from '../user/user.service';
 
 class FactoryModel {
   static defaultForumSearchView() : ForumSearchView {
@@ -78,7 +79,11 @@ export class ForumService {
   }; // store our data in memory
 
 
-  constructor(private req: RequestService, private notif : NotificationService, private websocket: WsService) {
+  constructor(private req: RequestService,
+    private notif : NotificationService,
+    private websocket: WsService,
+    private userService: UserService
+    ) {
 
 
     this.websocket.onNewMessage.subscribe((message:RegisterMessage) => {
