@@ -16,4 +16,16 @@ export class NotificationService {
     this.toastr.error(message, title)
   }
 
+  showInfo(message: string){
+    this.toastr.info(message,"Info");
+  }
+
+  showWarning(message:string){
+    this.toastr.warning(message,"Warning");
+  }
+
+  clear(){
+    this.toastr.clear();
+  }
+
 }
