@@ -19,7 +19,9 @@ Voilà ce qu'il est possible de faire avec notre application :
   - Se connecter / Se déconnecter
   - Rejoindre un forum et ses channels
  
- Voilà ce que l'on aurait aimé pouvoir faire/améliorer : 
+ Voilà ce que l'on aurait aimé pouvoir faire/améliorer :
+  - Implémenter la suppression de message / channel / forum
+  - Implémenter une recherche de message dans un channel
   - Inclure le chat vocal
   - Améliorer le style de l'application
   - Inclure un système d'amis
