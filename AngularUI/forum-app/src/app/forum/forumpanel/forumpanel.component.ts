@@ -17,7 +17,8 @@ export class ForumpanelComponent implements OnInit {
 
   forum : ForumView;
   channels : Array<ChannelView>
-  channelSelected: ChannelView;
+
+  idChannelSelect: string;
 
   displayParamForum: boolean;
   channelName : string;
@@ -34,11 +35,8 @@ export class ForumpanelComponent implements OnInit {
     })
 
     this.forumService.channelsOfMyForumSelected.subscribe((channels:Array<ChannelView>) => {
+      console.log("CHANNELS SELECTS CHANGE")
       this.channels = channels;
-    })
-
-    this.forumService.channelForumSelected.subscribe((channel:ChannelView) => {
-      this.channelSelected = channel;
     })
 
   }
@@ -48,20 +46,8 @@ export class ForumpanelComponent implements OnInit {
     this.displayParamForum=!this.displayParamForum;
   }
 
-  onChannelSelect(channel: ChannelView) {
-    this.forumService.selectChannelForum(this.forum._id,channel.id)
-  }
-
   onNewChannel() {
     this.forumService.createNewChannelForumSelected(this.channelName);
-  }
-
-  getChannelClass(channel: ChannelView) : string {
-    if(this.channelSelected!=undefined && this.channelSelected.id == channel.id) {
-      return 'text-gray-200 px-2 hover:text-gray-200 hover:bg-gray-900 bg-gray-600 rounded';
-    } else {
-      return 'text-gray-500 px-2 hover:text-gray-200 hover:bg-gray-900';
-    }
   }
 
 }

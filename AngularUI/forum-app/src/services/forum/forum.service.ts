@@ -78,7 +78,7 @@ export class ForumService {
   readonly channelForumSelected = this._channelForumSelected.asObservable();
   readonly messagesOfChannelSelected = this._messagesOfChannelSelected.asObservable();
 
-  constructor(private req: RequestService, private notif : NotificationService, private userService : UserService) { }
+  constructor(private req: RequestService, private notif : NotificationService) { }
 
   async loadMyForums() {
     //get forum API
@@ -116,8 +116,22 @@ export class ForumService {
         this.dataStore.usersOfMyForumSelected = panel.users;
         this._usersOfMyForumSelected.next(this.cpObj(this.dataStore).usersOfMyForumSelected);
 
-        if(this.dataStore.channelForumSelected==undefined&&panel.channels.length>0)
-          this.selectChannelForum(idForum,panel.channels[0].id);
+        //si pas de channel selectionner
+        if(this.dataStore.channelForumSelected==undefined){
+            //mais il y a des channels alors set le premier channel
+            if(panel.channels.length>0){
+              this.selectChannelForum(panel.channels[0].id);
+            }
+        } else { // si channel select
+          //find if channel current is in current forum
+          this.dataStore.channelForumSelected = panel.channels.find(channel => channel.id == this.dataStore.channelForumSelected.id)
+          //is il y est pas et que channels existe alors set le premier sinon set undefined
+          if(this.dataStore.channelForumSelected == undefined && panel.channels.length>0){
+            this.selectChannelForum(panel.channels[0].id);
+          } else {
+            this._channelForumSelected.next(this.cpObj(this.dataStore).channelForumSelected);
+          }
+        }
 
       }
 
@@ -153,22 +167,19 @@ export class ForumService {
 
       //update selected and next
       this.dataStore.myForumSelected = selected;
-
       this._myForumSelected.next(this.cpObj(this.dataStore).myForumSelected);
-      this.dataStore.channelForumSelected = undefined;
+
       //load data of forum select
+
       this.loadDatasOfSelectedForum();
 
     }
 
   }
 
-  selectChannelForum(idForum:string,idChannel:string){
+  selectChannelForum(idChannel:string){
 
-    //if current forum
-    if(this.dataStore.myForumSelected?._id == idForum){
-
-      var channelSelect = this.dataStore.channelsOfMyForumSelected.find(channel => channel.id = idChannel);
+      var channelSelect = this.dataStore.channelsOfMyForumSelected.find(channel => channel.id === idChannel);
 
       if(channelSelect){
 
@@ -178,8 +189,6 @@ export class ForumService {
         this.loadDataOfSelectedChannel();
 
       }
-
-    }
 
   }
 

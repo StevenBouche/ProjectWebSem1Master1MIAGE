@@ -13,6 +13,7 @@ import { ForumService } from 'src/services/forum/forum.service';
 })
 export class ChannelpanelComponent implements OnInit {
 
+  haveChannel: boolean;
   channel: ChannelView;
   messages: Array<MessageView>;
   //panel : ChannelPanelView;
@@ -35,8 +36,10 @@ export class ChannelpanelComponent implements OnInit {
     });
 
     this.forumService.channelForumSelected.subscribe((channel:ChannelView) => {
+      console.log("CHANNEL SELECT UPDATE")
       console.log(channel)
       this.channel = channel;
+      this.haveChannel = this.channel != undefined;
     })
 
     this.forumService.messagesOfChannelSelected.subscribe((message:Array<MessageView>) => {

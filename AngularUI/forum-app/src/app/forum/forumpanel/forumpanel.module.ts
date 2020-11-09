@@ -8,6 +8,7 @@ import { UserpanelComponent } from '../userpanel/userpanel.component';
 import { UserpanelModule } from '../userpanel/userpanel.module';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChannelitemComponent } from './channelitem/channelitem.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ForumpanelComponent,
     ChannelpanelComponent,
     UseritemComponent,
-    MessageitemComponent
+    MessageitemComponent,
+    ChannelitemComponent
   ],
   imports: [
     CommonModule,
