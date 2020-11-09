@@ -1,4 +1,4 @@
-<h1 align="center"> Angular / .NET - Application Discord-like </h1>
+<h1 align="center"> M1 MIAGE Projet Web : Angular / .NET - Application Discord-like </h1>
 
 <h3 align="center"> Code pour lancer l'application : <strong>npm install > ng serve</strong> </h3>
 
