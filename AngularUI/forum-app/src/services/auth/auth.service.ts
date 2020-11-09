@@ -1,5 +1,6 @@
 import { Injectable, ɵConsole } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { Config } from 'src/app/config.module';
 import LoginResult from 'src/models/auth/LoginResult';
 import RefreshToken from 'src/models/security/RefreshToken';
 import { AccountView, LoginView } from 'src/models/views/auth/AuthView';
@@ -19,7 +20,7 @@ export class AuthService {
 
   private readonly jwtHelper : JwtHelperService;
   private readonly keyStorage = "auth";
-  private readonly apiUrl = "http://localhost:7000/auth"
+  private readonly apiUrl = Config.API_URL+"/auth"
   identity : AccountView;
 
   constructor(private req: RequestService, private userService:UserService) {

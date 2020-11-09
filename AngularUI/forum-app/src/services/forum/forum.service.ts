@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Config } from 'src/app/config.module';
 import ChannelPanelView from 'src/models/forum/ChannelPanelView';
 import ChannelView from 'src/models/forum/ChannelView';
 import ForumForm from 'src/models/forum/ForumForm';
@@ -37,9 +38,9 @@ class FactoryModel {
 })
 export class ForumService {
 
-  private readonly apiUrl = "http://localhost:7000/forum";
-  private readonly apiUrlChannel = "http://localhost:7000/channel";
-  private readonly apiUrlMsg = "http://localhost:7000/message";
+  private readonly apiUrl = Config.API_URL+"/forum";
+  private readonly apiUrlChannel = Config.API_URL+"/channel";
+  private readonly apiUrlMsg = Config.API_URL+"/message";
 
 
   private _myForums = new BehaviorSubject<Array<ForumView>>(new Array<ForumView>());

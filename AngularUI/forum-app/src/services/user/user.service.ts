@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Config } from 'src/app/config.module';
 import { AccountView, LoginView, RegisterView } from 'src/models/views/auth/AuthView';
 import { AuthService } from '../auth/auth.service';
 import { RequestService } from '../request/RequestService';
@@ -14,7 +15,7 @@ enum MethodsAuth {
 })
 export class UserService {
 
-  private readonly apiUrl = "http://localhost:7000/account"
+  private readonly apiUrl = Config.API_URL+"/account"
 
   private _myIdentity = new BehaviorSubject<AccountView>(undefined);
 

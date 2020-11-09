@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { HubConnection } from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
+import { Config } from 'src/app/config.module';
 import LoginResult from 'src/models/auth/LoginResult';
 import ChannelView from 'src/models/forum/ChannelView';
 import MessageView from 'src/models/forum/MessageView';
@@ -18,7 +19,7 @@ import { NotificationService } from '../notification/notification.service';
 })
 export class WsService {
 
-  private readonly urlServer = "http://localhost:8081/forumhub"
+  private readonly urlServer = Config.API_WS+"/forumhub"
   private connection : HubConnection;
   private msg : MessageView;
 
