@@ -1,5 +1,5 @@
 <h1 align="center"> Projet Web : Application Discord-like - Angular / .NET</h1>
-<h3 align="center"> Code pour lancer l'application : <strong>npm install > ng serve</strong> </h3>
+<h3 align="center"> Code pour lancer l'application : <strong> cd forum-app > npm install > ng serve</strong> </h3>
 
 <p align="center"><i>Membres : Armand PREVOT - Steven BOUCHE</i></p>
 
