@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import ChannelPanelView from 'src/models/forum/ChannelPanelView';
 import ChannelView from 'src/models/forum/ChannelView';
 import MessageView from 'src/models/forum/MessageView';
@@ -24,12 +24,15 @@ export class ChannelpanelComponent implements OnInit {
 
   message : string;
 
+  @ViewChild("chat") chat: ElementRef;
 
   constructor(private forumService: ForumService) {
 
   }
 
   ngOnInit(): void {
+
+    //this.chat.nativeElement.maxScrollTop = this.chat.nativeElement.scrollHeight - this.chat.nativeElement.offsetHeight
 
     this.forumService.usersOfMyForumSelected.subscribe((users:Array<UserView>) => {
       this.usersOffline = users.filter(user => !user.isConnected);
@@ -45,6 +48,7 @@ export class ChannelpanelComponent implements OnInit {
 
     this.forumService.messagesOfChannelSelected.subscribe((message:Array<MessageView>) => {
       this.messages = message;
+      //this.onEvent();
     })
   }
 
@@ -56,6 +60,22 @@ export class ChannelpanelComponent implements OnInit {
       //If message = null
 
       this.forumService.sendMessage(msgEntered);
+  }
+
+  private onEvent(){
+    var elem = this.chat.nativeElement;
+
+    if (elem.maxScrollTop - elem.scrollTop <= elem.offsetHeight) {
+
+      elem.scrollTop = elem.scrollHeight
+      console.log("I just scrolled to the bottom!")
+
+    } else {
+      console.log("I won't scroll: you're way too far from the bottom!\n" +
+      "You should maybe alert the user that he received a new message.\n" +
+      "If he wants to scroll at this point, he must do it manually.")
+    }
+
   }
 
 

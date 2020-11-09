@@ -39,4 +39,8 @@ export class ChannelitemComponent implements OnInit {
     this.forumService.selectChannelForum(this.item.id)
   }
 
+  deleteItem(){
+
+  }
+
 }

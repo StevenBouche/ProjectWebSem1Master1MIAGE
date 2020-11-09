@@ -91,6 +91,8 @@ export class ForumService {
 
         this.pushMessage(message.messageV)
 
+        this.notif.showSuccess("new message on channel","Message");
+
     })
 
     this.websocket.onNewCategorie.subscribe((channel:RegisterChannelResult) => {
