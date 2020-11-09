@@ -1,12 +1,12 @@
-# Angular / .NET - Application Discord-like 
+<h1 align="center"> Angular / .NET - Application Discord-like </h1>
 
-<h3> Code pour lancer l'application : <strong>npm install > ng serve</strong> </h3>
+<h3 align="center"> Code pour lancer l'application : <strong>npm install > ng serve</strong> </h3>
+
+<p align="center"><i>Membres : Armand PREVOT - Steven BOUCHE</i></p>
 
 Notre application est structurée en micro-service.
 Chaque microservice est contenu dans un conteneur Docker.
 Nous utilisons des WebSocket pour l'authentification des clients et le chat. Le reste des interactions réseaux est en HTTP.
-
-<i>Membres : Armand PREVOT - Steven BOUCHE</i>
 
 Dans le cadre d'un projet universitaire, nous avons réalisé une application qui ressemble à Discord, en tous cas c'était notre objectif.
 
