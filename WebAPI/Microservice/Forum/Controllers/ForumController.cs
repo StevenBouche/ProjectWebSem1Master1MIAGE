@@ -62,7 +62,10 @@ namespace Forum.Controllers
         public ActionResult<SubscribeResultView> SubForum(string id)
         {
             SubscribeResultView result = this.Manager.UserSubscribe(id, this.Identity);
-            this.HubContext.Clients.AllExcept(new string[] { this.Identity.ID }).SendAsync("onUserSubscribe", result);
+            if (result.Result)
+            {
+                this.HubContext.Clients.AllExcept(new string[] { this.Identity.ID }).SendAsync("onUserSubscribe", result);
+            }
             return this.Ok(result);
         }
 
