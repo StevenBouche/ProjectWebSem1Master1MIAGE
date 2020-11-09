@@ -169,6 +169,8 @@ namespace Forum.Services
             sub.Message = "succes";
             sub.User = u.ToUserView();
 
+            sub.User.IsConnected = this.Cache.usersIdWebSocket.Values.Contains(sub.User.Id);
+
             return sub;
         }
 
