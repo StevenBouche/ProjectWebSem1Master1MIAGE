@@ -13,7 +13,7 @@ namespace Forum.Services
     public interface IChannelManagerView
     {
         ChannelView GetChannelView();
-        ChannelView CreateChannelView(RegisterChannel channel, UserIdentity identity);
+        RegisterChannelResult CreateChannelView(RegisterChannel channel, UserIdentity identity);
         ChannelPanelView GetChannelPanelView(string idChannel, UserIdentity identity);
     }
 
@@ -69,10 +69,15 @@ namespace Forum.Services
             throw new NotImplementedException();
         }
 
-        public ChannelView CreateChannelView(RegisterChannel channel, UserIdentity identity)
+        public RegisterChannelResult CreateChannelView(RegisterChannel channel, UserIdentity identity)
         {
+            RegisterChannelResult result = new RegisterChannelResult();
             Channel c = this.CreateChannel(channel.IdForum, new Channel { Name = channel.NameChannel }, identity);
-            return c?.ToChannelView();
+
+            result.Channel = c?.ToChannelView();
+            result.Forum = this.Manager.GetForumById(channel.IdForum).ToViewForum();
+
+            return result;
         }
 
         public ChannelPanelView GetChannelPanelView(string idChannel, UserIdentity identity)

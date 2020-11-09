@@ -8,14 +8,13 @@ import ForumSearchView from 'src/models/forum/ForumSearchView';
 import ForumView from 'src/models/forum/ForumView';
 import MessageView from 'src/models/forum/MessageView';
 import RegisterChannel from 'src/models/forum/RegisterChannel';
+import RegisterChannelResult from 'src/models/forum/RegisterChannelResult';
 import RegisterMessage from 'src/models/forum/RegisterMessage';
+import SubscribeResultView from 'src/models/forum/SubscribeResultView';
 import UserView from 'src/models/forum/UserView';
-import { RegisterView } from 'src/models/views/auth/AuthView';
 import { NotificationService } from '../notification/notification.service';
 import { RequestService } from '../request/RequestService';
 import { WsService } from '../request/ws.service';
-import { UserService } from '../user/user.service';
-
 
 class FactoryModel {
   static defaultForumSearchView() : ForumSearchView {
@@ -79,7 +78,56 @@ export class ForumService {
   }; // store our data in memory
 
 
-  constructor(private req: RequestService, private notif : NotificationService) { }
+  constructor(private req: RequestService, private notif : NotificationService, private websocket: WsService) {
+
+
+    this.websocket.onNewMessage.subscribe((message:RegisterMessage) => {
+
+        if(message==undefined) return;
+
+        if(this.dataStore.myForumSelected._id !== message.idForum) return;
+
+        if(this.dataStore.channelForumSelected.id !== message.idChannel) return;
+
+        this.pushMessage(message.messageV)
+
+    })
+
+    this.websocket.onNewCategorie.subscribe((channel:RegisterChannelResult) => {
+
+        if(channel==undefined) return;
+
+        //verif current forum is forum of channel variable
+        //add channel to channels datastore
+
+    })
+
+    this.websocket.onUserConnect.subscribe((idUser:string) => {
+
+        if(idUser==undefined) return;
+
+        //verif current forum curretn channel
+        // users data store
+
+    })
+
+    this.websocket.onUserDisconnect.subscribe((idUser:string) => {
+
+        if(idUser==undefined) return;
+
+
+
+    })
+
+    this.websocket.onUserSubscribe.subscribe((sub:SubscribeResultView) => {
+
+        if(sub==undefined) return;
+
+
+
+    })
+
+  }
 
   async loadMyForums() {
     //get forum API
@@ -221,7 +269,7 @@ export class ForumService {
     var res = await this.newChannel(register);
 
     //concat result to channels and notify
-    this.dataStore.channelsOfMyForumSelected = [...this.dataStore.channelsOfMyForumSelected, res];
+    this.dataStore.channelsOfMyForumSelected = [...this.dataStore.channelsOfMyForumSelected, res.channel];
     this._channelsOfMyForumSelected.next(this.cpObj(this.dataStore).channelsOfMyForumSelected)
 
     //if empty channel select and channels have data, select first channel
@@ -257,9 +305,13 @@ export class ForumService {
     //execute request
     var res = await this.subscribe(forum._id);
 
-    //and load refresh of my forum
-    this.loadMyForums();
-    this.notif.showSuccess("You have subscribed to this forum", "Success");
+    if(res.result){
+      //and load refresh of my forum
+      this.loadMyForums();
+      this.notif.showSuccess(res.message, "Success");
+    } else {
+      this.notif.showError(res.message, "Error");
+    }
 
   }
 
@@ -327,12 +379,12 @@ export class ForumService {
     return await this.req.executeGet<Array<ForumView>>(this.apiUrl+"/myforum")
   }
 
-  public async subscribe(id : string) : Promise<string> {
-    return await this.req.executeGet<string>(this.apiUrl+"/subscribe/" + id);
+  public async subscribe(id : string) : Promise<SubscribeResultView> {
+    return await this.req.executeGet<SubscribeResultView>(this.apiUrl+"/subscribe/" + id);
   }
 
-  public async newChannel(channel : RegisterChannel) : Promise<ChannelView> {
-    return await this.req.executePost<RegisterChannel, ChannelView>(this.apiUrlChannel+"/create", channel);
+  public async newChannel(channel : RegisterChannel) : Promise<RegisterChannelResult> {
+    return await this.req.executePost<RegisterChannel, RegisterChannelResult>(this.apiUrlChannel+"/create", channel);
   }
 
   public async getForumPannel(idForum : string) : Promise<ForumPanelView>{

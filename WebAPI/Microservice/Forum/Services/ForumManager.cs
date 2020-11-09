@@ -23,7 +23,7 @@ namespace Forum.Services
     {
         ForumView CreateForum(ForumForm value, UserIdentity iD);
         ForumSearchView SearchForums(ForumSearchView search, UserIdentity iD);
-        string UserSubscribe(string idForum, UserIdentity iD);
+        SubscribeResultView UserSubscribe(string idForum, UserIdentity iD);
         List<ForumView> GetForumsOfUser(UserIdentity identity);
         ForumPanelView GetForumPanel(string id, UserIdentity identity);
     }
@@ -121,18 +121,37 @@ namespace Forum.Services
             return search;
         }
 
-        public string UserSubscribe(string idForum, UserIdentity identity)
+        public SubscribeResultView UserSubscribe(string idForum, UserIdentity identity)
         {
 
-            if (String.IsNullOrEmpty(idForum)) return "id forum missing";
+            SubscribeResultView sub = new SubscribeResultView();
+            sub.Result = false;
 
-            if(String.IsNullOrEmpty(identity.ID)) return "id user missing";
+            if (String.IsNullOrEmpty(idForum))
+            {          
+                sub.Message = "id forum missing";
+                return sub;
+            }
+
+            if (String.IsNullOrEmpty(identity.ID))
+            {
+                sub.Message = "id user missing";
+                return sub;
+            }
 
             ForumObj forum = this.GetForumById(idForum);
 
-            if (forum == null) return "forum not found";
+            if (forum == null)
+            {
+                sub.Message = "forum not found";
+                return sub;
+            }
 
-            if (forum.Users.Any(User => User.Id == identity.ID)) return "user is already subscribe";
+            if (forum.Users.Any(User => User.Id == identity.ID))
+            {
+                sub.Message = "user is already subscribe";
+                return sub;
+            }
 
             forum.Users.Add(new User
             {
@@ -143,7 +162,11 @@ namespace Forum.Services
 
             this.Context.GetCollection().ReplaceOne((f => f.Id == forum.Id), forum);
 
-            return "succes";
+            sub.Result = true;
+            sub.IdForum = idForum;
+            sub.Message = "succes";
+
+            return sub;
         }
 
         public ForumObj GetForumById(string id)

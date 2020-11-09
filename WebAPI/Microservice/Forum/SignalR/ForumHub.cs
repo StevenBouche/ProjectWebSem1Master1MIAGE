@@ -7,13 +7,9 @@ using System.Threading.Tasks;
 
 namespace Forum.SignalR
 {
-    public interface IForumHub
-    {
-        Task OnNewMessage(RegisterMessage message);
-    }
 
     [Authorize(AuthenticationSchemes = "Bearer")]
-    public class ForumHub : Hub<IForumHub>
+    public class ForumHub : Hub
     {
         CacheUserWs Cache;
 
@@ -24,18 +20,20 @@ namespace Forum.SignalR
 
         public override async Task OnConnectedAsync()
         {
-            await Groups.AddToGroupAsync(this.GetIdUser(), "users");
-            await base.OnConnectedAsync();
             Console.WriteLine("Connected");
-            this.Cache.UserConnect(this.GetIdUser(), GetIdWsUser());
+            var userId = this.GetIdUser();
+            await base.OnConnectedAsync();
+            this.Cache.UserConnect(userId, GetIdWsUser());
+            await Clients.AllExcept(new string[] { userId }).SendAsync("onUserConnect", userId);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            await Groups.RemoveFromGroupAsync(this.GetIdUser(), "users");
-            await base.OnDisconnectedAsync(exception);
             Console.WriteLine("Disconnect");
-            this.Cache.UserDisconnect(this.GetIdUser(), GetIdWsUser());
+            var userId = this.GetIdUser();
+            await base.OnDisconnectedAsync(exception);
+            this.Cache.UserDisconnect(userId, GetIdWsUser());
+            await Clients.AllExcept(new string[] { userId }).SendAsync("onUserDisconnect", userId);
         }
 
         public string GetIdUser()

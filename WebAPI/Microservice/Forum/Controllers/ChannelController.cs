@@ -38,9 +38,11 @@ namespace Forum.Controllers
         }
 
         [HttpPost("create")]
-        public ActionResult<ChannelView> CreateChannel([FromBody] RegisterChannel channel)
+        public async Task<ActionResult<ChannelView>> CreateChannel([FromBody] RegisterChannel channel)
         {
-            return this.Ok(this.Manager.CreateChannelView(channel,this.Identity));
+            ChannelView c = this.Manager.CreateChannelView(channel, this.Identity);
+            await this.HubContext.Clients.AllExcept(new string[] { Identity.ID }).SendAsync("onNewChannel", c);
+            return this.Ok();
         }
 
         [HttpGet("panel/{id}")]
