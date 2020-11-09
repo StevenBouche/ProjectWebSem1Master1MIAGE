@@ -3,7 +3,11 @@ import * as signalR from '@microsoft/signalr';
 import { HubConnection } from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
 import LoginResult from 'src/models/auth/LoginResult';
+import MessageView from 'src/models/forum/MessageView';
+import RegisterMessage from 'src/models/forum/RegisterMessage';
+import { RegisterView } from 'src/models/views/auth/AuthView';
 import { AuthService } from '../auth/auth.service';
+import { ForumService } from '../forum/forum.service';
 import { NotificationService } from '../notification/notification.service';
 
 @Injectable({
@@ -13,6 +17,7 @@ export class WsService {
 
   private readonly urlServer = "http://localhost:8081/forumhub"
   private connection : HubConnection;
+  private msg : MessageView;
 
   private _isConnected = new BehaviorSubject<boolean>(false);
 
@@ -24,7 +29,7 @@ export class WsService {
 
   readonly isConnected = this._isConnected.asObservable()
 
-  constructor(private auth : AuthService, private alert: NotificationService) {
+  constructor(private auth : AuthService, private alert: NotificationService, private forumService : ForumService) {
 
   }
 
@@ -86,8 +91,12 @@ export class WsService {
       this.dataStore.isConnected = false;
         this._isConnected.next(false);
     })
-    connection.on("newMessage", (user,message) => {
-      console.log("NEW MESSAGE "+user+" : "+message);
+
+    connection.on("newMessage", (message) => {
+      console.log("NEW MESSAGE : "+message);
+      this.msg = message;
+      this.forumService.pushMessage(this.msg);
+
     })
   }
 

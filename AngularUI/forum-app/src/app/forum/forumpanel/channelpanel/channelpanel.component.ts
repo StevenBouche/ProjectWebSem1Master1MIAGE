@@ -5,6 +5,7 @@ import MessageView from 'src/models/forum/MessageView';
 import RegisterMessage from 'src/models/forum/RegisterMessage';
 import UserView from 'src/models/forum/UserView';
 import { ForumService } from 'src/services/forum/forum.service';
+import { WsService } from 'src/services/request/ws.service';
 
 @Component({
   selector: 'app-channelpanel',
@@ -24,7 +25,7 @@ export class ChannelpanelComponent implements OnInit {
   message : string;
 
 
-  constructor(private forumService: ForumService ) {
+  constructor(private forumService: ForumService) {
 
   }
 
@@ -52,7 +53,10 @@ export class ChannelpanelComponent implements OnInit {
       var msgEntered = this.message;
       this.message = '';
 
+      //If message = null
+
       this.forumService.sendMessage(msgEntered);
   }
+
 
 }

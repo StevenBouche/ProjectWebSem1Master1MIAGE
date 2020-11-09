@@ -13,6 +13,7 @@ import UserView from 'src/models/forum/UserView';
 import { RegisterView } from 'src/models/views/auth/AuthView';
 import { NotificationService } from '../notification/notification.service';
 import { RequestService } from '../request/RequestService';
+import { WsService } from '../request/ws.service';
 import { UserService } from '../user/user.service';
 
 
@@ -243,6 +244,11 @@ export class ForumService {
     let res = await this.newMsg(registerMsg);
 
     this.dataStore.messagesOfChannelSelected.push(res);
+    this._messagesOfChannelSelected.next(this.cpObj(this.dataStore).messagesOfChannelSelected)
+  }
+
+  pushMessage(msg : MessageView){
+    this.dataStore.messagesOfChannelSelected.push(msg);
     this._messagesOfChannelSelected.next(this.cpObj(this.dataStore).messagesOfChannelSelected)
   }
     //
