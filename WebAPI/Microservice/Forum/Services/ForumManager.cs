@@ -165,6 +165,7 @@ namespace Forum.Services
             sub.Result = true;
             sub.IdForum = idForum;
             sub.Message = "succes";
+            sub.IdUser = identity.ID;
 
             return sub;
         }
