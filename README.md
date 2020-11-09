@@ -1,5 +1,4 @@
-<h1 align="center"> M1 MIAGE Projet Web :Application Discord-like </h1>
-<h2 align="center"> Angular / .NET </h2>
+<h1 align="center"> Projet Web : Application Discord-like - Angular / .NET</h1>
 <h3 align="center"> Code pour lancer l'application : <strong>npm install > ng serve</strong> </h3>
 
 <p align="center"><i>Membres : Armand PREVOT - Steven BOUCHE</i></p>
