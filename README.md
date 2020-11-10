@@ -1,5 +1,7 @@
 <h1 align="center"> Projet Web Miage  : Application Discord-like - Angular / .NET</h1>
-<h3 align="center"> Code pour lancer l'application : <strong> cd AngularUI > cd forum-app > npm install > ng serve</strong> </h3>
+
+<h3 align="center"> Adresse pour lancer l'application en ligne: <strong> http://51.210.181.145:4200/ </strong> </h3>
+<h3 align="center"> Code pour lancer l'application en local : <strong> cd AngularUI > cd forum-app > npm install > ng serve</strong> </h3>
 
 <p align="center"><i>Membres : Armand PREVOT - Steven BOUCHE</i></p>
 <p align="center"><i>Enseignant : M.Buffa </i></p>
