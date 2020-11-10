@@ -21,6 +21,16 @@ namespace PolicyMiddleware
                         .WithOrigins("https://localhost:7001")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
+
+                    builder
+                        .WithOrigins("http://51.210.181.145:7000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+
+                    builder
+                        .WithOrigins("https://51.210.181.145:7001")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                 });
             });
 
@@ -37,7 +47,13 @@ namespace PolicyMiddleware
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
-                    
+
+                    builder
+                        .WithOrigins("http://51.210.181.145:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+
                 });
             });
 
