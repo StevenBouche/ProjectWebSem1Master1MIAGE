@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Config } from 'src/app/config.module';
 import ChannelPanelView from 'src/models/forum/ChannelPanelView';
 import ChannelView from 'src/models/forum/ChannelView';
+import DeleteChannelForm from 'src/models/forum/DeleteChannelForm';
 import ForumForm from 'src/models/forum/ForumForm';
 import ForumPanelView from 'src/models/forum/ForumPanelView';
 import ForumSearchView from 'src/models/forum/ForumSearchView';
@@ -166,6 +167,18 @@ export class ForumService {
         }
           this.dataStore.usersOfMyForumSelected.push(sub.user);
           this._usersOfMyForumSelected.next(this.cpObj(this.dataStore).usersOfMyForumSelected);
+    })
+
+    this.websocket.onChannelDeleted.subscribe((delC:DeleteChannelForm) => {
+      if(delC==undefined) return;
+
+      if(this.dataStore.myForumSelected._id !== delC.idForum) return;
+
+      if(this.dataStore.channelForumSelected.id !== delC.idChannel) return;
+
+      let res = this.dataStore.channelsOfMyForumSelected.filter(channel => channel.id != this.dataStore.channelForumSelected.id)
+      this.dataStore.channelsOfMyForumSelected = res;
+      this._channelsOfMyForumSelected.next(this.cpObj(this.dataStore).channelsOfMyForumSelected);;
     })
 
   }
@@ -441,6 +454,10 @@ export class ForumService {
 
   public async getChannelPannel(idChannel: string) : Promise<ChannelPanelView> {
     return await this.req.executeGet<ChannelPanelView>(this.apiUrlChannel+"/panel/" + idChannel);
+  }
+
+  public async deleteChannel(deletedChannel : DeleteChannelForm) : Promise<DeleteChannelForm> {
+    return await this.req.executePost<DeleteChannelForm, DeleteChannelForm>(this.apiUrlChannel+"/delete/", deletedChannel);
   }
 
   private cpObj<T>(obj:T) : T{
