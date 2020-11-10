@@ -12,14 +12,16 @@
 Dans le cadre d'un projet universitaire, nous avons réalisé une application qui ressemble à Discord, surtout sur sa partie forum. Voici la configuration de notre projet :
 
 <ul>
-  <li>Le front est en Angular et le back en C# dans un environnement .NET Core</li>
-  <li>Nous stockons nos données dans une base Mongo.</li>
+  <li>Le Front est en Angular 10 et les API en C# dans un environnement .NET Core 3.1</li>
+  <li>Nous stockons nos données dans plusieurs bases Mongo.</li>
   <li>Notre application est structurée en micro-service.</li>
   <li>Chaque microservice est contenu dans un conteneur Docker.</li>
   <li>Aussi, chaque microservice contient une base Mongo qui lui est propre.</li>
+  <li>Microservice d'Authentification OAuth avec Jwt token et refresh token.</li>
+  <li>Passerelle d'API qui expose nos microservices.</li>
   <li>Enfin, nous utilisons des WebSocket pour pouvoir gérer les notifications de utilisateurs en temps réel. Le reste des interactions réseau est en HTTP.</li>
+  <li>Authentification websocket via le microservice d'Authentification.</li>
 </ul>
-
 
 Voilà ce qu'il est possible de faire avec notre application :
   - Créer un compte
