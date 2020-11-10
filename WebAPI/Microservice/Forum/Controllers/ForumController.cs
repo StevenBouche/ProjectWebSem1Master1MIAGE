@@ -45,9 +45,10 @@ namespace Forum.Controllers
         }
 
         [HttpPost("create")]
-        public ActionResult<ForumView> CreateForum([FromBody] ForumForm value)
+        public async Task<ActionResult<ForumView>> CreateForum([FromBody] ForumForm value)
         {
             ForumView forum = this.Manager.CreateForum(value,this.Identity);
+            await this.HubContext.Clients.AllExcept(new string[] { Identity.ID }).SendAsync("onNewForum", forum);
             return this.Ok(forum);
         }
 

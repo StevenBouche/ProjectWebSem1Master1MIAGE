@@ -98,6 +98,14 @@ export class ForumService {
       this.identity = identity;
     })
 
+    this.websocket.onNewForum.subscribe(async (forum) => {
+
+      if(forum==undefined) return;
+
+      await this.loadSearchForumAsync();
+
+    })
+
     this.websocket.onNewMessage.subscribe((message:RegisterMessage) => {
 
         if(message==undefined) return;
@@ -130,8 +138,6 @@ export class ForumService {
 
         if(idUser==undefined) return;
 
-        if(idUser == this.identity?._id) return;
-
         let user2 = this.dataStore.usersOfMyForumSelected.find(user => user.id === idUser);
 
         if(user2 == undefined) return;
@@ -146,8 +152,6 @@ export class ForumService {
     this.websocket.onUserDisconnect.subscribe((idUser:string) => {
 
       if(idUser==undefined) return;
-
-      if(idUser == this.identity?._id) return;
 
       let user2 = this.dataStore.usersOfMyForumSelected.find(user => user.id === idUser);
 

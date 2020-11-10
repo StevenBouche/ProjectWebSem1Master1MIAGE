@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Config } from 'src/app/config.module';
 import LoginResult from 'src/models/auth/LoginResult';
 import DeleteChannelForm from 'src/models/forum/DeleteChannelForm';
+import ForumView from 'src/models/forum/ForumView';
 import MessageView from 'src/models/forum/MessageView';
 import RegisterChannelResult from 'src/models/forum/RegisterChannelResult';
 import RegisterMessage from 'src/models/forum/RegisterMessage';
@@ -85,6 +86,9 @@ export class WsService {
 
   }
 
+  private _onNewForum = new BehaviorSubject<ForumView>(undefined);
+  readonly onNewForum = this._onNewForum.asObservable()
+
   private _onNewMessage = new BehaviorSubject<RegisterMessage>(undefined);
   readonly onNewMessage = this._onNewMessage.asObservable()
 
@@ -110,6 +114,12 @@ export class WsService {
         this.dataStore.isConnected = false;
         this._isConnected.next(false);
         await this.auth.logoutUserAsync()
+    })
+
+    connection.on("onNewForum", (result:ForumView) => {
+      console.log("onNewForum")
+      console.log(result)
+      this._onNewForum.next(result);
     })
 
     connection.on("onNewMessage", (result:RegisterMessage) => {
