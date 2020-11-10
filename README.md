@@ -7,7 +7,7 @@
 Dans le cadre d'un projet universitaire, nous avons réalisé une application qui ressemble à Discord, surtout sur sa partie forum. Voici la configuration de notre projet :
 
 <ul>
-  <li>Le front est en Angular et le back en C# dans un environement .NET Core</li>
+  <li>Le front est en Angular et le back en C# dans un environnement .NET Core</li>
   <li>Nous stockons nos données dans une base Mongo.</li>
   <li>Notre application est structurée en micro-service.</li>
   <li>Chaque microservice est contenu dans un conteneur Docker.</li>
