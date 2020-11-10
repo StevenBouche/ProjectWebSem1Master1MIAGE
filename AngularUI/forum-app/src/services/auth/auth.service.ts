@@ -92,7 +92,7 @@ export class AuthService {
       var result = await this.req.executePost<RefreshToken,LoginResult>(this.apiUrl+"/"+MethodsAuth.REFRESH,auth.refreshToken);
       console.log(result)
        //If not undefined store tokens
-      if(result!=undefined)
+      if(result!=undefined&&result.jwtToken!=undefined&&result.refreshToken!=undefined)
         await this.setLocalStorageAsync(this.keyStorage, result);
       else {
         this.removeLocalStorage(this.keyStorage);
