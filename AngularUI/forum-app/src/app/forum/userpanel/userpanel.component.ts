@@ -38,7 +38,7 @@ export class UserpanelComponent implements OnInit {
   }
 
   async onLogout(){
-    await this.authService.logoutUser();
+    await this.authService.logoutUserAsync();
     window.location.reload();
   }
 

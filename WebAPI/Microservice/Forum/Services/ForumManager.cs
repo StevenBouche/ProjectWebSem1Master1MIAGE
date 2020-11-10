@@ -35,6 +35,8 @@ namespace Forum.Services
         private readonly IMongoDBContext<ForumObj> Context;
         private readonly CacheUserWs Cache;
 
+        public static readonly object LockObject = new object();
+
         public ForumManager(IMongoDBContext<ForumObj> c, CacheUserWs cache)
         {
             this.Context = c;
@@ -45,6 +47,7 @@ namespace Forum.Services
         {
             var forum = new ForumObj
             {
+                Id = ObjectId.GenerateNewId().ToString(),
                 Name = value.Name,
                 UrlPicture = value.Image,
                 Description = value.Description,
@@ -53,16 +56,23 @@ namespace Forum.Services
             };
 
             //todo change
-
-            forum.Users.Add(new User
+            lock (LockObject)
             {
-                Id = identity.ID,
-                Pseudo = identity.Pseudo,
-                UrlPicture = Config.URL+"/account/picture/" + identity.ID
-            });
+                forum.Users.Add(new User
+                {
+                    Id = identity.ID,
+                    Pseudo = identity.Pseudo,
+                    UrlPicture = Config.URL + "/account/picture/" + identity.ID
+                });
 
 
-            this.Context.GetCollection().InsertOne(forum);
+                this.Context.GetCollection().InsertOne(forum);
+            }
+
+            if (forum.Id != null)
+            {
+                return this.GetForumById(forum.Id).ToViewForum();
+            }
 
             return forum.ToViewForum();
 
@@ -76,9 +86,12 @@ namespace Forum.Services
 
             if (forum.Users.Any(User => User.Id == identity.ID))
             {
-                channel.Id = ObjectId.GenerateNewId().ToString();
-                forum.Channels.Add(channel);
-                this.Context.GetCollection().ReplaceOne(acc => acc.Id.Equals(forum.Id), forum);
+                lock (LockObject)
+                {
+                    channel.Id = ObjectId.GenerateNewId().ToString();
+                    forum.Channels.Add(channel);
+                    this.Context.GetCollection().ReplaceOne(acc => acc.Id.Equals(forum.Id), forum);
+                }
             }
         }
 
@@ -141,39 +154,42 @@ namespace Forum.Services
                 return sub;
             }
 
-            ForumObj forum = this.GetForumById(idForum);
-
-            if (forum == null)
+            lock (LockObject)
             {
-                sub.Message = "forum not found";
-                return sub;
+                ForumObj forum = this.GetForumById(idForum);
+
+                if (forum == null)
+                {
+                    sub.Message = "forum not found";
+                    return sub;
+                }
+
+                if (forum.Users.Any(User => User.Id == identity.ID))
+                {
+                    sub.Message = "user is already subscribe";
+                    return sub;
+                }
+
+                User u = new User
+                {
+                    Id = identity.ID,
+                    Pseudo = identity.Pseudo,
+                    UrlPicture = identity.UrlPicture
+                };
+
+                forum.Users.Add(u);
+
+                this.Context.GetCollection().ReplaceOne((f => f.Id == forum.Id), forum);
+
+                sub.Result = true;
+                sub.IdForum = idForum;
+                sub.Message = "succes";
+                sub.User = u.ToUserView();
+                sub.User.IsConnected = this.Cache.usersIdWebSocket.Values.Contains(sub.User.Id);
             }
-
-            if (forum.Users.Any(User => User.Id == identity.ID))
-            {
-                sub.Message = "user is already subscribe";
-                return sub;
-            }
-
-            User u = new User
-            {
-                Id = identity.ID,
-                Pseudo = identity.Pseudo,
-                UrlPicture = identity.UrlPicture
-            };
-
-            forum.Users.Add(u);
-
-            this.Context.GetCollection().ReplaceOne((f => f.Id == forum.Id), forum);
-
-            sub.Result = true;
-            sub.IdForum = idForum;
-            sub.Message = "succes";
-            sub.User = u.ToUserView();
-
-            sub.User.IsConnected = this.Cache.usersIdWebSocket.Values.Contains(sub.User.Id);
 
             return sub;
+
         }
 
         public ForumObj GetForumById(string id)
@@ -227,16 +243,19 @@ namespace Forum.Services
 
             if (permit && message.UserId == identity.ID)
             {
-                message.Id = ObjectId.GenerateNewId().ToString();
+                lock (LockObject)
+                {
+                    message.Id = ObjectId.GenerateNewId().ToString();
 
-                ForumObj forum = this.Context.GetQueryable()
-                    .FirstOrDefault(f => f.Id == idforum && f.Channels.Any(channel => channel.Id == idchannel));
+                    ForumObj forum = this.Context.GetQueryable().FirstOrDefault(f => f.Id == idforum && f.Channels.Any(channel => channel.Id == idchannel));
 
-                forum.Channels.FirstOrDefault(channel => channel.Id == idchannel).Messages.Add(message);
+                    forum.Channels.FirstOrDefault(channel => channel.Id == idchannel).Messages.Add(message);
 
-                this.Context.GetCollection().ReplaceOne(f => f.Id == forum.Id, forum);
+                    this.Context.GetCollection().ReplaceOne(f => f.Id == forum.Id, forum);
 
-                return forum.Channels.FirstOrDefault(Channel => Channel.Id == idchannel).Messages.FirstOrDefault(m => m.Id == message.Id);
+                    return forum.Channels.FirstOrDefault(Channel => Channel.Id == idchannel).Messages.FirstOrDefault(m => m.Id == message.Id);
+
+                }
 
             }
 
@@ -253,20 +272,23 @@ namespace Forum.Services
 
             if (permit)
             {
-                ForumObj forum = this.Context.GetQueryable()
-                       .FirstOrDefault(f => f.Id == idForum && f.Channels.Any(channel => channel.Id == idChannel));
+                lock (LockObject)
+                {
+                    ForumObj forum = this.Context.GetQueryable().FirstOrDefault(f => f.Id == idForum && f.Channels.Any(channel => channel.Id == idChannel));
 
-                forum.Channels.RemoveAll(channel => channel.Id == idChannel);
+                    forum.Channels.RemoveAll(channel => channel.Id == idChannel);
 
-                this.Context.GetCollection().ReplaceOne(f => f.Id == forum.Id, forum);
+                    this.Context.GetCollection().ReplaceOne(f => f.Id == forum.Id, forum);
 
-                permit = this.Context.GetQueryable()
-                .Any(Forum =>
-                        Forum.Id == idForum &&
-                        Forum.Users.Any(user => user.Id == identity.ID) &&
-                        Forum.Channels.Any(channel => channel.Id == idChannel));
+                    var test = this.Context.GetQueryable()
+                    .Any(Forum =>
+                            Forum.Id == idForum &&
+                            Forum.Users.Any(user => user.Id == identity.ID) &&
+                            Forum.Channels.Any(channel => channel.Id == idChannel));
 
-                return !permit;
+                    return permit == true && test == false;
+                }
+                
             }
 
             return false;

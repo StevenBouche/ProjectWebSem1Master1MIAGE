@@ -67,11 +67,11 @@ export class AuthComponent implements OnInit {
     this.state = AuthState.REGISTER;
   }
 
-  async onSubmitRegister(register: RegisterView) {
+  async onSubmitRegisterAsync(register: RegisterView) {
     this.isLoading = true;
     register.image = this.imgURL;
     console.log(register);
-    var user : AccountView = await this.user.registerUser(register);
+    var user : AccountView = await this.user.registerUserAsync(register);
     if(user!=undefined&&user._id!=undefined){
       this.alert.showSuccess("Success register","Success")
       this.state = AuthState.LOGIN;
@@ -82,10 +82,10 @@ export class AuthComponent implements OnInit {
     this.isLoading = false;
   }
 
-  async onSubmitLogin(login : LoginView){
+  async onSubmitLoginAsync(login : LoginView){
 
     this.isLoading = true;
-    var loginResult : LoginResult = await this.auth.loginUser(login);
+    var loginResult : LoginResult = await this.auth.loginUserAsync(login);
 
     if(loginResult==undefined)
       this.alert.showError("Error on login : "+loginResult.message,"Error");
