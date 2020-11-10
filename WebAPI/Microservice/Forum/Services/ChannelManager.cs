@@ -15,6 +15,7 @@ namespace Forum.Services
         ChannelView GetChannelView();
         RegisterChannelResult CreateChannelView(RegisterChannel channel, UserIdentity identity);
         ChannelPanelView GetChannelPanelView(string idChannel, UserIdentity identity);
+        DeleteChannelForm DeleteChannel(DeleteChannelForm channel, UserIdentity identity);
     }
 
     public interface IChannelManager
@@ -76,6 +77,7 @@ namespace Forum.Services
 
             result.Channel = c?.ToChannelView();
             result.Forum = this.Manager.GetForumById(channel.IdForum).ToViewForum();
+            result.UserId = identity.ID;
 
             return result;
         }
@@ -99,5 +101,16 @@ namespace Forum.Services
             return this.Manager.CreateAndAddNewMessage(idforum, idchannel, message, identity);
         }
 
+        public DeleteChannelForm DeleteChannel(DeleteChannelForm channel, UserIdentity identity)
+        {
+            bool result = this.Manager.RemoveChannelForum(channel.idForum, channel.idChannel, identity);
+            if (result)
+            {
+                return channel;
+            } else
+            {
+                return new DeleteChannelForm();
+            }
+        }
     }
 }

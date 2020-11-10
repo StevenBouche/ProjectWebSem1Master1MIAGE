@@ -45,6 +45,14 @@ namespace Forum.Controllers
             return this.Ok(c);
         }
 
+        [HttpPost("delete")]
+        public async Task<ActionResult<DeleteChannelForm>> DeleteChannel([FromBody] DeleteChannelForm channel)
+        {
+            DeleteChannelForm c = this.Manager.DeleteChannel(channel, this.Identity);
+            await this.HubContext.Clients.AllExcept(new string[] { Identity.ID }).SendAsync("onDeleteChannel", c);
+            return this.Ok(c);
+        }
+
         [HttpGet("panel/{id}")]
         public ActionResult<ChannelPanelView> GetChannelPanel(string id)
         {

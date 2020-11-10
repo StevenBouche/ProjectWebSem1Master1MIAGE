@@ -14,5 +14,7 @@ namespace Forum.Models.View
         public ForumView Forum { get; set; }
         [JsonPropertyName("channel")]
         public ChannelView Channel { get; set; }
+        [JsonPropertyName("userId")]
+        public string UserId { get; set; }
     }
 }

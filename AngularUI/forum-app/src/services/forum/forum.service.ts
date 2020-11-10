@@ -91,6 +91,8 @@ export class ForumService {
 
         if(message==undefined) return;
 
+        if(message.messageV.userId == this.userService.getCurrentIdentity()) return;
+
         if(this.dataStore.myForumSelected._id !== message.idForum) return;
 
         if(this.dataStore.channelForumSelected.id !== message.idChannel) return;
@@ -102,8 +104,10 @@ export class ForumService {
     })
 
     this.websocket.onNewCategorie.subscribe((channel:RegisterChannelResult) => {
-      console.log("hey")
+
         if(channel==undefined) return;
+
+        if(channel.userId == this.userService.getCurrentIdentity()) return;
 
         if(this.dataStore.myForumSelected._id !== channel.forum._id) return;
 
@@ -117,6 +121,9 @@ export class ForumService {
     this.websocket.onUserConnect.subscribe((idUser:string) => {
 
         if(idUser==undefined) return;
+
+        if(idUser == this.userService.getCurrentIdentity()) return;
+
         let user = this.dataStore.usersOfMyForumSelected.find(user => user.id === idUser);
 
         if(user == undefined) return;
@@ -132,6 +139,9 @@ export class ForumService {
     this.websocket.onUserDisconnect.subscribe((idUser:string) => {
 
       if(idUser==undefined) return;
+
+      if(idUser == this.userService.getCurrentIdentity()) return;
+
       let user = this.dataStore.usersOfMyForumSelected.find(user => user.id === idUser);
 
       if(user == undefined) return;
@@ -145,6 +155,8 @@ export class ForumService {
     this.websocket.onUserSubscribe.subscribe((sub:SubscribeResultView) => {
 
         if(sub==undefined) return;
+
+        if(sub.user.id == this.userService.getCurrentIdentity()) return;
 
         if(this.dataStore.myForumSelected != undefined && this.dataStore.myForumSelected._id !== sub.idForum) return;
 

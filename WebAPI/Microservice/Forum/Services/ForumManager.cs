@@ -17,6 +17,7 @@ namespace Forum.Services
         void AddChannelForum(string idForum, Channel channel, UserIdentity identity);
         void GetForumAndChannel(string idChannel, out ForumObj forum, out Channel channel, UserIdentity user);
         Message CreateAndAddNewMessage(string idforum, string idchannel, Message message, UserIdentity identity);
+        bool RemoveChannelForum(string idForum, string idChannel, UserIdentity identity);
     }
 
     public interface IForumManagerView
@@ -239,6 +240,36 @@ namespace Forum.Services
             }
 
             return message;
+        }
+
+        public bool RemoveChannelForum(string idForum, string idChannel, UserIdentity identity)
+        {
+            bool permit = this.Context.GetQueryable()
+                .Any(Forum =>
+                        Forum.Id == idForum &&
+                        Forum.Users.Any(user => user.Id == identity.ID) &&
+                        Forum.Channels.Any(channel => channel.Id == idChannel));
+
+            if (permit)
+            {
+                ForumObj forum = this.Context.GetQueryable()
+                       .FirstOrDefault(f => f.Id == idForum && f.Channels.Any(channel => channel.Id == idChannel));
+
+                forum.Channels.RemoveAll(channel => channel.Id == idChannel);
+
+                this.Context.GetCollection().ReplaceOne(f => f.Id == forum.Id, forum);
+
+                permit = this.Context.GetQueryable()
+                .Any(Forum =>
+                        Forum.Id == idForum &&
+                        Forum.Users.Any(user => user.Id == identity.ID) &&
+                        Forum.Channels.Any(channel => channel.Id == idChannel));
+
+                return permit;
+            }
+
+            return false;
+
         }
 
         //GET PUT POST ...
