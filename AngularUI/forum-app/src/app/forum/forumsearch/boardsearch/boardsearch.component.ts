@@ -25,12 +25,12 @@ export class BoardsearchComponent implements OnInit {
       console.log(data);
     })
 
-    this.forumService.loadSearchForum();
+    await this.forumService.loadSearchForumAsync();
   }
 
-  onPageChange(event:PageEvent){
+  async onPageChange(event:PageEvent){
     console.log(event)
-    this.forumService.OnSearchPaginitionChange(event.length,event.pageIndex,event.pageSize);
+    await this.forumService.OnSearchPaginitionChangeAsync(event.length,event.pageIndex,event.pageSize);
   }
 
 }

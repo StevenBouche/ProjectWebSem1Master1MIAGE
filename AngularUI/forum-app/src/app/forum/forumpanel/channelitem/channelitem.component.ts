@@ -34,14 +34,14 @@ export class ChannelitemComponent implements OnInit {
       :"text-gray-500 px-2 hover:text-gray-200 hover:bg-gray-900";
   }
 
-  onChannelSelect(){
+  async onChannelSelect(){
     console.log("ON CHANNEL CHANGE")
     console.log(this.item)
-    this.forumService.selectChannelForum(this.item.id)
+    await this.forumService.selectChannelForumAsync(this.item.id)
   }
 
-  deleteItem(){
-    this.forumService.deleteAChannel(this.item.id);
+  async deleteItem(){
+    await this.forumService.deleteAChannelAsync(this.item.id);
   }
 
 }

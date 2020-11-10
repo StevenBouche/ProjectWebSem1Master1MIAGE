@@ -10,7 +10,7 @@ export class AuthGuardService implements CanActivate {
   constructor(public auth: AuthService, public router: Router) {}
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    var auth : boolean = await this.auth.isAuthenticated();
+    var auth : boolean = await this.auth.isAuthenticatedAsync();
     console.log(auth)
     if (!auth && state.url != "/auth") {
       return this.router.parseUrl('/auth');

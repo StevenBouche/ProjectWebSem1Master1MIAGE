@@ -16,10 +16,10 @@ export class ForumsearchitemComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  subscribe() {
+  async subscribe() {
     console.log("THIS ITEM : ");
     console.log(this.item);
-    this.forumService.subscribeToAForum(this.item);
+    await this.forumService.subscribeToAForumAsync(this.item);
   }
 
 }

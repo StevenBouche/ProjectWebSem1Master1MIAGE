@@ -4,15 +4,12 @@ import { HubConnection } from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
 import { Config } from 'src/app/config.module';
 import LoginResult from 'src/models/auth/LoginResult';
-import ChannelView from 'src/models/forum/ChannelView';
 import DeleteChannelForm from 'src/models/forum/DeleteChannelForm';
 import MessageView from 'src/models/forum/MessageView';
 import RegisterChannelResult from 'src/models/forum/RegisterChannelResult';
 import RegisterMessage from 'src/models/forum/RegisterMessage';
 import SubscribeResultView from 'src/models/forum/SubscribeResultView';
-import { RegisterView } from 'src/models/views/auth/AuthView';
 import { AuthService } from '../auth/auth.service';
-import { ForumService } from '../forum/forum.service';
 import { NotificationService } from '../notification/notification.service';
 
 @Injectable({
@@ -38,9 +35,9 @@ export class WsService {
 
   }
 
-  public async connectToWebSocket() {
+  public async connectToWebSocketAsync() {
 
-    var isAuth : boolean = await this.auth.isAuthenticated();
+    var isAuth : boolean = await this.auth.isAuthenticatedAsync();
 
       if(!isAuth) return;
 
@@ -108,10 +105,11 @@ export class WsService {
 
   private initEventWebSocket(connection : HubConnection) : void {
 
-    connection.onclose((callback:any) => {
+    connection.onclose(async (callback:any) => {
       console.log("CONNECTION CLOSE");
         this.dataStore.isConnected = false;
         this._isConnected.next(false);
+        await this.auth.logoutUserAsync()
     })
 
     connection.on("onNewMessage", (result:RegisterMessage) => {

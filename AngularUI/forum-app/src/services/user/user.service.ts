@@ -29,7 +29,7 @@ export class UserService {
 
   constructor(private req: RequestService) { }
 
-  public async registerUser(register: RegisterView) : Promise<AccountView> {
+  public async registerUserAsync(register: RegisterView) : Promise<AccountView> {
       var data = new RegisterView();
       data.firstName = register.firstName;
       data.lastName = register.lastName;
@@ -41,7 +41,7 @@ export class UserService {
       return this.req.executePost<RegisterView,AccountView>(this.apiUrl,data);
   }
 
-  public async updateUser(account: AccountView) : Promise<AccountView>{
+  public async updateUserAsync(account: AccountView) : Promise<AccountView>{
     return this.req.executePut<AccountView,AccountView>(this.apiUrl,account);
   }
 
@@ -50,12 +50,12 @@ export class UserService {
     this._myIdentity.next(Object.assign({}, this.dataStore).myIdentity);
   }
 
-  async onSetAuth() {
-    this.dataStore.myIdentity = await this.getIdentity();
+  async onSetAuthAsync() {
+    this.dataStore.myIdentity = await this.getIdentityAsync();
     this._myIdentity.next(Object.assign({}, this.dataStore).myIdentity);
   }
 
-  public async getIdentity() : Promise<AccountView>{
+  public async getIdentityAsync() : Promise<AccountView>{
     return this.req.executeGet<AccountView>(this.apiUrl+"/"+MethodsAuth.IDENTITY);
   }
 

@@ -10,7 +10,7 @@
         <!-- SIGNUP FORM-->
         <div id="signup" [class.hidden]="!isRegister()">
           <h1>Sign Up for Free</h1>
-          <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegister(registerForm.value)">
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegisterAsync(registerForm.value)">
             <div class="top-row">
               <div class="field-wrap">
                 <label [class.active]="registerData.firstName!=undefined">First Name<span class="req">*</span></label>
@@ -47,7 +47,7 @@
         <!-- LOGIN FORM-->
         <div id="login" [class.hidden]="!isLogin()">
           <h1>Welcome Back!</h1>
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin(loginForm.value)">
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmitLoginAsync(loginForm.value)">
             <div class="field-wrap">
               <label [class.active]="loginData.email!=undefined">Email Address<span class="req">*</span></label>
               <input [(ngModel)]="loginData.email" type="email"required autocomplete="off" formControlName="email"/>

@@ -47,10 +47,10 @@ export class ForumpanelComponent implements OnInit {
     this.displayParamForum=!this.displayParamForum;
   }
 
-  onNewChannel() {
+  async onNewChannel() {
     this.channelName = this.channelName.trim();
     if(this.channelName === undefined || this.channelName === '') return;
-    this.forumService.createNewChannelForumSelected(this.channelName);
+    await this.forumService.createNewChannelForumSelectedAsync(this.channelName);
   }
 
 }

@@ -88,7 +88,7 @@ export class BoardcreateComponent implements OnInit {
       return;
     }
     this.notif.showSuccess("Forum successfuly created !", "Success !")
-    this.forumService.createNewForum(this.forumForm);
+    await this.forumService.createNewForumAsync(this.forumForm);
   }
 
 }

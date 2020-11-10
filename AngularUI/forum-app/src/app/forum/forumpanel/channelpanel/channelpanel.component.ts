@@ -26,8 +26,13 @@ export class ChannelpanelComponent implements OnInit {
 
   @ViewChild("chat") chat: ElementRef;
 
-  constructor(private forumService: ForumService) {
+  private haveSendMessage: boolean;
+  private firstInit: boolean;
+  private firstPushMessage: boolean;
 
+  constructor(private forumService: ForumService) {
+    //this.firstInit=true;
+    //this.firstPushMessage=false;
   }
 
   ngOnInit(): void {
@@ -46,13 +51,24 @@ export class ChannelpanelComponent implements OnInit {
       this.haveChannel = this.channel != undefined;
     })
 
+
     this.forumService.messagesOfChannelSelected.subscribe((message:Array<MessageView>) => {
+      console.log("CHANGE MESSAGES")
       this.messages = message;
-      //this.onEvent();
+      //this.firstPushMessage = true;
     })
+
   }
 
-  sendMessage(){
+  ngAfterContentChecked(){
+   /* console.log(this.firstInit)
+    if(this.chat!=undefined){
+      var elem = this.chat.nativeElement;
+      elem.scrollTop = elem.scrollHeight - elem.clientHeight;
+    }*/
+  }
+
+  async sendMessage(){
       console.log("MESSAGE AVANT ENVOI " + this.message);
 
       this.message = this.message.trim();
@@ -63,24 +79,10 @@ export class ChannelpanelComponent implements OnInit {
 
       //If message = null
 
-      this.forumService.sendMessage(msgEntered);
-  }
+      await this.forumService.sendMessageAsync(msgEntered);
 
-  private onEvent(){
-    var elem = this.chat.nativeElement;
-
-    if (elem.maxScrollTop - elem.scrollTop <= elem.offsetHeight) {
-
-      elem.scrollTop = elem.scrollHeight
-      console.log("I just scrolled to the bottom!")
-
-    } else {
-      console.log("I won't scroll: you're way too far from the bottom!\n" +
-      "You should maybe alert the user that he received a new message.\n" +
-      "If he wants to scroll at this point, he must do it manually.")
-    }
+      this.haveSendMessage = true;
 
   }
-
 
 }

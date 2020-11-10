@@ -82,6 +82,7 @@ namespace User.Services
 
         public RefreshToken RefreshTokenIsValid(Account userAccount, RefreshToken token)
         {
+            
             return userAccount.RefreshTokens.FirstOrDefault(refresh => 
                 refresh.AddressIP.Equals(token.AddressIP) && 
                 refresh.Token.Equals(token.Token) && 

@@ -30,7 +30,7 @@ export class AuthService {
     })
   }
 
-  public async loginUser(login: LoginView) : Promise<LoginResult> {
+  public async loginUserAsync(login: LoginView) : Promise<LoginResult> {
 
     //Prepare data to send back end
     var data = new LoginView();
@@ -44,14 +44,14 @@ export class AuthService {
 
     //If not undefined store tokens
     if(result!=undefined&&result.jwtToken!=undefined&&result.refreshToken!=undefined){
-      this.setLocalStorage(this.keyStorage, result);
+      await this.setLocalStorageAsync(this.keyStorage, result);
     }
     return result;
   }
 
-  public async logoutUser() : Promise<boolean> {
+  public async logoutUserAsync() : Promise<boolean> {
     //If user is auth call back end to logout and remove local tokens
-    if(this.isAuthenticated()){
+    if(await this.isAuthenticatedAsync()){
       var result = await this.req.executePost<any,any>(this.apiUrl+"/"+MethodsAuth.LOGOUT);
       this.removeLocalStorage(this.keyStorage);
       return true;
@@ -64,7 +64,7 @@ export class AuthService {
     return this.getLocalStorage<LoginResult>(this.keyStorage);
   }
 
-  public async isAuthenticated(): Promise<boolean> {
+  public async isAuthenticatedAsync(): Promise<boolean> {
 
     var auth = this.getAuth();
     var currentTimeSecond = (Date.now()/1000);
@@ -79,7 +79,7 @@ export class AuthService {
      //if jwt token exist and expiration is valid
     if(auth.jwtToken!= undefined && auth.jwtToken.expireAt > currentTimeSecond){
       if(this.identity==undefined){
-        this.userService.onSetAuth();
+        await this.userService.onSetAuthAsync();
       }
       return true;
     }
@@ -93,13 +93,13 @@ export class AuthService {
       console.log(result)
        //If not undefined store tokens
       if(result!=undefined)
-        this.setLocalStorage(this.keyStorage, result);
+        await this.setLocalStorageAsync(this.keyStorage, result);
       else {
         this.removeLocalStorage(this.keyStorage);
       }
 
       //retry to return a valid jwt token recursive
-      return this.isAuthenticated();
+      return await this.isAuthenticatedAsync();
     }
 
     //no valid tokens (jwt and refresh) no auth found
@@ -107,9 +107,9 @@ export class AuthService {
     return false;
   }
 
-  private setLocalStorage<T>(key:string, obj: T) : void {
+  private async setLocalStorageAsync<T>(key:string, obj: T) {
     localStorage.setItem(key,JSON.stringify(obj))
-    this.userService.onSetAuth();
+    await this.userService.onSetAuthAsync();
   }
 
   private removeLocalStorage(key:string) : void {

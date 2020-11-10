@@ -26,6 +26,7 @@ export class ForumComponent implements OnInit {
     //subscribe event my forum
     this.forumService.myForums.subscribe((list:Array<ForumView>) => {
       this.forums = list;
+      this.component = list.length==0 ? this.componentSearchName : this.componentForumName;
     })
     //subscribe event selected forum
     this.forumService.myForumSelected.subscribe((value:ForumView) => {
@@ -35,23 +36,23 @@ export class ForumComponent implements OnInit {
         this.component = this.componentForumName;
     })
     // load my forum
-    this.forumService.loadMyForums();
+    await this.forumService.loadMyForumsAsync();
     //connect to forum websocket server
-    this.connectionWs.connectToWebSocket();
+    await this.connectionWs.connectToWebSocketAsync();
   }
 
   ngOnDestroy() : void {
     this.connectionWs.disconnectWebSocket();
   }
 
-  onSearchForumSelect() {
-    this.forumService.selectMyForums(undefined);
+  async onSearchForumSelect() {
+    await this.forumService.selectMyForumsAsync(undefined);
     this.component = this.componentSearchName;
   }
 
-  onForumSelect(forum: ForumView){
+  async onForumSelect(forum: ForumView){
     console.log(forum)
-    this.forumService.selectMyForums(forum._id);
+    await this.forumService.selectMyForumsAsync(forum._id);
   }
 
   forumIsSelected(forum: ForumView) : boolean{
