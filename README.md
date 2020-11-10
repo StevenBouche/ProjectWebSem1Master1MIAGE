@@ -7,7 +7,7 @@ Nous stockons nos données dans une base Mongo.
 Notre application est structurée en micro-service.
 Chaque microservice est contenu dans un conteneur Docker.
 Aussi, chaque microservice contient une base Mongo qui lui est propre.
-Nous utilisons des WebSocket pour l'authentification des clients et le chat. Le reste des interactions réseau est en HTTP.
+Enfin, nous utilisons des WebSocket pour pouvoir gérer les notifications de utilisateurs en temps réel. Le reste des interactions réseau est en HTTP.
 
 Dans le cadre d'un projet universitaire, nous avons réalisé une application qui ressemble à Discord, en tous cas c'était notre objectif.
 
@@ -15,14 +15,16 @@ Voilà ce qu'il est possible de faire avec notre application :
   - Créer un compte
   - Créer des forums
   - Créer des channels de discussion
-  - Créer / envoyer / recevoir des messages dans un channel en temps réel
+  - Supprimer des channels de discussion 
+  - Créer / envoyer / recevoir des messages dans un channel
+  - Visualiser les utilisateurs dans un forum
   - Se connecter / Se déconnecter
-  - Rejoindre un forum et ses channels
+  - Rejoindre un forum existant et ses channels
  
  Voilà ce que l'on aurait aimé pouvoir faire/améliorer :
-  - Implémenter la suppression de message / channel / forum
-  - Implémenter une recherche de message dans un channel
+  - Implémenter la suppression de message / forum
+  - Améliorer la vérification des formulaires
+  - Implémenter la recherche dans les forums / channels / messages
   - Inclure le chat vocal
-  - Améliorer le style de l'application
   - Inclure un système d'amis
   - Inclure des chats privés entre amis
