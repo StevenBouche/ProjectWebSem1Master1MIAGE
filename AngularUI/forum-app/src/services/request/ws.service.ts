@@ -120,8 +120,8 @@ export class WsService {
       this._onNewMessage.next(result);
     })
 
-    connection.on("onNewCategorie", (result:RegisterChannelResult) => {
-      console.log("onNewCategorie")
+    connection.on("onNewChannel", (result:RegisterChannelResult) => {
+      console.log("onNewChannel")
       console.log(result);
       this._onNewCategorie.next(result);
     })

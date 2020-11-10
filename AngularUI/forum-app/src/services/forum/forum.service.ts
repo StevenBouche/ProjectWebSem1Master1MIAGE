@@ -105,18 +105,19 @@ export class ForumService {
     })
 
     this.websocket.onNewCategorie.subscribe((channel:RegisterChannelResult) => {
-
+      console.log("ON NEW CATEGORY")
+      console.log(channel);
         if(channel==undefined) return;
 
         if(channel.userId == this.userService.getCurrentIdentity()) return;
 
         if(this.dataStore.myForumSelected._id !== channel.forum._id) return;
 
-        let res : ChannelView = new ChannelView();
-        res.id = channel.channel.id;
-        res.name = channel.channel.name;
+        // let res : ChannelView = new ChannelView();
+        // res.id = channel.channel.id;
+        // res.name = channel.channel.name;
 
-        this.addNewCategory(res);
+        this.addNewCategory(channel.channel);
     })
 
     this.websocket.onUserConnect.subscribe((idUser:string) => {
@@ -185,6 +186,7 @@ export class ForumService {
 
       this.dataStore.channelsOfMyForumSelected = res;
       this._channelsOfMyForumSelected.next(this.cpObj(this.dataStore).channelsOfMyForumSelected);
+      this.notif.showSuccess("Channel successfuly deleted", "Success");
     })
 
   }
@@ -426,7 +428,11 @@ export class ForumService {
 
   addNewCategory(channel : ChannelView){
     console.log(channel)
-    this.dataStore.channelsOfMyForumSelected.push(channel)
+    let test = new ChannelView();
+    test.id = channel.id;
+    test.name = channel.name;
+    this.dataStore.channelsOfMyForumSelected.push(test)
+
     this._channelsOfMyForumSelected.next(this.cpObj((this.dataStore).channelsOfMyForumSelected))
   }
 

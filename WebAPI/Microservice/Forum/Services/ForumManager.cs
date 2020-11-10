@@ -266,7 +266,7 @@ namespace Forum.Services
                         Forum.Users.Any(user => user.Id == identity.ID) &&
                         Forum.Channels.Any(channel => channel.Id == idChannel));
 
-                return permit;
+                return !permit;
             }
 
             return false;

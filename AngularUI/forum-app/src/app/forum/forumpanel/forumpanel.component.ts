@@ -36,6 +36,7 @@ export class ForumpanelComponent implements OnInit {
 
     this.forumService.channelsOfMyForumSelected.subscribe((channels:Array<ChannelView>) => {
       console.log("CHANNELS SELECTS CHANGE")
+      console.log(channels);
       this.channels = channels;
     })
 
