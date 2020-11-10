@@ -5,7 +5,7 @@ services:
   restaurant:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=https:http://+:80
     ports:
       - "80:80"
       - "443:443"
@@ -15,7 +15,7 @@ services:
   user:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:80
     ports:
       - "8080:80"
       - "444:443"
@@ -25,7 +25,7 @@ services:
   forum:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:80
     ports:
       - "8081:80"
       - "8082:443"
@@ -35,7 +35,7 @@ services:
   gateway:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:7001;http://+:7000
+      - ASPNETCORE_URLS=http://+:7000
     ports:
       - "7000:7000"
       - "7001:7001"
