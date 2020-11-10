@@ -17,14 +17,12 @@
             </div>
 
             <!-- PARAM FORUM -->
-            <div class="rounded-lg" [class.disabled]="!displayParamForum">
+            <div class="border border-gray-900" [class.disabled]="!displayParamForum">
 
                 <ul class="px-2 py-3">
-                    <li class="text-gray-500 px-2 hover:text-gray-200 hover:bg-gray-900">
-                        <span class="flex items-center">
-                            <span class="text-xl">#</span>
-                            <span class="ml-2">FC</span>
-                        </span>
+                    <li class="text-gray-500 px-2">
+                      <h3 class="text-gray text-center">Forum description</h3>
+                      <span class="flex items-center text-center"><i>{{forum.description}}</i></span>
                     </li>
                 </ul>
             </div>

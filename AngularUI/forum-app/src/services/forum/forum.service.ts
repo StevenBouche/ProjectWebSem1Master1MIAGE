@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Config } from 'src/app/config.module';
 import ChannelPanelView from 'src/models/forum/ChannelPanelView';
 import ChannelView from 'src/models/forum/ChannelView';
+import DeleteChannelForm from 'src/models/forum/DeleteChannelForm';
 import ForumForm from 'src/models/forum/ForumForm';
 import ForumPanelView from 'src/models/forum/ForumPanelView';
 import ForumSearchView from 'src/models/forum/ForumSearchView';
@@ -168,6 +169,24 @@ export class ForumService {
           this._usersOfMyForumSelected.next(this.cpObj(this.dataStore).usersOfMyForumSelected);
     })
 
+    this.websocket.onChannelDeleted.subscribe((delC:DeleteChannelForm) => {
+      if(delC==undefined) return;
+
+      if(this.dataStore.myForumSelected._id !== delC.idForum) return;
+
+      let res = this.dataStore.channelsOfMyForumSelected.filter(channel => channel.id != this.dataStore.channelForumSelected.id)
+
+      if(this.dataStore.channelForumSelected.id === delC.idChannel) {
+        if(res.length > 0 && res != undefined){
+          this.selectChannelForum(res[0].id);
+        }
+        this.selectChannelForum(undefined);
+      }
+
+      this.dataStore.channelsOfMyForumSelected = res;
+      this._channelsOfMyForumSelected.next(this.cpObj(this.dataStore).channelsOfMyForumSelected);
+    })
+
   }
 
   async loadMyForums() {
@@ -299,6 +318,10 @@ export class ForumService {
 
   }
 
+  getCurrentUserId(){
+    return this.userService.getCurrentIdentity();
+  }
+
   async createNewChannelForumSelected(channelName: string) {
 
     //setup register form
@@ -407,6 +430,15 @@ export class ForumService {
     this._channelsOfMyForumSelected.next(this.cpObj((this.dataStore).channelsOfMyForumSelected))
   }
 
+  deleteAChannel(item : ChannelView){
+    let res : DeleteChannelForm = new DeleteChannelForm();
+    res.idChannel = item.id;
+    res.idUser = this.getCurrentUserId();
+    res.idForum = this.dataStore.myForumSelected._id;
+
+    this.deleteChannel(res);
+  }
+
     //
     // HTTP CALLS
     //
@@ -441,6 +473,12 @@ export class ForumService {
 
   public async getChannelPannel(idChannel: string) : Promise<ChannelPanelView> {
     return await this.req.executeGet<ChannelPanelView>(this.apiUrlChannel+"/panel/" + idChannel);
+  }
+
+  public async deleteChannel(deletedChannel : DeleteChannelForm) : Promise<DeleteChannelForm> {
+    console.log("DELETEEEEEEEEEEE")
+    console.log(deletedChannel);
+    return await this.req.executePost<DeleteChannelForm, DeleteChannelForm>(this.apiUrlChannel+"/delete/", deletedChannel);
   }
 
   private cpObj<T>(obj:T) : T{

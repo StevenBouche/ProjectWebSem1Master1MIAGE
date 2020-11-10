@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Config } from 'src/app/config.module';
 import LoginResult from 'src/models/auth/LoginResult';
 import ChannelView from 'src/models/forum/ChannelView';
+import DeleteChannelForm from 'src/models/forum/DeleteChannelForm';
 import MessageView from 'src/models/forum/MessageView';
 import RegisterChannelResult from 'src/models/forum/RegisterChannelResult';
 import RegisterMessage from 'src/models/forum/RegisterMessage';
@@ -102,6 +103,9 @@ export class WsService {
   private _onUserSubscribe = new BehaviorSubject<SubscribeResultView>(undefined);
   readonly onUserSubscribe = this._onUserSubscribe.asObservable()
 
+  private _onChannelDeleted = new BehaviorSubject<DeleteChannelForm>(undefined);
+  readonly onChannelDeleted = this._onChannelDeleted.asObservable()
+
   private initEventWebSocket(connection : HubConnection) : void {
 
     connection.onclose((callback:any) => {
@@ -138,6 +142,12 @@ export class WsService {
       console.log("onUserSubscribe")
       console.log(result);
       this._onUserSubscribe.next(result);
+    })
+
+    connection.on("onDeleteChannel", (result:DeleteChannelForm) => {
+      console.log("onDeleteChannel")
+      console.log(result)
+      this._onChannelDeleted.next(result);
     })
 
   }
