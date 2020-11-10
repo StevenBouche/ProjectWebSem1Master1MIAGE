@@ -117,7 +117,8 @@ export class ForumService {
         // res.id = channel.channel.id;
         // res.name = channel.channel.name;
 
-        this.addNewCategory(channel.channel);
+        this.addNewCategory(Object.assign({},channel.channel));
+
     })
 
     this.websocket.onUserConnect.subscribe((idUser:string) => {
@@ -126,13 +127,11 @@ export class ForumService {
 
         if(idUser == this.userService.getCurrentIdentity()) return;
 
-        let user = this.dataStore.usersOfMyForumSelected.find(user => user.id === idUser);
+        let user2 = this.dataStore.usersOfMyForumSelected.find(user => user.id === idUser);
 
-        if(user == undefined) return;
+        if(user2 == undefined) return;
 
-        user.isConnected = true;
-        let test = this.dataStore.usersOfMyForumSelected.find(usera => usera.isConnected === user.isConnected)
-        console.log(test);
+        user2.isConnected = true;
 
         this._usersOfMyForumSelected.next(this.cpObj(this.dataStore).usersOfMyForumSelected);
 
@@ -144,14 +143,14 @@ export class ForumService {
 
       if(idUser == this.userService.getCurrentIdentity()) return;
 
-      let user = this.dataStore.usersOfMyForumSelected.find(user => user.id === idUser);
+      let user2 = this.dataStore.usersOfMyForumSelected.find(user => user.id === idUser);
 
-      if(user == undefined) return;
+      if(user2 == undefined) return;
 
-      user.isConnected = false;
-      this.dataStore.usersOfMyForumSelected.find(usera => usera.isConnected === user.isConnected)
+      user2.isConnected = false;
 
       this._usersOfMyForumSelected.next(this.cpObj(this.dataStore).usersOfMyForumSelected);
+
     })
 
     this.websocket.onUserSubscribe.subscribe((sub:SubscribeResultView) => {
@@ -173,11 +172,11 @@ export class ForumService {
     this.websocket.onChannelDeleted.subscribe((delC:DeleteChannelForm) => {
       if(delC==undefined) return;
 
-      if(this.dataStore.myForumSelected._id !== delC.idForum) return;
+      if(this.dataStore.myForumSelected?._id !== delC.idForum) return;
 
-      let res = this.dataStore.channelsOfMyForumSelected.filter(channel => channel.id != this.dataStore.channelForumSelected.id)
+      let res = this.dataStore.channelsOfMyForumSelected.filter(channel => channel.id != this.dataStore.channelForumSelected?.id)
 
-      if(this.dataStore.channelForumSelected.id === delC.idChannel) {
+      if(this.dataStore.channelForumSelected?.id === delC.idChannel) {
         if(res.length > 0 && res != undefined){
           this.selectChannelForum(res[0].id);
         }
@@ -193,7 +192,7 @@ export class ForumService {
 
   async loadMyForums() {
     //get forum API
-    this.dataStore.myForums = await this.getMyForums();
+    this.dataStore.myForums = await this.getMyForumsAsync();
     //notify change value
     this._myForums.next(Object.assign({}, this.dataStore).myForums);
     //if value have forums and not have current selected forum, set first element of array and notify
@@ -209,7 +208,7 @@ export class ForumService {
   async loadSearchForum() {
 
     //execute request
-    this.dataStore.searchForum = await this.getForums(this.dataStore.searchForum);
+    this.dataStore.searchForum = await this.getForumsAsync(this.dataStore.searchForum);
     //notify change
     this._searchForum.next(this.cpObj(this.dataStore).searchForum)
 
@@ -225,7 +224,7 @@ export class ForumService {
       }
 
       //get panel of selected forum
-      var panel = await this.getForumPannel(idForum);
+      var panel = await this.getForumPannelAsync(idForum);
 
       //set data in store and notify channels / users
       this.dataStore.channelsOfMyForumSelected = panel.channels;
@@ -262,7 +261,7 @@ export class ForumService {
     }
 
     //get panel of selected forum
-    var panel = await this.getChannelPannel(idChannel);
+    var panel = await this.getChannelPannelAsync(idChannel);
     //set data in store and notify message
     this.dataStore.messagesOfChannelSelected = panel.messages;
     this._messagesOfChannelSelected.next(this.cpObj(this.dataStore).messagesOfChannelSelected);
@@ -332,7 +331,7 @@ export class ForumService {
     register.NameChannel = channelName;
 
     //execute request
-    var res = await this.newChannel(register);
+    var res = await this.newChannelAsync(register);
 
     //concat result to channels and notify
     this.dataStore.channelsOfMyForumSelected = [...this.dataStore.channelsOfMyForumSelected, res.channel];
@@ -347,7 +346,7 @@ export class ForumService {
   async createNewForum(forum : ForumForm) {
 
     //execute request to create forum
-    var res = await this.sendFormValues(forum);
+    var res = await this.sendFormValuesAsync(forum);
 
     //set redirection on new forum
     if(this.dataStore.channelForumSelected !== undefined)
@@ -370,7 +369,7 @@ export class ForumService {
     }
 
     //execute request
-    var res = await this.subscribe(forum._id);
+    var res = await this.subscribeAsync(forum._id);
 
     if(res.result){
       //and load refresh of my forum
@@ -380,6 +379,17 @@ export class ForumService {
       this.notif.showError(res.message, "Error");
     }
 
+  }
+
+  pushMessage(msg : MessageView){
+    //push and notify new message
+    this.dataStore.messagesOfChannelSelected.push(msg);
+    this._messagesOfChannelSelected.next(this.cpObj(this.dataStore).messagesOfChannelSelected)
+  }
+
+  addNewCategory(channel : ChannelView){
+    this.dataStore.channelsOfMyForumSelected.push(channel)
+    this._channelsOfMyForumSelected.next(this.cpObj(this.dataStore).channelsOfMyForumSelected)
   }
 
   async OnSearchPaginitionChange(length:number,pageIndex:number,pageSize:number){
@@ -404,7 +414,7 @@ export class ForumService {
     registerMsg.messageV = message;
 
     //execute request
-    let res = await this.newMsg(registerMsg);
+    let res = await this.newMsgAsync(registerMsg);
 
     //if correct response create message (have id)
     // and is current forum and channel
@@ -420,68 +430,51 @@ export class ForumService {
 
   }
 
-  pushMessage(msg : MessageView){
-    //push and notify new message
-    this.dataStore.messagesOfChannelSelected.push(msg);
-    this._messagesOfChannelSelected.next(this.cpObj(this.dataStore).messagesOfChannelSelected)
-  }
-
-  addNewCategory(channel : ChannelView){
-    console.log(channel)
-    let test = new ChannelView();
-    test.id = channel.id;
-    test.name = channel.name;
-    this.dataStore.channelsOfMyForumSelected.push(test)
-
-    this._channelsOfMyForumSelected.next(this.cpObj((this.dataStore).channelsOfMyForumSelected))
-  }
-
-  deleteAChannel(item : ChannelView){
+  async deleteAChannel(item : string){
     let res : DeleteChannelForm = new DeleteChannelForm();
-    res.idChannel = item.id;
+    res.idChannel = item;
     res.idUser = this.getCurrentUserId();
     res.idForum = this.dataStore.myForumSelected._id;
-
-    this.deleteChannel(res);
+    await this.deleteChannelAsync(res);
   }
 
     //
     // HTTP CALLS
     //
 
-  public async newMsg(registerMsg : RegisterMessage){
+  public async newMsgAsync(registerMsg : RegisterMessage){
     return await this.req.executePost<RegisterMessage, RegisterMessage>(this.apiUrlMsg, registerMsg)
   }
 
-  public async getForums(listForum : ForumSearchView) : Promise<ForumSearchView>{
+  public async getForumsAsync(listForum : ForumSearchView) : Promise<ForumSearchView>{
     return await this.req.executePost<ForumSearchView, ForumSearchView>(this.apiUrl+"/search", listForum);
   }
 
-  public async sendFormValues(forumForm : ForumForm){
+  public async sendFormValuesAsync(forumForm : ForumForm){
     return await this.req.executePost<ForumForm, ForumView>(this.apiUrl+"/create", forumForm)
   }
 
-  public async getMyForums() : Promise<Array<ForumView>> {
+  public async getMyForumsAsync() : Promise<Array<ForumView>> {
     return await this.req.executeGet<Array<ForumView>>(this.apiUrl+"/myforum")
   }
 
-  public async subscribe(id : string) : Promise<SubscribeResultView> {
+  public async subscribeAsync(id : string) : Promise<SubscribeResultView> {
     return await this.req.executeGet<SubscribeResultView>(this.apiUrl+"/subscribe/" + id);
   }
 
-  public async newChannel(channel : RegisterChannel) : Promise<RegisterChannelResult> {
+  public async newChannelAsync(channel : RegisterChannel) : Promise<RegisterChannelResult> {
     return await this.req.executePost<RegisterChannel, RegisterChannelResult>(this.apiUrlChannel+"/create", channel);
   }
 
-  public async getForumPannel(idForum : string) : Promise<ForumPanelView>{
+  public async getForumPannelAsync(idForum : string) : Promise<ForumPanelView>{
     return await this.req.executeGet<ForumPanelView>(this.apiUrl+"/panel/" + idForum);
   }
 
-  public async getChannelPannel(idChannel: string) : Promise<ChannelPanelView> {
+  public async getChannelPannelAsync(idChannel: string) : Promise<ChannelPanelView> {
     return await this.req.executeGet<ChannelPanelView>(this.apiUrlChannel+"/panel/" + idChannel);
   }
 
-  public async deleteChannel(deletedChannel : DeleteChannelForm) : Promise<DeleteChannelForm> {
+  public async deleteChannelAsync(deletedChannel : DeleteChannelForm) : Promise<DeleteChannelForm> {
     console.log("DELETEEEEEEEEEEE")
     console.log(deletedChannel);
     return await this.req.executePost<DeleteChannelForm, DeleteChannelForm>(this.apiUrlChannel+"/delete/", deletedChannel);

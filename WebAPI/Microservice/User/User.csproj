@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ConfigIp\ConfigIp.csproj" />
     <ProjectReference Include="..\AuthMiddleware\AuthMiddleware.csproj" />
     <ProjectReference Include="..\MongoDBAccess\MongoDBAccess.csproj" />
     <ProjectReference Include="..\PolicyMiddleware\PolicyMiddleware.csproj" />
