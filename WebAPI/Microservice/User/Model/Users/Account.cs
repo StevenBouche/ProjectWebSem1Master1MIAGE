@@ -1,4 +1,5 @@
 ﻿using AuthMiddleware;
+using ConfigIp;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
@@ -44,7 +45,7 @@ namespace User.Model.Users
                 Pseudo = this.Pseudo,
                 AddressIP = ip,
                 Role = this.Profil.Role == 0 ? "ADMIN" : "USER",
-                UrlPicture = "http://localhost:7000/account/picture/" + this.ID
+                UrlPicture = ConfigIp.+"/account/picture/" + this.ID
             };
         }
 

@@ -1,4 +1,5 @@
 ﻿using AuthMiddleware;
+using ConfigIp;
 using Forum.Models;
 using Forum.Models.View;
 using MongoDB.Bson;
@@ -57,7 +58,7 @@ namespace Forum.Services
             {
                 Id = identity.ID,
                 Pseudo = identity.Pseudo,
-                UrlPicture = "http://localhost:7000/account/picture/" + identity.ID
+                UrlPicture = Config.URL+"/account/picture/" + identity.ID
             });
 
 
