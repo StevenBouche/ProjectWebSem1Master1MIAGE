@@ -45,7 +45,7 @@ namespace User.Model.Users
                 Pseudo = this.Pseudo,
                 AddressIP = ip,
                 Role = this.Profil.Role == 0 ? "ADMIN" : "USER",
-                UrlPicture = Config.URL +"/account/picture/" + this.ID
+                UrlPicture = Config.URL+"/account/picture/" + this.ID
             };
         }
 
