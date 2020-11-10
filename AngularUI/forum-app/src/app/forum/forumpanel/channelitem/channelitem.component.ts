@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import ChannelView from 'src/models/forum/ChannelView';
+import DeleteChannelForm from 'src/models/forum/DeleteChannelForm';
 import { ForumService } from 'src/services/forum/forum.service';
 
 @Component({
@@ -40,7 +41,7 @@ export class ChannelitemComponent implements OnInit {
   }
 
   deleteItem(){
-
+    this.forumService.deleteAChannel(this.item);
   }
 
 }

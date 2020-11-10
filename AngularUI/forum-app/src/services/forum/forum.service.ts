@@ -174,11 +174,17 @@ export class ForumService {
 
       if(this.dataStore.myForumSelected._id !== delC.idForum) return;
 
-      if(this.dataStore.channelForumSelected.id !== delC.idChannel) return;
-
       let res = this.dataStore.channelsOfMyForumSelected.filter(channel => channel.id != this.dataStore.channelForumSelected.id)
+
+      if(this.dataStore.channelForumSelected.id === delC.idChannel) {
+        if(res.length > 0 && res != undefined){
+          this.selectChannelForum(res[0].id);
+        }
+        this.selectChannelForum(undefined);
+      }
+
       this.dataStore.channelsOfMyForumSelected = res;
-      this._channelsOfMyForumSelected.next(this.cpObj(this.dataStore).channelsOfMyForumSelected);;
+      this._channelsOfMyForumSelected.next(this.cpObj(this.dataStore).channelsOfMyForumSelected);
     })
 
   }
@@ -312,6 +318,10 @@ export class ForumService {
 
   }
 
+  getCurrentUserId(){
+    return this.userService.getCurrentIdentity();
+  }
+
   async createNewChannelForumSelected(channelName: string) {
 
     //setup register form
@@ -420,6 +430,15 @@ export class ForumService {
     this._channelsOfMyForumSelected.next(this.cpObj((this.dataStore).channelsOfMyForumSelected))
   }
 
+  deleteAChannel(item : ChannelView){
+    let res : DeleteChannelForm = new DeleteChannelForm();
+    res.idChannel = item.id;
+    res.idUser = this.getCurrentUserId();
+    res.idForum = this.dataStore.myForumSelected._id;
+
+    this.deleteChannel(res);
+  }
+
     //
     // HTTP CALLS
     //
@@ -457,6 +476,8 @@ export class ForumService {
   }
 
   public async deleteChannel(deletedChannel : DeleteChannelForm) : Promise<DeleteChannelForm> {
+    console.log("DELETEEEEEEEEEEE")
+    console.log(deletedChannel);
     return await this.req.executePost<DeleteChannelForm, DeleteChannelForm>(this.apiUrlChannel+"/delete/", deletedChannel);
   }
 
